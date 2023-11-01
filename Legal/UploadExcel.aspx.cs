@@ -264,7 +264,7 @@ public partial class Legal_UploadExcel : System.Web.UI.Page
                             DtDoc.AcceptChanges();
                             ViewState["DtDoc"] = DtDoc; // It Keep Case Document For Save.
                             // To Check Exists Record
-                            DataSet DsRecord = obj.ByDataSet("select Case_ID, UniqueNo, FilingNo, CourtName,CasetypeName, CaseNo, CaseYear from tblLegalCaseRegistration");
+                            DataSet DsRecord = obj.ByDataSet("select Case_ID, UniqueNo, FilingNo, CourtName,CasetypeName, CaseNo, CaseYear from tblLegalCaseRegistration where UniqueNo is not null AND FilingNo is not null AND CourtName is not null AND CasetypeName is not null AND CaseNo is not null");
                             DataTable dt_ds = DsRecord.Tables[0];
                             List<ExistRecord> Erobj = new List<ExistRecord>();
 

@@ -282,7 +282,7 @@
                                                         <asp:Label ID="lbltimeline" runat="server" Text='<%# Eval("IntrimOrderTimeline") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Any PP">
+                                            <asp:TemplateField HeaderText="Personal Presence">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblOicName" runat="server" Text='<%# Eval("IntrimOrderAnyPrevPP") %>'></asp:Label>
                                                 </ItemTemplate>
@@ -341,7 +341,7 @@
                     text: '<i class="fa fa-print"></i> Print',
                     title: $('h3').text(),
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
                     },
                     footer: true,
                     autoPrint: true
@@ -350,7 +350,7 @@
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
                     title: $('h3').text(),
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
                     },
                     footer: true
                 }],

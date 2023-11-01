@@ -51,7 +51,11 @@ public partial class Legal_InterimOrderRpt : System.Web.UI.Page
             {
                 string District_Id = Session["District_Id"].ToString();
                 dtCourt = court.GetCourtForCourt(District_Id) as DataTable;
-
+            }
+			 else if (Session["Role_ID"].ToString() == "3")// OIC Login
+            {
+                string District_Id = Session["District_Id"].ToString();
+                dtCourt = court.GetCourtForCourt(District_Id) as DataTable;
             }
             else dtCourt = court.GetCourt() as DataTable;
             if (dtCourt.Rows.Count > 0)
@@ -235,7 +239,7 @@ public partial class Legal_InterimOrderRpt : System.Web.UI.Page
             {
                 GridViewRow row = (GridViewRow)((LinkButton)e.CommandSource).NamingContainer;
                 string ID = HttpUtility.UrlEncode(Encrypt(e.CommandArgument.ToString()));
-                string page_ID = HttpUtility.UrlEncode(Encrypt("1"));
+                string page_ID = HttpUtility.UrlEncode(Encrypt("9"));
                 string CaseID = HttpUtility.UrlEncode(Encrypt("CaseID"));
                 string pageID = HttpUtility.UrlEncode(Encrypt("pageID"));
                 Response.Redirect("~/Legal/ViewWPPendingCaseDetail.aspx?" + CaseID + "=" + ID + "&" + pageID + "=" + page_ID, false);
