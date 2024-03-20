@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -26,8 +26,8 @@ public partial class Legal_InterimOrderRpt : System.Web.UI.Page
                 FillYear();
                 FillCourt();
                 ViewState["OIC_ID"] = Session["OICMaster_ID"];
-                txtFromDate.Text = "01/01/" + DateTime.Now.Year.ToString();
-                txtFromDate.Attributes.Add("readonly", "readonly");
+                //txtFromDate.Text = "01/01/" + DateTime.Now.Year.ToString();
+                //txtFromDate.Attributes.Add("readonly", "readonly");
             }
         }
         else

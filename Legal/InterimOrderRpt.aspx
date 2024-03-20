@@ -139,7 +139,7 @@
                 <asp:Label ID="lblMsg" runat="server" Text=""></asp:Label>
                 <div class="card">
                     <div class="card-header">
-                       Interim Case Report
+                        Interim Case Report
                     </div>
                     <div class="card-body">
                         <fieldset>
@@ -190,25 +190,25 @@
                                     <div class="form-group">
                                         <label>
                                             From Date<span style="color: red;"><b> *</b></span>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="Save"
+                                            <%--     <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="Save"
                                                 ErrorMessage="Enter From Date." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                 ControlToValidate="txtFromDate" Display="Dynamic" runat="server">
-                                            </asp:RequiredFieldValidator><br />
+                                            </asp:RequiredFieldValidator><br />--%>
                                         </label>
                                         <%--<asp:TextBox ID="txtFromDate" runat="server" date-provide="datepicker" AutoComplete="off" data-date-end-date="0d" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>--%>
-                                        <asp:TextBox ID="txtFromDate" runat="server" date-provide="datepicker" AutoComplete="off" data-date-end-date="0d" placeholder="DD/MM/YYYY" class="form-control" ClientIDMode="Static"></asp:TextBox>
+                                        <asp:TextBox ID="txtFromDate" runat="server" date-provide="datepicker" AutoComplete="off" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>
                                             To Date<span style="color: red;"><b> *</b></span>
-                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="Save"
+                                            <%--  <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="Save"
                                                 ErrorMessage="Enter To Date." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                 ControlToValidate="txttodate" Display="Dynamic" runat="server">
-                                            </asp:RequiredFieldValidator><br />
+                                            </asp:RequiredFieldValidator><br />--%>
                                         </label>
-                                        <asp:TextBox ID="txttodate" runat="server" date-provide="datepicker" AutoComplete="off" data-date-start-date="0d" data-date-end-date="0d" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>
+                                        <asp:TextBox ID="txttodate" runat="server" date-provide="datepicker" AutoComplete="off" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -267,6 +267,11 @@
                                                     <asp:Label ID="lblCaseSubject" runat="server" Text='<%# Eval("CaseSubject") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Case Sub Subject">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCaseSubSubject" runat="server" Text='<%# Eval("CaseSubSubject") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Interim Start Date">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblInterimstartDate" runat="server" Text='<%# Eval("IntrimOrderStartDate") %>'></asp:Label>
@@ -278,10 +283,10 @@
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Timeline In Days">
-                                                    <ItemTemplate>
-                                                        <asp:Label ID="lbltimeline" runat="server" Text='<%# Eval("IntrimOrderTimeline") %>'></asp:Label>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lbltimeline" runat="server" Text='<%# Eval("IntrimOrderTimeline") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Personal Presence">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblOicName" runat="server" Text='<%# Eval("IntrimOrderAnyPrevPP") %>'></asp:Label>
@@ -292,6 +297,22 @@
                                                     <asp:Label ID="lblSummary" runat="server" Text='<%# Eval("IntrimOrderSummary") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="WP Number">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lbloldCaseNo" runat="server" Text='<%# Eval("OldCaseNo") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="WP Year">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lbloldWPYear" runat="server" Text='<%# Eval("oldCaseYear") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="WP Order date">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lbloldWPOrderdate" runat="server" Text='<%# Eval("OrderDate") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+
                                             <asp:TemplateField HeaderText="View" ItemStyle-Width="5%">
                                                 <ItemTemplate>
                                                     <asp:LinkButton ID="lnkbtnView" runat="server" CommandName="ViewDetail" CommandArgument='<%# Eval("Case_ID") %>' ToolTip="View"><i class="fa fa-eye"></i></asp:LinkButton>
@@ -339,18 +360,18 @@
                 buttons: [{
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
-                    title: $('h3').text(),
+                    title: 'Interim Case Report',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
                     },
                     footer: true,
                     autoPrint: true
                 }, {
                     extend: 'excel',
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
-                    title: $('h3').text(),
+                    title: 'Interim Case Report',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
                     },
                     footer: true
                 }],

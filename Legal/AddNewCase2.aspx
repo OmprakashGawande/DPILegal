@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Legal/MainMaster.master" AutoEventWireup="true" CodeFile="AddNewCase2.aspx.cs" Inherits="Legal_AddNewCase2" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Legal/MainMaster.master" AutoEventWireup="true"  MaintainScrollPositionOnPostback="true" CodeFile="AddNewCase2.aspx.cs" Inherits="Legal_AddNewCase2" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 </asp:Content>
@@ -34,6 +34,7 @@
             </div>
         </div>
     </div>
+   
     <div class="content-wrapper">
         <section class="content">
             <div class="container-fluid">
@@ -109,7 +110,7 @@
                                             <div class="form-group">
                                                 <div class="form-group">
                                                     <label>
-                                                              Case Subject<%--<span style="color: red;">*</span>--%></label>
+                                                        Case Subject<%--<span style="color: red;">*</span>--%></label>
                                                     <%--<asp:RequiredFieldValidator ID="rfvCaseSubject" ValidationGroup="Save"
                                                         ErrorMessage="Select Case Subject." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                         ControlToValidate="ddlCaseSubject" Display="Dynamic" runat="server" InitialValue="0">
@@ -122,7 +123,7 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>Sub Subject</label>
-                                                <asp:DropDownList runat="server" ID="ddlSubSubject" CssClass="form-control">
+                                                <asp:DropDownList runat="server" ID="ddlSubSubject" CssClass="form-control select2">
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
@@ -169,7 +170,7 @@
                                                 <asp:DropDownList runat="server" ID="ddlDistrict" CssClass="form-control select2"></asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="col-md-3" runat="server" visible="false" >
+                                        <div class="col-md-3" runat="server" visible="false">
                                             <div class="form-group">
                                                 <label>
                                                     Party Name</label>
@@ -237,7 +238,7 @@
                                                     Text="<i class='fa fa-exclamation-circle' title='Required !'></i>">
                                                 </asp:RequiredFieldValidator>--%>
                                                 <asp:TextBox ID="txtPetiMobileNo" runat="server" placeholder="Mobile No." AutoComplete="off" CssClass="form-control MobileNo1" MaxLength="10" onkeypress="return NumberOnly();"></asp:TextBox>
-                                               <%-- <asp:RegularExpressionValidator ID="rfvPetiadvocatemobile" ValidationGroup="Petitioner" runat="server" Display="Dynamic" ControlToValidate="txtPetiMobileNo"
+                                                <%-- <asp:RegularExpressionValidator ID="rfvPetiadvocatemobile" ValidationGroup="Petitioner" runat="server" Display="Dynamic" ControlToValidate="txtPetiMobileNo"
                                                     ErrorMessage="Invalid Mobile No." SetFocusOnError="true"
                                                     ForeColor="Red" ValidationExpression="^([6-9]{1}[0-9]{9})$"></asp:RegularExpressionValidator>--%>
                                             </div>
@@ -250,7 +251,7 @@
                                                     ControlToValidate="txtPetiAddRess" ValidationGroup="Petitioner" ErrorMessage="Enter Present posting address"
                                                     Text="<i class='fa fa-exclamation-circle' title='Required !'></i>">
                                                 </asp:RequiredFieldValidator>
-                                                <asp:TextBox ID="txtPetiAddRess" runat="server" placeholder="Address" AutoComplete="off" CssClass="form-control" MaxLength="200" onkeyup="javascript:capFirst(this);"></asp:TextBox>
+                                                <asp:TextBox ID="txtPetiAddRess" runat="server" placeholder="Address" AutoComplete="off" CssClass="form-control" TextMode="MultiLine" onkeyup="javascript:capFirst(this);"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="col-md-1">
@@ -323,8 +324,8 @@
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
-                                                <label>Office Location</label><%--<span style="color: red;"><b> *</b></span>--%>
-                                               <%-- <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Responder"
+                                                <label>Office Location</label><%--<span style="color: red;"><b> *</b></span>
+                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Responder"
                                                     ErrorMessage="Select Office Location." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                     ControlToValidate="ddlOfficeName" Display="Dynamic" runat="server" InitialValue="0">
                                                 </asp:RequiredFieldValidator>--%>
@@ -365,7 +366,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Address</label>
-                                                <asp:TextBox ID="txtAddress" runat="server" placeholder="Address" CssClass="form-control" onkeyup="javascript:capFirst(this);" AutoComplete="off" MaxLength="70"></asp:TextBox>
+                                                <asp:TextBox ID="txtAddress" runat="server" placeholder="Address" CssClass="form-control" onkeyup="javascript:capFirst(this);" AutoComplete="off" TextMode="MultiLine"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="col-md-1" style="padding-top: 2rem! important;">
@@ -382,13 +383,13 @@
                                                                 <asp:Label ID="lblSrnO" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                         <asp:TemplateField HeaderText="Department">
+                                                        <asp:TemplateField HeaderText="Department">
                                                             <ItemTemplate>
                                                                 <asp:Label ID="lblDepartment" runat="server" Text='<%# Eval("Dept_ID") %>' Visible="false"></asp:Label>
                                                                 <asp:Label ID="lblDepartmentname" runat="server" Text='<%# Eval("Department") %>'></asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                         <asp:TemplateField HeaderText="HOD">
+                                                        <asp:TemplateField HeaderText="HOD">
                                                             <ItemTemplate>
                                                                 <asp:Label ID="lblHODID" runat="server" Text='<%# Eval("HOD_ID") %>' Visible="false"></asp:Label>
                                                                 <asp:Label ID="lblHODname" runat="server" Text='<%# Eval("HodName") %>'></asp:Label>
@@ -400,7 +401,7 @@
                                                                 <asp:Label ID="lblofficetypename" runat="server" Text='<%# Eval("OfficeTypeName") %>'></asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="Office Name">
+                                                        <asp:TemplateField HeaderText="Office Location">
                                                             <ItemTemplate>
                                                                 <asp:Label ID="lblOfficeNameID" runat="server" Text='<%# Eval("OfficeNameId") %>' Visible="false"></asp:Label>
                                                                 <asp:Label ID="lblOfficename" runat="server" Text='<%# Eval("OfficeName") %>'></asp:Label>

@@ -246,7 +246,7 @@
                                                         ControlToValidate="ddlDesignation" ForeColor="Red" Display="Dynamic" runat="server" InitialValue="0">
                                                     </asp:RequiredFieldValidator>
                                                 </span>
-                                                <asp:DropDownList runat="server" ID="ddlDesignation" CssClass="form-control"></asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlDesignation" CssClass="form-control select2"></asp:DropDownList>
 
                                             </div>
                                         </div>
@@ -259,7 +259,7 @@
                                                         ControlToValidate="ddlDepartment" ForeColor="Red" Display="Dynamic" runat="server" InitialValue="0">
                                                     </asp:RequiredFieldValidator>
                                                 </span>
-                                                <asp:DropDownList runat="server" ID="ddlDepartment" CssClass="form-control"></asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlDepartment" CssClass="form-control select2"></asp:DropDownList>
 
                                             </div>
                                         </div>

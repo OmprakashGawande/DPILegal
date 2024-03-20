@@ -30,7 +30,7 @@ public partial class Legal_WPCaseList : System.Web.UI.Page
                 FillYear();
                 if (Request.QueryString["CourtId"] != null)
                 {
-                    ddlCourt.SelectedValue = obj.Decrypt(Request.QueryString["CourtId"]); 
+                    ddlCourt.SelectedValue = obj.Decrypt(Request.QueryString["CourtId"]);
                     ddlCourt_SelectedIndexChanged(sender, e);
                     ddlCaseYear.ClearSelection();
                     if (Request.QueryString["Caseyear"] != null)
@@ -47,11 +47,11 @@ public partial class Legal_WPCaseList : System.Web.UI.Page
                     {
                         ddlCaseStatus.SelectedItem.Text = obj.Decrypt(Request.QueryString["CaseStatus"]);
                     }
-                    ddlCaseNo.ClearSelection();
-                    if (Request.QueryString["CaseNo"] != null)
-                    {
-                        ddlCaseNo.SelectedItem.Text= obj.Decrypt(Request.QueryString["CaseNo"]);
-                    }
+                    //ddlCaseNo.ClearSelection();
+                    //if (Request.QueryString["CaseNo"] != null)
+                    //{
+                    //    ddlCaseNo.SelectedItem.Text = obj.Decrypt(Request.QueryString["CaseNo"]);
+                    //}
                     btnSearch_Click(sender, e);
                 }
             }
@@ -80,7 +80,7 @@ public partial class Legal_WPCaseList : System.Web.UI.Page
                 dtCourt = court.GetCourtForCourt(District_Id) as DataTable;
 
             }
-			 else if (Session["Role_ID"].ToString() == "3")// District Office.
+            else if (Session["Role_ID"].ToString() == "3")// District Office.
             {
                 string District_Id = Session["District_Id"].ToString();
                 dtCourt = court.GetCourtForCourt(District_Id) as DataTable;
@@ -106,7 +106,7 @@ public partial class Legal_WPCaseList : System.Web.UI.Page
         try
         {
             ddlCaseYear.Items.Clear();
-            DataSet dsCase = obj.ByDataSet("with yearlist as (select 2000 as year union all select yl.year + 1 as year from yearlist yl where yl.year + 1 <= YEAR(GetDate())) select year from yearlist order by year asc");
+            DataSet dsCase = obj.ByDataSet("with yearlist as (select 2000 as year union all select yl.year + 1 as year from yearlist yl where yl.year + 1 <= YEAR(GetDate())) select year from yearlist order by year DESC");
             if (dsCase.Tables.Count > 0 && dsCase.Tables[0].Rows.Count > 0)
             {
                 ddlCaseYear.DataSource = dsCase.Tables[0];
@@ -126,7 +126,7 @@ public partial class Legal_WPCaseList : System.Web.UI.Page
     {
         try
         {
-            ddlCaseNo.Items.Clear();
+            //ddlCaseNo.Items.Clear();
             DataTable dtCN = new DataTable();
             Helper CaseNo = new Helper();
             if (Session["Role_ID"].ToString() == "4")
@@ -157,14 +157,14 @@ public partial class Legal_WPCaseList : System.Web.UI.Page
                 }
             }
 
-            if (dtCN != null && dtCN.Rows.Count > 0)
-            {
-                ddlCaseNo.DataValueField = "Case_ID";
-                ddlCaseNo.DataTextField = "CaseNo";
-                ddlCaseNo.DataSource = dtCN;
-                ddlCaseNo.DataBind();
-            }
-            ddlCaseNo.Items.Insert(0, new ListItem("Select", "0"));
+            //if (dtCN != null && dtCN.Rows.Count > 0)
+            //{
+            //    ddlCaseNo.DataValueField = "Case_ID";
+            //    ddlCaseNo.DataTextField = "CaseNo";
+            //    ddlCaseNo.DataSource = dtCN;
+            //    ddlCaseNo.DataBind();
+            //}
+            //ddlCaseNo.Items.Insert(0, new ListItem("Select", "0"));
         }
         catch (Exception ex)
         {
@@ -216,25 +216,25 @@ public partial class Legal_WPCaseList : System.Web.UI.Page
 
             if (Session["Role_ID"].ToString() == "4")
             {
-                ds = obj.ByProcedure("USP_GetCaseRegisDetail", new string[] { "Casetype_ID", "CourtType_Id", "CaseNo", "Year", "CaseStatus", "District_ID", "flag" }
-                  , new string[] { ddlCaseType.SelectedValue, ddlCourt.SelectedValue, ddlCaseNo.SelectedItem.Text, ddlCaseYear.SelectedItem.Text, ddlCaseStatus.SelectedItem.Text, District_ID, "2" }, "dataset");
+                ds = obj.ByProcedure("USP_GetCaseRegisDetail", new string[] { "Casetype_ID", "CourtType_Id", "Year", "CaseStatus", "District_ID", "flag" }
+                  , new string[] { ddlCaseType.SelectedValue, ddlCourt.SelectedValue, ddlCaseYear.SelectedItem.Text, ddlCaseStatus.SelectedItem.Text, District_ID, "2" }, "dataset");
             }
             else if (Session["Role_ID"].ToString() == "2")
             {
                 string Division_ID = Session["Division_Id"].ToString();
-                ds = obj.ByProcedure("USP_GetCaseRegisDetail", new string[] { "Casetype_ID", "CourtType_Id", "CaseNo", "Year", "CaseStatus", "Division_ID", "flag" }
-                  , new string[] { ddlCaseType.SelectedValue, ddlCourt.SelectedValue, ddlCaseNo.SelectedItem.Text, ddlCaseYear.SelectedItem.Text, ddlCaseStatus.SelectedItem.Text, Division_ID, "3" }, "dataset");
+                ds = obj.ByProcedure("USP_GetCaseRegisDetail", new string[] { "Casetype_ID", "CourtType_Id", "Year", "CaseStatus", "Division_ID", "flag" }
+                  , new string[] { ddlCaseType.SelectedValue, ddlCourt.SelectedValue, ddlCaseYear.SelectedItem.Text, ddlCaseStatus.SelectedItem.Text, Division_ID, "3" }, "dataset");
             }
             else if (Session["Role_ID"].ToString() == "5")
             {
                 string District_Id = Session["District_Id"].ToString();
-                ds = obj.ByProcedure("USP_GetCaseRegisDetail", new string[] { "Casetype_ID", "CourtType_Id", "CaseNo", "Year", "CaseStatus", "CourtLocation_Id", "flag" }
-                  , new string[] { ddlCaseType.SelectedValue, ddlCourt.SelectedValue, ddlCaseNo.SelectedItem.Text, ddlCaseYear.SelectedItem.Text, ddlCaseStatus.SelectedItem.Text, District_Id, "4" }, "dataset");
+                ds = obj.ByProcedure("USP_GetCaseRegisDetail", new string[] { "Casetype_ID", "CourtType_Id", "Year", "CaseStatus", "CourtLocation_Id", "flag" }
+                  , new string[] { ddlCaseType.SelectedValue, ddlCourt.SelectedValue, ddlCaseYear.SelectedItem.Text, ddlCaseStatus.SelectedItem.Text, District_Id, "4" }, "dataset");
             }
             else
             {
-                ds = obj.ByProcedure("USP_GetCaseRegisDetail", new string[] { "Casetype_ID", "CourtType_Id", "CaseNo", "Year", "CaseStatus", "OICMaster_Id", "flag" }
-                   , new string[] { ddlCaseType.SelectedValue, ddlCourt.SelectedValue, ddlCaseNo.SelectedItem.Text, ddlCaseYear.SelectedItem.Text, ddlCaseStatus.SelectedItem.Text, OICMaster_Id, "1" }, "dataset");
+                ds = obj.ByProcedure("USP_GetCaseRegisDetail", new string[] { "Casetype_ID", "CourtType_Id", "Year", "CaseStatus", "OICMaster_Id", "flag" }
+                   , new string[] { ddlCaseType.SelectedValue, ddlCourt.SelectedValue, ddlCaseYear.SelectedItem.Text, ddlCaseStatus.SelectedItem.Text, OICMaster_Id, "1" }, "dataset");
             }
 
             if (ds != null && ds.Tables[0].Rows.Count > 0)
@@ -254,7 +254,6 @@ public partial class Legal_WPCaseList : System.Web.UI.Page
         catch (Exception ex)
         {
             ErrorLogCls.SendErrorToText(ex);
-            //lblMsg.Text = obj.Alert("fa-ban", "alert-danger", "Sorry !", ex.Message.ToString());
         }
         finally { ds.Clear(); }
     }
@@ -267,26 +266,35 @@ public partial class Legal_WPCaseList : System.Web.UI.Page
             GridViewRow row = (GridViewRow)(((LinkButton)e.CommandSource).NamingContainer);
             Label lblUniqueNo = (Label)row.FindControl("lblUniqueNo");
             Label lblStatus = (Label)row.FindControl("lblStatus");
+            Label lblCasetype = (Label)row.FindControl("lblCasetype");
             string ID = obj.Encrypt(e.CommandArgument.ToString());
             string UniqueNO = obj.Encrypt(lblUniqueNo.Text);
             string CourtId = obj.Encrypt(ddlCourt.SelectedValue);
             string Caseyear = obj.Encrypt(ddlCaseYear.SelectedItem.Text);
-            string CaseType = obj.Encrypt(ddlCaseType.SelectedValue);
-            string CaseNo = obj.Encrypt(ddlCaseNo.SelectedItem.Text);
+            //string CaseType = obj.Encrypt(ddlCaseType.SelectedValue);
+            //string CaseNo = obj.Encrypt(ddlCaseNo.SelectedItem.Text);
             string CaseStatus = obj.Encrypt(ddlCaseStatus.SelectedItem.Text);
-            if (lblStatus.Text == "Pending")
+            string CaseType = obj.Encrypt(lblCasetype.Text);
+            if (lblStatus.Text == "Pending" || lblStatus.Text == "pending")
             {
-                Response.Redirect("~/Legal/EditCaseDetail.aspx?CaseID=" + ID + "&UniqueNO=" + UniqueNO + "&CourtId=" + CourtId + "&Caseyear=" + Caseyear + "&CaseType=" + CaseType + "&CaseNo=" + CaseNo + "&CaseStatus=" + CaseStatus, false);
+                if (lblCasetype.Text == "1")
+                {
+                    Response.Redirect("~/Legal/EditCaseDetail_WP.aspx?CaseID=" + ID + "&UniqueNO=" + UniqueNO + "&CourtId=" + CourtId + "&Caseyear=" + Caseyear + "&CaseType=" + CaseType + "&CaseStatus=" + CaseStatus, false);
+                }
+                else
+                {
+                    Response.Redirect("~/Legal/EditCaseDetail.aspx?CaseID=" + ID + "&UniqueNO=" + UniqueNO + "&CourtId=" + CourtId + "&Caseyear=" + Caseyear + "&CaseType=" + CaseType + "&CaseStatus=" + CaseStatus, false);
 
+                }
             }
             else if (lblStatus.Text == "Disposed")
             {
-                Response.Redirect("~/Legal/EditDisposeCase.aspx?CaseID=" + ID + "&UniqueNO=" + UniqueNO + "&CourtId=" + CourtId + "&Caseyear=" + Caseyear + "&CaseType=" + CaseType + "&CaseNo=" + CaseNo + "&CaseStatus=" + CaseStatus, false);
+                Response.Redirect("~/Legal/EditDisposeCase.aspx?CaseID=" + ID + "&UniqueNO=" + UniqueNO + "&CourtId=" + CourtId + "&Caseyear=" + Caseyear + "&CaseType=" + CaseType + "&CaseStatus=" + CaseStatus, false);
             }
         }
         catch (Exception ex)
         {
-            lblMsg.Text = obj.Alert("fa-ban", "alert-danger", "Sorry !", ex.Message.ToString());
+            ErrorLogCls.SendErrorToText(ex);
         }
     }
     protected void ddlCourt_SelectedIndexChanged(object sender, EventArgs e)

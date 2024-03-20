@@ -182,7 +182,7 @@
                                             SetFocusOnError="true" ControlToValidate="ddlDesigNation" ValidationGroup="Petitioner" ErrorMessage="Select Designation"
                                             Text="<i class='fa fa-exclamation-circle' title='Required !'></i>" InitialValue="0">
                                         </asp:RequiredFieldValidator>
-                                       
+
                                         <asp:DropDownList ID="ddlDesigNation" runat="server" CssClass="form-control select2"></asp:DropDownList>
                                     </div>
                                 </div>
@@ -206,11 +206,11 @@
                                     <div class="form-group">
                                         <label>
                                             From Date</label>
-                                            <%--<span style="color: red;"><b> *</b></span><asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Save"
+                                        <%--<span style="color: red;"><b> *</b></span><asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Save"
                                                 ErrorMessage="Enter From Date." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                 ControlToValidate="txtFromDate" Display="Dynamic" runat="server">
                                             </asp:RequiredFieldValidator><br />--%>
-                                        
+
                                         <asp:TextBox ID="txtFromDate" runat="server" date-provide="datepicker" AutoComplete="off" data-date-end-date="0d" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>
                                     </div>
                                 </div>
@@ -218,11 +218,11 @@
                                     <div class="form-group">
                                         <label>
                                             To Date</label>
-                                          <%-- <span style="color: red;"><b> *</b></span> <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="Save"
+                                        <%-- <span style="color: red;"><b> *</b></span> <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="Save"
                                                 ErrorMessage="Enter To Date." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                 ControlToValidate="txttodate" Display="Dynamic" runat="server">
                                             </asp:RequiredFieldValidator><br />--%>
-                         
+
                                         <asp:TextBox ID="txttodate" runat="server" date-provide="datepicker" AutoComplete="off" data-date-start-date="0d" data-date-end-date="0d" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>
                                     </div>
                                 </div>
@@ -275,6 +275,11 @@
                                                 <asp:TemplateField HeaderText="Case Subject">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblCasesubject" runat="server" Text='<%# Eval("CaseSubject") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Case Sub Subject">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblCaseSubsubject" runat="server" Text='<%# Eval("CaseSubSubject") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Hearing Date">
@@ -335,18 +340,18 @@
                 buttons: [{
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
-                    title: $('h3').text(),
+                    title: 'Respondent Wise Case Detail',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                     },
                     footer: true,
                     autoPrint: true
                 }, {
                     extend: 'excel',
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
-                    title: $('h3').text(),
+                    title: 'Respondent Wise Case Detail',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                     },
                     footer: true
                 }],

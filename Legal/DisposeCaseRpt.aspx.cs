@@ -9,6 +9,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.IO;
 using System.Globalization;
+using ClosedXML.Excel;
+using System.Configuration;
+using System.Data.SqlClient;
+using DocumentFormat.OpenXml.VariantTypes;
+using System.Text.RegularExpressions;
 
 public partial class Legal_DisposeCaseRpt : System.Web.UI.Page
 {
@@ -27,7 +32,7 @@ public partial class Legal_DisposeCaseRpt : System.Web.UI.Page
                 FillOrderWithDirection();
             }
         }
-        else { Response.Redirect("/Login.aspx");}
+        else { Response.Redirect("/Login.aspx"); }
     }
     protected void FillOrderWithDirection()
     {
@@ -49,14 +54,14 @@ public partial class Legal_DisposeCaseRpt : System.Web.UI.Page
             ErrorLogCls.SendErrorToText(ex);
         }
     }
-    protected void FillCourt() //added by omprakash 21/06/2023
+    protected void FillCourt() //added by Omprakash 21/06/2023
     {
         try
         {
             ddlCourtName.Items.Clear();
             Helper court = new Helper();
             DataTable dtCourt = new DataTable();
-            if (Session["Role_ID"].ToString() == "5")// JD Legal.
+            if (Session["Role_ID"].ToString() == "5")// Court.
             {
                 string District_Id = Session["District_Id"].ToString();
                 dtCourt = court.GetCourtForCourt(District_Id) as DataTable;
@@ -71,6 +76,12 @@ public partial class Legal_DisposeCaseRpt : System.Web.UI.Page
             {
                 string District_Id = Session["District_Id"].ToString();
                 dtCourt = court.GetCourtForCourt(District_Id) as DataTable;
+            }
+            else if (Session["Role_ID"].ToString() == "2")// Division Office.
+            {
+                string Division_Id = Session["Division_Id"].ToString();
+                dtCourt = court.GetCourtByDivision(Division_Id) as DataTable;
+
             }
             else dtCourt = court.GetCourt() as DataTable;
             if (dtCourt.Rows.Count > 0)
@@ -158,35 +169,33 @@ public partial class Legal_DisposeCaseRpt : System.Web.UI.Page
             string Todate = !string.IsNullOrEmpty(txttodate.Text) ? Convert.ToDateTime(txttodate.Text, cult).ToString("yyyy/MM/dd") : "";
             if (Session["Role_ID"].ToString() == "3")
             {
-                ds = obj.ByProcedure("USP_Select_CaseDisposalRpt", new string[] { "Casetype_ID", "CaseDisposeType_Id",  "OICMaster_Id", "flag", "OrderWithDirection_ID", "CourtType_Id", "Fromdate", "Todate" },
-                    new string[] { ddlCaseType.SelectedItem.Value, ddlDisposetype.SelectedItem.Value,  Session["OICMaster_ID"].ToString(), "1", ddlOrderWith.SelectedValue, ddlCourtName.SelectedValue, FromDate, Todate }, "dataset");
+                ds = obj.ByProcedure("USP_Select_CaseDisposalRpt", new string[] { "Casetype_ID", "CaseDisposeType_Id", "OICMaster_Id", "flag", "OrderWithDirection_ID", "CourtType_Id", "Fromdate", "Todate" },
+                    new string[] { ddlCaseType.SelectedItem.Value, ddlDisposetype.SelectedItem.Value, Session["OICMaster_ID"].ToString(), "1", ddlOrderWith.SelectedValue, ddlCourtName.SelectedValue, FromDate, Todate }, "dataset");
             }
             else if (Session["Role_ID"].ToString() == "1")
             {
-                ds = obj.ByProcedure("USP_Select_CaseDisposalRpt", new string[] { "Casetype_ID", "CaseDisposeType_Id","flag" , "OrderWithDirection_ID", "CourtType_Id", "Fromdate", "Todate" },
-                    new string[] { ddlCaseType.SelectedItem.Value, ddlDisposetype.SelectedItem.Value, "2",ddlOrderWith.SelectedValue, ddlCourtName.SelectedValue, FromDate, Todate }, "dataset");
+                ds = obj.ByProcedure("USP_Select_CaseDisposalRpt", new string[] { "Casetype_ID", "CaseDisposeType_Id", "flag", "OrderWithDirection_ID", "CourtType_Id", "Fromdate", "Todate" },
+                    new string[] { ddlCaseType.SelectedItem.Value, ddlDisposetype.SelectedItem.Value, "2", ddlOrderWith.SelectedValue, ddlCourtName.SelectedValue, FromDate, Todate }, "dataset");
             }
             else if (Session["Role_ID"].ToString() == "4")
             {
-                ds = obj.ByProcedure("USP_Select_CaseDisposalRpt", new string[] { "Casetype_ID", "CaseDisposeType_Id","flag", "District_ID", "OrderWithDirection_ID", "CourtType_Id", "Fromdate", "Todate" },
-                    new string[] { ddlCaseType.SelectedItem.Value, ddlDisposetype.SelectedItem.Value,  "3", Session["District_Id"].ToString(), ddlOrderWith.SelectedValue, ddlCourtName.SelectedValue, FromDate, Todate }, "dataset");
+                ds = obj.ByProcedure("USP_Select_CaseDisposalRpt", new string[] { "Casetype_ID", "CaseDisposeType_Id", "flag", "District_ID", "OrderWithDirection_ID", "CourtType_Id", "Fromdate", "Todate" },
+                    new string[] { ddlCaseType.SelectedItem.Value, ddlDisposetype.SelectedItem.Value, "3", Session["District_Id"].ToString(), ddlOrderWith.SelectedValue, ddlCourtName.SelectedValue, FromDate, Todate }, "dataset");
             }
             else if (Session["Role_ID"].ToString() == "2")
             {
-                ds = obj.ByProcedure("USP_Select_CaseDisposalRpt", new string[] { "Casetype_ID", "CaseDisposeType_Id",  "flag", "Division_ID", "OrderWithDirection_ID", "CourtType_Id", "Fromdate", "Todate" },
-                    new string[] { ddlCaseType.SelectedItem.Value, ddlDisposetype.SelectedItem.Value,  "4", Session["Division_Id"].ToString(), ddlOrderWith.SelectedValue, ddlCourtName.SelectedValue, FromDate, Todate }, "dataset");
+                ds = obj.ByProcedure("USP_Select_CaseDisposalRpt", new string[] { "Casetype_ID", "CaseDisposeType_Id", "flag", "Division_ID", "OrderWithDirection_ID", "CourtType_Id", "Fromdate", "Todate" },
+                    new string[] { ddlCaseType.SelectedItem.Value, ddlDisposetype.SelectedItem.Value, "4", Session["Division_Id"].ToString(), ddlOrderWith.SelectedValue, ddlCourtName.SelectedValue, FromDate, Todate }, "dataset");
             }
             else if (Session["Role_ID"].ToString() == "5")
             {
                 ds = obj.ByProcedure("USP_Select_CaseDisposalRpt", new string[] { "Casetype_ID", "CaseDisposeType_Id", "flag", "CourtLocation_Id", "OrderWithDirection_ID", "CourtType_Id", "Fromdate", "Todate" },
-                    new string[] { ddlCaseType.SelectedItem.Value, ddlDisposetype.SelectedItem.Value, "5", Session["District_Id"].ToString(),ddlOrderWith.SelectedValue,ddlCourtName.SelectedValue,FromDate,Todate }, "dataset");
+                    new string[] { ddlCaseType.SelectedItem.Value, ddlDisposetype.SelectedItem.Value, "5", Session["District_Id"].ToString(), ddlOrderWith.SelectedValue, ddlCourtName.SelectedValue, FromDate, Todate }, "dataset");
             }
             if (ds.Tables[0].Rows.Count > 0)
             {
                 grdSubjectWiseCasedtl.DataSource = ds;
                 grdSubjectWiseCasedtl.DataBind();
-                grdSubjectWiseCasedtl.HeaderRow.TableSection = TableRowSection.TableHeader;
-                grdSubjectWiseCasedtl.UseAccessibleHeader = true;
             }
             else
             {
@@ -198,6 +207,10 @@ public partial class Legal_DisposeCaseRpt : System.Web.UI.Page
         catch (Exception ex)
         {
             ErrorLogCls.SendErrorToText(ex);
+        }
+        finally
+        {
+            Datatable();
         }
     }
     #endregion
@@ -241,19 +254,6 @@ public partial class Legal_DisposeCaseRpt : System.Web.UI.Page
     }
     #endregion
     #region Page Index Changing
-    protected void grdSubjectWiseCasedtl_PageIndexChanging(object sender, GridViewPageEventArgs e)
-    {
-        try
-        {
-            lblMsg.Text = "";
-            grdSubjectWiseCasedtl.PageIndex = e.NewPageIndex;
-            BindGrid();
-        }
-        catch (Exception ex)
-        {
-            ErrorLogCls.SendErrorToText(ex);
-        }
-    }
     #endregion
     #region ddlDisposetype Selected Index Changed
     protected void ddlDisposetype_SelectedIndexChanged(object sender, EventArgs e)
@@ -265,11 +265,12 @@ public partial class Legal_DisposeCaseRpt : System.Web.UI.Page
             ddlOrderWith.ClearSelection();
             if (ddlDisposetype.SelectedIndex == 1)
             {
-                rfvOrderWith.Enabled = true;
+                //rfvOrderWith.Enabled = true;
                 OrderWithDir_Div.Visible = true;
                 ComplianceSt_Div.Visible = false;
             }
-            else { ComplianceSt_Div.Visible = false; OrderWithDir_Div.Visible = false; rfvOrderWith.Enabled = false; }
+            else { ComplianceSt_Div.Visible = false; OrderWithDir_Div.Visible = false; }
+            Datatable();
         }
         catch (Exception ex)
         {
@@ -298,5 +299,104 @@ public partial class Legal_DisposeCaseRpt : System.Web.UI.Page
         }
         return clearText;
     }
+    protected void lnkbtnExport_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string Compliance = ddlCompliaceSt.SelectedIndex > 0 ? ddlCompliaceSt.SelectedItem.Value : null;
+            string FromDate = !string.IsNullOrEmpty(txtFromDate.Text) ? Convert.ToDateTime(txtFromDate.Text, cult).ToString("yyyy/MM/dd") : "";
+            string Todate = !string.IsNullOrEmpty(txttodate.Text) ? Convert.ToDateTime(txttodate.Text, cult).ToString("yyyy/MM/dd") : "";
+            ds = obj.ByProcedure("USP_GetCaseDisposalDetail_ExcelFormat", new string[] { "CourtType_Id" },
+                                                                          new string[] { ddlCourtName.SelectedValue }, "dataset");
 
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow datarow in ds.Tables[0].Rows)
+                    {
+                        foreach (DataColumn datacol in ds.Tables[0].Columns)
+                        {
+                            string r = "[\x00-\x08\x0B\x0C\x0E-\x1F\x26]";
+                            datarow["OrderSummary"] = Regex.Replace(datarow["OrderSummary"].ToString(), r, "", RegexOptions.Compiled);
+                        }
+                    }
+                    DataTable dt = new DataTable();
+                    dt = ds.Tables[0];
+                    //AddSerialNumber(dt);
+                    using (XLWorkbook wb = new XLWorkbook())
+                    {
+                        wb.Worksheets.Add(dt, "Customers");
+                        Response.Clear();
+                        Response.Buffer = true;
+                        Response.Charset = "";
+                        Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                        string CrrDt = DateTime.Now.ToString("dd/MM/yyyy");
+                        string CRRDTReplace = CrrDt.Replace("/", "-");
+                        Response.AddHeader("content-disposition", "attachment;filename=WPCaseDisposalDetails" + CRRDTReplace + ".xlsx");
+                        using (MemoryStream MyMemoryStream = new MemoryStream())
+                        {
+                            wb.SaveAs(MyMemoryStream);
+                            MyMemoryStream.WriteTo(Response.OutputStream);
+                            Response.Flush();
+                            Response.End();
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+    protected DataTable AddSerialNumber(DataTable originalDataTable)
+    {
+        try
+        {
+            // Create a new DataColumn for serial numbers
+            DataColumn serialNumberColumn = new DataColumn("S. No.", typeof(int));
+            // Add the new column to the DataTable
+            originalDataTable.Columns.Add(serialNumberColumn);
+            // Generate serial numbers for each row
+            for (int i = 0; i < originalDataTable.Rows.Count; i++)
+            {
+                originalDataTable.Rows[i]["S. No."] = i + 1;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+        return originalDataTable;
+    }
+    protected void ddlCaseType_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (ddlCaseType.SelectedValue == "1")
+            {
+                lnkbtnExport.Visible = true;
+            }
+            else
+            {
+                lnkbtnExport.Visible = false;
+            }
+
+            Datatable();
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+    protected void Datatable()
+    {
+        if (grdSubjectWiseCasedtl.Rows.Count > 0)
+        {
+            grdSubjectWiseCasedtl.HeaderRow.TableSection = TableRowSection.TableHeader;
+            grdSubjectWiseCasedtl.UseAccessibleHeader = true;
+        }
+    }
 }

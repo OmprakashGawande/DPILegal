@@ -20,7 +20,8 @@ public partial class Legal_Court_DistrictMaping_Mst : System.Web.UI.Page
                 ViewState["Emp_Id"] = Session["Emp_Id"];
                 ViewState["Office_Id"] = Session["Office_Id"];
                 FillCourtName();
-                FillDistrictName();
+                ddlDistrictName.Items.Insert(0, new ListItem("Select", "0"));
+                //FillDistrictName();
                 FillGrid();
             }
         }
@@ -40,9 +41,14 @@ public partial class Legal_Court_DistrictMaping_Mst : System.Web.UI.Page
             {
                 grdCourtDistrictMap.DataSource = ds;
                 grdCourtDistrictMap.DataBind();
+                grdCourtDistrictMap.HeaderRow.TableSection = TableRowSection.TableHeader;
+                grdCourtDistrictMap.UseAccessibleHeader = true;
             }
-            grdCourtDistrictMap.HeaderRow.TableSection = TableRowSection.TableHeader;
-            grdCourtDistrictMap.UseAccessibleHeader = true;
+            else
+            {
+                grdCourtDistrictMap.DataSource = null;
+                grdCourtDistrictMap.DataBind();
+            }
         }
         catch (Exception ex)
         {
@@ -55,7 +61,7 @@ public partial class Legal_Court_DistrictMaping_Mst : System.Web.UI.Page
     {
         try
         {
-            ds = obj.ByDataSet("select CourtName_ID,CourtName from tbl_LegalCourtMaster");
+            ds = obj.ByDataSet("select CourtName_ID,CourtName from tbl_LegalCourtMaster where CourtName_ID in(2,3,4)");
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 ddlCourtName.DataValueField = "CourtName_ID";
@@ -72,25 +78,25 @@ public partial class Legal_Court_DistrictMaping_Mst : System.Web.UI.Page
     }
     #endregion
     #region Fill District Name
-    protected void FillDistrictName()
-    {
-        try
-        {
-            ds = obj.ByProcedure("USP_SelectCourtAndDistrict", new string[] { }, new string[] { }, "dataset");
-            if (ds != null && ds.Tables[0].Rows.Count > 0)
-            {
-                ddlDistrictName.DataValueField = "District_ID";
-                ddlDistrictName.DataTextField = "District_Name";
-                ddlDistrictName.DataSource = ds;
-                ddlDistrictName.DataBind();
-            }
-            ddlDistrictName.Items.Insert(0, new ListItem("Select", "0"));
-        }
-        catch (Exception ex)
-        {
-            ErrorLogCls.SendErrorToText(ex);
-        }
-    }
+    //protected void FillDistrictName()
+    //{
+    //    try
+    //    {
+    //        ds = obj.ByProcedure("USP_SelectCourtAndDistrict", new string[] { }, new string[] { }, "dataset");
+    //        if (ds != null && ds.Tables[0].Rows.Count > 0)
+    //        {
+    //            ddlDistrictName.DataValueField = "District_ID";
+    //            ddlDistrictName.DataTextField = "District_Name";
+    //            ddlDistrictName.DataSource = ds;
+    //            ddlDistrictName.DataBind();
+    //        }
+    //        ddlDistrictName.Items.Insert(0, new ListItem("Select", "0"));
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        ErrorLogCls.SendErrorToText(ex);
+    //    }
+    //}
     #endregion
     #region Btn Map
     protected void btnMap_Click(object sender, EventArgs e)
@@ -116,9 +122,11 @@ public partial class Legal_Court_DistrictMaping_Mst : System.Web.UI.Page
                     {
                         ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Alert!', '" + ErrMsg + "', 'success')", true);
                         FillGrid();
-                        FillDistrictName();
+                        //FillDistrictName();
                         ddlCourtName.ClearSelection();
                         ddlDistrictName.ClearSelection();
+                        ddlDistrictName.Items.Clear();
+                        ddlDistrictName.Items.Insert(0, new ListItem("Select", "0"));
                     }
                     else if (ds.Tables[0].Rows[0]["Msg"].ToString() == "NotOK")
                     {
@@ -163,7 +171,7 @@ public partial class Legal_Court_DistrictMaping_Mst : System.Web.UI.Page
                 DataSet DsDelete = obj.ByDataSet("delete from tbl_DistrictCourtMaping_Mst where Map_ID =" + e.CommandArgument.ToString());
                 ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Alert!', 'Delete Record Successfully', 'success')", true);
                 FillGrid();
-                FillDistrictName();
+                //FillDistrictName();
             }
         }
         catch (Exception ex)
@@ -172,4 +180,26 @@ public partial class Legal_Court_DistrictMaping_Mst : System.Web.UI.Page
         }
     }
     #endregion
+
+    protected void ddlCourtName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            ds = obj.ByProcedure("USP_SelectCourtAndDistrict", new string[] { "CourtName_ID" }, new string[] { ddlCourtName.SelectedValue }, "dataset");
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                ddlDistrictName.DataValueField = "District_ID";
+                ddlDistrictName.DataTextField = "District_Name";
+                ddlDistrictName.DataSource = ds;
+                ddlDistrictName.DataBind();
+            }
+            ddlDistrictName.Items.Insert(0, new ListItem("Select", "0"));
+            grdCourtDistrictMap.HeaderRow.TableSection = TableRowSection.TableHeader;
+            grdCourtDistrictMap.UseAccessibleHeader = true;
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
 }

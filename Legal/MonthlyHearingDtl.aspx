@@ -100,7 +100,8 @@
         .box {
             min-height: auto;
         }
-            .sorting,
+
+        .sorting,
         .sorting_asc,
         .sorting_desc,
         .sorting_asc_disabled,
@@ -155,6 +156,32 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
+                                        <label>
+                                            Court Name <span style="color: red;"><b>*</b></span>
+                                            <asp:RequiredFieldValidator ID="rfvCaseyear" ValidationGroup="Save"
+                                                ErrorMessage="Select Court Name." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
+                                                ControlToValidate="ddlCourtName" Display="Dynamic" runat="server" InitialValue="0">
+                                            </asp:RequiredFieldValidator><br />
+                                        </label>
+                                        <asp:DropDownList ID="ddlCourtName" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Case Type</label><span style="color: red;"><b> *</b></span>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="Save"
+                                            ErrorMessage="Select Case Type." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
+                                            ControlToValidate="ddlCaseType" Display="Dynamic" runat="server" InitialValue="0">
+                                        </asp:RequiredFieldValidator>
+                                        <asp:DropDownList ID="ddlCaseType" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                        <%--<asp:RadioButtonList ID="rbWPCOnt" runat="server" RepeatDirection="Horizontal" CssClass="form-control">
+                                            <asp:ListItem Value="1">&nbsp;WP/Contempt &nbsp;&nbsp;&nbsp;</asp:ListItem>
+                                            <asp:ListItem Value="2">&nbsp;WA/RP</asp:ListItem>
+                                        </asp:RadioButtonList>--%>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
                                         <label>Month</label><span style="color: red;"><b> *</b></span>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Save"
                                             ErrorMessage="Select Month Name." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
@@ -188,32 +215,7 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Case Type</label><span style="color: red;"><b> *</b></span>
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="Save"
-                                            ErrorMessage="Select Case Type." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
-                                            ControlToValidate="ddlCaseType" Display="Dynamic" runat="server" InitialValue="0">
-                                        </asp:RequiredFieldValidator>
-                                        <asp:DropDownList ID="ddlCaseType" runat="server" CssClass="form-control select2"></asp:DropDownList>
-                                        <%--<asp:RadioButtonList ID="rbWPCOnt" runat="server" RepeatDirection="Horizontal" CssClass="form-control">
-                                            <asp:ListItem Value="1">&nbsp;WP/Contempt &nbsp;&nbsp;&nbsp;</asp:ListItem>
-                                            <asp:ListItem Value="2">&nbsp;WA/RP</asp:ListItem>
-                                        </asp:RadioButtonList>--%>
-                                    </div>
-                                </div>
-                                    <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>
-                                            Court Name <span style="color: red;"><b>*</b></span>
-                                            <asp:RequiredFieldValidator ID="rfvCaseyear" ValidationGroup="Save"
-                                                ErrorMessage="Select Court Name." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
-                                                ControlToValidate="ddlCourtName" Display="Dynamic" runat="server" InitialValue="0">
-                                            </asp:RequiredFieldValidator><br />
-                                        </label>
-                                        <asp:DropDownList ID="ddlCourtName" runat="server" CssClass="form-control select2" ></asp:DropDownList>
-                                    </div>
-                                </div>
+
                                 <div class="col-md-3 mt-4">
                                     <div class="row">
                                         <div class="col-md-6 mt-2">
@@ -238,7 +240,7 @@
                                                         <asp:Label ID="lblSrno" runat="server" Text='<%# Container.DataItemIndex +1 %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                 <asp:TemplateField HeaderText="Case No.">
+                                                <asp:TemplateField HeaderText="Case No.">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblCaseNO" runat="server" Text='<%# Eval("CaseNo") %>'></asp:Label>
                                                     </ItemTemplate>
@@ -258,21 +260,26 @@
                                                         <asp:Label ID="lblDistrict" runat="server" Text='<%# Eval("District_Name") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                 <asp:TemplateField HeaderText="Case Subject">
+                                                <asp:TemplateField HeaderText="Case Subject">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblCasesubject" runat="server" Text='<%# Eval("CaseSubject") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                 <asp:TemplateField HeaderText="Hearing Date" >
+                                                <asp:TemplateField HeaderText="Case Sub Subject">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblCaseSubsubject" runat="server" Text='<%# Eval("CaseSubSubject") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Hearing Date">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblHearingDate" runat="server" Text='<%# Eval("NextHearingDate") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Return File/Appeal">
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lblReplyCompliance" runat="server" Text='<%# Eval("ActionYesOrNo") %>'></asp:Label>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblReplyCompliance" runat="server" Text='<%# Eval("ActionYesOrNo") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <%--<asp:TemplateField HeaderText="Case Status">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblCasestatus" runat="server" ForeColor='<%# Eval("CaseStatus").ToString() == "Pending" ? System.Drawing.Color.Red : System.Drawing.Color.Green  %>' Font-Bold="true" Text='<%# Eval("CaseStatus") %>'></asp:Label>
@@ -316,8 +323,8 @@
                 orderable: false
             }],
             dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>>' +
-              '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
-              '<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                '<"row"<"col-sm-5"i><"col-sm-7"p>>',
             fixedHeader: {
                 header: true
             },
@@ -325,18 +332,18 @@
                 buttons: [{
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
-                    title: $('h3').text(),
+                    title: 'Monthly Hearing Detail',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                     },
                     footer: true,
                     autoPrint: true
                 }, {
                     extend: 'excel',
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
-                    title: $('h3').text(),
+                    title: 'Monthly Hearing Detail',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                     },
                     footer: true
                 }],

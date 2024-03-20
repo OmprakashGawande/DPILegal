@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using System.Configuration;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Configuration;
 using System.Net.Mail;
-using System.Configuration;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 //using System.Net.Sockets;
 
 
@@ -29,28 +27,23 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
         {
             if (!IsPostBack)
             {
-                //string localIPAddress = string.Empty;
-                //string hostName1 = System.Net.Dns.GetHostName();
-                //var ips = System.Net.Dns.GetHostEntry(hostName1);
-                //for (var i = 0; i <= ips.AddressList.Length - 1; i++)
-                //{
-                //    if (ips.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
-                //        localIPAddress = ips.AddressList[i].ToString();
-                //}
 
                 string multiCharString = Request.QueryString.ToString();
                 string[] multiArray = multiCharString.Split(new Char[] { '=', '&' });
                 //string CaseID = Decrypt(HttpUtility.UrlDecode(multiArray[1]));
                 string CaseID = obj.Decrypt(Request.QueryString["CaseID"].ToString());
                 string Uniqueno = obj.Decrypt(Request.QueryString["UniqueNO"].ToString());
+                string CaseType = obj.Decrypt(Request.QueryString["CaseType"].ToString());
                 //string Uniqueno = Decrypt(HttpUtility.UrlDecode(multiArray[3]));
 
                 divReplyDate.Visible = false;
                 divReplyRemark.Visible = false;
                 ViewState["ID"] = CaseID;
                 ViewState["UniqueNO"] = Uniqueno;
+                ViewState["CaseType"] = CaseType;
                 ViewState["Emp_Id"] = Session["Emp_Id"].ToString();
                 ViewState["Office_Id"] = Session["Office_Id"].ToString();
+                // ViewState["CaseType"] = Session["CaseType"].ToString();
                 Session["PAGETOKEN"] = Server.UrlEncode(System.DateTime.Now.ToString());
                 FillOldCaseYear();
                 FillYear();
@@ -58,7 +51,7 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
                 BindDisposalType();
                 FillParty();
                 FillCaseSubject();
-
+                CaseDisposeStatus(); // by deafult Case Dispose on NO text.
                 FillDesignation();
                 BindOfficeType();
                 FillCasetype();
@@ -66,9 +59,20 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
 
                 BindDetails(sender, e);
                 ManagVisiblity();
+                fillWPRemainingdays();
                 //FieldViewOldCaseDtl.Visible = false;
-
-
+                BindddlCaseDisposd_yes();
+                FillOrderWithDirection();
+                if (CaseType == "1")
+                {
+                    Div_PetitionerAdv.Visible = false;
+                    FieldViewDeptAdvDtl.Visible = false;
+                }
+                else
+                {
+                    Div_PetitionerAdv.Visible = true;
+                    FieldViewDeptAdvDtl.Visible = true;
+                }
 
 
             }
@@ -79,6 +83,49 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
         }
 
     }
+    protected void CaseDisposeStatus() // Case Dispose By Default On NO condtiton
+    {
+        foreach (ListItem item in rdCaseDispose.Items)
+        {
+            if (item.Text.Contains("No"))
+            {
+                item.Selected = true;
+                break;
+            }
+            caseDisposeYes.Visible = false;
+            OrderBy1.Visible = false;
+            OrderBy2.Visible = false;
+            HearingDtl_CaseDispose.Visible = false;
+            //CimplianceSt_Div.Visible = false;
+        }
+    }
+    protected void fillWPRemainingdays()
+    {
+        try
+        {
+            ds = obj.ByProcedure("Usp_WPDisposedCase_Get", new string[] { "Case_ID" }, new string[] { ViewState["ID"].ToString() }, "Dataset");
+
+            if (ds != null)
+            {
+                lblremainingdays.Text = ds.Tables[0].Rows[0]["DateAfter90Days"].ToString();
+                lblcasedisposeldate.Text = ds.Tables[0].Rows[0]["CaseDisposal_Date"].ToString();
+                if (ds.Tables[1].Rows[0]["RemainingDays"].ToString() == "")
+                {
+                    lblTotalDays.Text = "NULL";
+                }
+                else
+                {
+                    lblTotalDays.Text = ds.Tables[1].Rows[0]["RemainingDays"].ToString();
+
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+
     #region Fill District
     protected void FillDitrict()
     {
@@ -464,18 +511,127 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
         }
     }
     #endregion
+    protected void FillOrderWithDirection()
+    {
+        try
+        {
+            ddlOrderWith.ClearSelection();
+            DataSet dsHod = obj.ByDataSet("select OrderWithDirection_ID,OrderWithDirection from tbl_OrderWithDirection");
+            if (dsHod.Tables[0].Rows.Count > 0)
+            {
+                ddlOrderWith.DataTextField = "OrderWithDirection";
+                ddlOrderWith.DataValueField = "OrderWithDirection_ID";
+                ddlOrderWith.DataSource = dsHod;
+                ddlOrderWith.DataBind();
+                ddlOrderWith.Items.Insert(0, new ListItem("Select", "0"));
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+
+    protected void ddlOrderWith_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+
+            div_Compliance_AnyRejoinder.Visible = true;
+            Div_AdditionalNo.Visible = false; Div_AdditionalDate.Visible = false; Div_AdditionalDoc.Visible = false; Div_AdditionalRemar.Visible = false;
+            if (ddlOrderWith.SelectedIndex > 0)
+            {
+                OrderByFirst1.Visible = true;
+                OrderBy2First.Visible = true;
+                HearingDtl_CaseDisposeFirst.Visible = true;
+
+                OrderSummary_DivFirst.Visible = true;
+                div_Compliance_AnyRejoinder.Visible = true;
+                Div_AdditionalNo.Visible = false; Div_AdditionalDate.Visible = false; Div_AdditionalDoc.Visible = false; Div_AdditionalRemar.Visible = false;
+                // CimplianceSt_Div.Visible = true;
+            }
+            else
+            {
+                // CimplianceSt_Div.Visible = false;DivOrderTimeline.Visible = false;
+                OrderByFirst1.Visible = false;
+                OrderBy2First.Visible = false;
+                HearingDtl_CaseDisposeFirst.Visible = false;
+                OrderSummary_DivFirst.Visible = false;
+                div_Compliance_AnyRejoinder.Visible = false;
+                Div_AdditionalNo.Visible = false; Div_AdditionalDate.Visible = false; Div_AdditionalDoc.Visible = false; Div_AdditionalRemar.Visible = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+    protected void BindddlCaseDisposd_yes()
+    {
+        try
+        {
+            ddlCaseDisposdType_First.Items.Clear();
+            ds = obj.ByDataSet("select CaseDisposeType_Id, CaseDisposeType from tbl_LegalCaseDisposeType");
+
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                ddlCaseDisposdType_First.DataTextField = "CaseDisposeType";
+                ddlCaseDisposdType_First.DataValueField = "CaseDisposeType_Id";
+                ddlCaseDisposdType_First.DataSource = ds;
+                ddlCaseDisposdType_First.DataBind();
+            }
+            ddlCaseDisposdType_First.Items.Insert(0, new ListItem("Select", "0"));
+        }
+        catch (Exception ex)
+        {
+            //lblMsg.Text = obj.Alert("fa-ban", "alert-danger", "Sorry !", ex.Message.ToString());
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
     protected void BindDetails(object sender, EventArgs e)
     {
         try
         {
-            //lblMsg.Text = "";
+            lblFlag.Text = "";
             ds = obj.ByProcedure("USP_Select_NewCaseRegis", new string[] { "Case_ID" }
                 , new string[] { ViewState["ID"].ToString() }, "dataset");
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
                 lblCaseNo.Text = ds.Tables[0].Rows[0]["CaseNo"].ToString();
                 txtCaseDetail.Text = ds.Tables[0].Rows[0]["CaseDetail"].ToString();
-
+                txtCaseRegistrationDate.Text = ds.Tables[0].Rows[0]["CaseRegDate"].ToString();
+                lblFlag.Text = ds.Tables[0].Rows[0]["Flag"].ToString();
+                if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["Flag"].ToString()))
+                {
+                    if (ds.Tables[0].Rows[0]["Flag"].ToString() == "Excel")
+                    {
+                        FirstHearingDisposd.Visible = true;
+                        lblFlag.Text = "Uploaded by Excel Sheet";
+                    }
+                    else
+                    {
+                        FirstHearingDisposd.Visible = false;
+                    }
+                    if (ds.Tables[6].Rows[0]["CaseDisposal_Status"].ToString() == "")
+                    {
+                        FirstHearingDisposd.Visible = true;
+                    }
+                    else
+                    {
+                        FirstHearingDisposd.Visible = false;
+                    }
+                }
+                if (ds.Tables[0].Rows[0]["Casetype_ID"].ToString() == "1")
+                {
+                    DivOICName.Visible = false; DivOICMobile.Visible = false; DivOICEmail.Visible = false; DivOICOrderNu.Visible = false; div1.Visible = false;
+                    DovOICOrderDoc.Visible = false; FieldViewHearingDtl.Visible = false;
+                }
+                else
+                {
+                    DivOICName.Visible = true;
+                    DivOICMobile.Visible = true;
+                    DivOICEmail.Visible = true; DivOICOrderNu.Visible = true; div1.Visible = true; DovOICOrderDoc.Visible = true; FieldViewHearingDtl.Visible = true;
+                }
                 ddlCourtType.ClearSelection();
                 BindCourtName();
                 if (ddlCourtType.Items.Count > 0)
@@ -503,8 +659,8 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
 
                 if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["Department_Id"].ToString()))
                 {
+                    ddlDepartment.Items.Clear();
                     FillDepartment();
-                    ddlDepartment.ClearSelection();
                     ddlDepartment.Items.FindByValue(ds.Tables[0].Rows[0]["Department_Id"].ToString()).Selected = true;
                 }
 
@@ -572,6 +728,11 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
                 if (!string.IsNullOrEmpty(ds.Tables[6].Rows[0]["CaseDisposal_Status"].ToString()))
                 {
                     GrdCaseDispose.DataSource = ds.Tables[6]; GrdCaseDispose.DataBind(); DisposalStatus.Visible = false;
+                    Fieldset_CaseDispose.Visible = true;
+                }
+                else
+                {
+                    Fieldset_CaseDispose.Visible = false;
                 }
 
                 if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["OICOrderNumber"].ToString()))
@@ -591,7 +752,6 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
                     ViewState["oldOICDoc"] = Link;
                     hyperlinkOICdoc.NavigateUrl = lbldoc;
                     hyperlinkOICdoc.Visible = true; ;
-
                 }
                 else
                 {
@@ -611,7 +771,6 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
         {
             ErrorLogCls.SendErrorToText(ex);
         }
-
     }
     //Petitioner Dtl 1.0
     protected void btnUpdate_Click(object sender, EventArgs e)
@@ -674,14 +833,15 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
                     {
                         string OICDate = txtOICDate.Text != "" ? Convert.ToDateTime(txtOICDate.Text, cult).ToString("yyyy/MM/dd") : "";
                         string ReplyDate = txtReplyDate.Text != "" ? Convert.ToDateTime(txtReplyDate.Text, cult).ToString("yyyy/MM/dd") : "";
-                        ds = obj.ByProcedure("USP_Update_CaseRegisDtl",
-                              new string[] { "flag", "CaseSubject_Id", "CaseSubSubj_Id",
-                                      "OICMaster_Id","OICOrderNumber","OICOrderDate","OICOrderDoc","Department_Id","District_ID" ,"Party_Id",
+                        string CaseRegDate = txtCaseRegistrationDate.Text.Trim() != "" ? Convert.ToDateTime(txtCaseRegistrationDate.Text, cult).ToString("yyyy/MM/dd") : null;
+                        ds = obj.ByProcedure("DisposecaseDetailUpdate",
+                              new string[] {"CaseSubject_Id", "CaseSubSubj_Id",
+                                      "OICMaster_Id","OICOrderNumber","OICOrderDate","OICOrderDoc","Department_Id","District_ID" ,"Party_Id","CaseRegDate",
                                       "HighPriorityCase_Status", "CaseDetail", "Case_ID",
                                       "CaseReplyStatus","CaseReplyDate","CaseReplyRemark",
                                       "UniqueNo", "LastupdatedBy", "LastupdatedByIP" }
-                            , new string[] { "1", ddlCaseSubject.SelectedValue, ddlCaseSubSubject.SelectedValue,
-                            ddlOicName.SelectedValue,txtOICcaseNumber.Text.Trim(),OICDate,OICDocument, ddlDepartment.SelectedValue,ddlDistrict.SelectedValue,ddlParty.SelectedValue,
+                            , new string[] { ddlCaseSubject.SelectedValue, ddlCaseSubSubject.SelectedValue,
+                            ddlOicName.SelectedValue,txtOICcaseNumber.Text.Trim(),OICDate,OICDocument, ddlDepartment.SelectedValue,ddlDistrict.SelectedValue,ddlParty.SelectedValue,CaseRegDate,
                             ddlHighprioritycase.SelectedItem.Text.Trim(), txtCaseDetail.Text.Trim(), ViewState["ID"].ToString(),
                             ddlCaseReply.SelectedValue,ReplyDate,txtReplyCaseRemark.Text.Trim(),
                             ViewState["UniqueNO"].ToString(), ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
@@ -886,9 +1046,14 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
                     txtPetiName.Text = lblPetitionerName.Text;
                     txtPetiMobileNo.Text = lblPetitionermobileNo.Text;
                     txtPetiAddRess.Text = lblAddress.Text;
-                    if (lblDesignation_Id.Text != "")
+                    if (!string.IsNullOrEmpty(lblDesignation_Id.Text))
+                    {
                         ddlPetiDesigNation.ClearSelection();
-                    ddlPetiDesigNation.Items.FindByValue(lblDesignation_Id.Text).Selected = true;
+                        ddlPetiDesigNation.Items.FindByValue(lblDesignation_Id.Text).Selected = true;
+                    }
+                    //if (lblDesignation_Id.Text != "")
+                    //    ddlPetiDesigNation.ClearSelection();
+                    //ddlPetiDesigNation.Items.FindByValue(lblDesignation_Id.Text).Selected = true;
                     btnPetitioner.Text = "Update";
                 }
                 if (e.CommandName == "DeleteRecord")
@@ -1183,7 +1348,7 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
                     {
                         DocFailedCntExt += 1;
                     }
-                    else if (FileCaseDoc.PostedFile.ContentLength > 204800) // 200 KB = 1024 * 200
+                    else if (FileCaseDoc.PostedFile.ContentLength > 2097152) // 2 MB
                     {
                         DocFailedCntSize += 1;
                     }
@@ -1333,7 +1498,7 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
                     {
                         DocFailedCntExt += 1;
                     }
-                    else if (FileHearingDoc.PostedFile.ContentLength > 204800) // 200 KB = 1024 * 200
+                    else if (FileHearingDoc.PostedFile.ContentLength > 2097152) // 2 MB
                     {
                         DocFailedCntSize += 1;
                     }
@@ -1549,7 +1714,7 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
                     {
                         DocFailedCntExt += 1;
                     }
-                    else if (FielUpcaseDisposeOrderDoc.PostedFile.ContentLength > 204800) // 200 KB = 1024 * 200
+                    else if (FielUpcaseDisposeOrderDoc.PostedFile.ContentLength > 2097152) // 2 MB 
                     {
                         DocFailedCntSize += 1;
                     }
@@ -2112,18 +2277,24 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
     }
     protected void btnYes_Click(object sender, EventArgs e)
     {
-        ds = obj.ByProcedure("USP_Update_CaseRegisDtl",
-            new string[] { "flag", "Case_ID", "UniqueNo", "LastupdatedBy", "LastupdatedByIP" }
-                           , new string[] { "3", ViewState["ID"].ToString(), ViewState["UniqueNO"].ToString(), ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
-        if (ds != null && ds.Tables[0].Rows.Count > 0)
+        if (ddlCaserRelated.SelectedValue == "2")
         {
-            string ErrMsg = ds.Tables[0].Rows[0]["ErrMsg"].ToString();
-            if (ds.Tables[0].Rows[0]["Msg"].ToString() == "OK")
+            ds = obj.ByProcedure("USP_Update_CaseRegisDtl",
+           new string[] { "flag", "Case_ID", "UniqueNo", "LastupdatedBy", "LastupdatedByIP" }
+                          , new string[] { "3", ViewState["ID"].ToString(), ViewState["UniqueNO"].ToString(), ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
-                Response.Redirect("WPCaseList.aspx");
+                string ErrMsg = ds.Tables[0].Rows[0]["ErrMsg"].ToString();
+                if (ds.Tables[0].Rows[0]["Msg"].ToString() == "OK")
+                {
+                    Response.Redirect("WPCaseList.aspx");
+                }
+                else ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Warning!','" + ErrMsg + "' , 'warning')", true);
             }
-            else ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Warning!','" + ErrMsg + "' , 'warning')", true);
+
         }
+
+
 
     }
     protected void ddlDepartment_SelectedIndexChanged(object sender, EventArgs e)
@@ -2189,6 +2360,373 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
             }
         }
         return cipherText;
+    }
+    protected void rdCaseDispose_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            lblMsg.Text = "";
+            CaseDisposd_Yes.Visible = false;
+            if (rdCaseDispose.SelectedValue == "1")
+            {
+                CaseDisposd_Yes.Visible = true; OrderWithDir_Div.Visible = false;
+                Div_RejoinderNo.Visible = false; Div_RejoinderDate.Visible = false; Div_FileRejoinder.Visible = false; Div_RejoinderRemark.Visible = false;
+                divAdditionalReturn.Visible = false;
+                Div_CompliancNo.Visible = false; Div_CompliancDate.Visible = false; Div_CompliancDoc.Visible = false;
+                Div_ComplianceRemark.Visible = false; div_Compliance_AnyRejoinder.Visible = false;
+                Div_AdditionalNo.Visible = false; Div_AdditionalDate.Visible = false; Div_AdditionalDoc.Visible = false; Div_AdditionalRemar.Visible = false;
+                //divAdditionalReturn.Visible = false;
+                btnCaseDisposeFirst.Text = "Update";
+            }
+            else if (rdCaseDispose.SelectedValue == "2")
+            {
+                // divAdditionalReturn.Visible = true; CimplianceSt_Div.Visible = false;DivOrderTimeline.Visible = false;
+                CaseDisposd_Yes.Visible = false; OrderByFirst1.Visible = false; HearingDtl_CaseDisposeFirst.Visible = false;
+                OrderBy2First.Visible = false; ddlCaseDisposdType_First.ClearSelection(); OrderSummary_DivFirst.Visible = false;
+                Div_RejoinderNo.Visible = false; Div_RejoinderDate.Visible = false; Div_FileRejoinder.Visible = false; Div_RejoinderRemark.Visible = false;
+                divAdditionalReturn.Visible = false; OrderWithDir_Div.Visible = false;
+                Div_CompliancNo.Visible = false; Div_CompliancDate.Visible = false; Div_CompliancDoc.Visible = false;
+                Div_ComplianceRemark.Visible = false; div_Compliance_AnyRejoinder.Visible = false;
+                Div_AdditionalNo.Visible = false; Div_AdditionalDate.Visible = false; Div_AdditionalDoc.Visible = false; Div_AdditionalRemar.Visible = false;
+            }
+            else
+            {
+                CaseDisposd_Yes.Visible = false;
+                //divAdditionalReturn.Visible = false; DivOrderTimeline.Visible = false;
+                OrderByFirst1.Visible = false; OrderBy2First.Visible = false; //CimplianceSt_Div.Visible = false;
+                ddlCaseDisposdType_First.ClearSelection();
+                Div_RejoinderNo.Visible = false; Div_RejoinderDate.Visible = false; Div_FileRejoinder.Visible = false; Div_RejoinderRemark.Visible = false;
+                divAdditionalReturn.Visible = false; OrderWithDir_Div.Visible = false;
+                Div_CompliancNo.Visible = false; Div_CompliancDate.Visible = false; Div_CompliancDoc.Visible = false;
+                Div_ComplianceRemark.Visible = false; div_Compliance_AnyRejoinder.Visible = false;
+                //txtAdditionalReturn.Text = "";
+                HearingDtl_CaseDisposeFirst.Visible = false; OrderSummary_DivFirst.Visible = false; btnCaseDisposeFirst.Text = "Update";
+                Div_AdditionalNo.Visible = false; Div_AdditionalDate.Visible = false; Div_AdditionalDoc.Visible = false; Div_AdditionalRemar.Visible = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            //lblMsg.Text = obj.Alert("fa-ban", "alert-danger", "Sorry !", ex.Message.ToString());
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+
+    protected void ddlCaseDisposd_yes_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            lblMsg.Text = "";
+            OrderByFirst1.Visible = false;
+            OrderBy2First.Visible = false;
+            if (ddlCaseDisposdType_First.SelectedIndex > 0)
+            {
+                OrderWithDir_Div.Visible = false;
+                OrderByFirst1.Visible = true;
+                OrderBy2First.Visible = true;
+                HearingDtl_CaseDisposeFirst.Visible = true;
+                //DivOrderTimeline.Visible = true;
+                OrderSummary_DivFirst.Visible = true;
+                ddlOrderWith.ClearSelection();
+                div_Compliance_AnyRejoinder.Visible = false;
+                // CimplianceSt_Div.Visible = true;
+                if (ddlCaseDisposdType_First.SelectedValue == "2")
+                {
+                    OrderByFirst1.Visible = false; OrderBy2First.Visible = false; HearingDtl_CaseDisposeFirst.Visible = false;
+                    OrderSummary_DivFirst.Visible = false; OrderWithDir_Div.Visible = true; div_Compliance_AnyRejoinder.Visible = false;
+                    /* ddlCompliaceSt.ClearSelection(); CimplianceSt_Div.Visible = false;DivOrderTimeline.Visible = false;*/
+                    ddlOrderWith.ClearSelection();
+                }
+            }
+            else
+            {
+                OrderWithDir_Div.Visible = false; HearingDtl_CaseDisposeFirst.Visible = false; OrderByFirst1.Visible = false; OrderBy2First.Visible = false;
+                OrderSummary_DivFirst.Visible = false; //CimplianceSt_Div.Visible = false;DivOrderTimeline.Visible = false;
+                Div_RejoinderNo.Visible = false; Div_RejoinderDate.Visible = false; Div_FileRejoinder.Visible = false; Div_RejoinderRemark.Visible = false;
+                divAdditionalReturn.Visible = false; Div_CompliancNo.Visible = false; Div_CompliancDate.Visible = false; Div_CompliancDoc.Visible = false;
+                Div_ComplianceRemark.Visible = false; div_Compliance_AnyRejoinder.Visible = false; ddlOrderWith.ClearSelection();
+                Div_AdditionalNo.Visible = false; Div_AdditionalDate.Visible = false; Div_AdditionalDoc.Visible = false; Div_AdditionalRemar.Visible = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+    protected void ddlAnyRejoinder_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (ddlAnyRejoinder.SelectedValue == "1")
+            {
+                Div_RejoinderNo.Visible = true; Div_RejoinderDate.Visible = true; Div_FileRejoinder.Visible = true; Div_RejoinderRemark.Visible = true;
+                divAdditionalReturn.Visible = true;
+                Div_AdditionalNo.Visible = false; Div_AdditionalDate.Visible = false; Div_AdditionalDoc.Visible = false; Div_AdditionalRemar.Visible = false;
+                rfvRejNo.Enabled = true; rfvRejDate.Enabled = true; rfvRejRemark.Enabled = true;
+
+            }
+            else
+            {
+                Div_RejoinderNo.Visible = false; Div_RejoinderDate.Visible = false; Div_FileRejoinder.Visible = false; Div_RejoinderRemark.Visible = false;
+                divAdditionalReturn.Visible = false; rfvRejNo.Enabled = false; rfvRejDate.Enabled = false; rfvRejRemark.Enabled = false;
+                Div_AdditionalNo.Visible = false; Div_AdditionalDate.Visible = false; Div_AdditionalDoc.Visible = false; Div_AdditionalRemar.Visible = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+    protected void ddlAdditionalReturn_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (ddlAdditionalReturn.SelectedValue == "1")
+            {
+                Div_AdditionalNo.Visible = true; Div_AdditionalDate.Visible = true; Div_AdditionalDoc.Visible = true; Div_AdditionalRemar.Visible = true;
+                rfvAdditionalNo.Enabled = true; rfvAdditionalDate.Enabled = true; rfvadditionalRemark.Enabled = true;
+            }
+            else
+            {
+                Div_AdditionalNo.Visible = false; Div_AdditionalDate.Visible = false; Div_AdditionalDoc.Visible = false; Div_AdditionalRemar.Visible = false;
+                rfvAdditionalNo.Enabled = false; rfvAdditionalDate.Enabled = false; rfvadditionalRemark.Enabled = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+
+    protected void btnCaseDisposeFirst_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (Page.IsValid)
+            {
+
+                lblMsg.Text = "";
+                ViewState["DisposeDOC"] = "";
+                ViewState["ComplianceDOC"] = "";
+                ViewState["RejoinderDOC"] = "";
+                ViewState["AdditionalDOC"] = "";
+                int DocFailedCntExt = 0;
+                int DocFailedCntSize = 0;
+                string strFileName = "";
+                string strExtension = "";
+                string strTimeStamp = "";
+                if (FielUpcaseDisposeOrderDoc.HasFile)     // CHECK IF ANY FILE HAS BEEN SELECTED.
+                {
+
+                    string fileExt = System.IO.Path.GetExtension(FielUpcaseDisposeOrderDoc.FileName).Substring(1);
+                    string[] supportedTypes = { "PDF", "pdf" };
+                    if (!supportedTypes.Contains(fileExt))
+                    {
+                        DocFailedCntExt += 1;
+                    }
+                    //else if (FielUpcaseDisposeOrderDoc.PostedFile.ContentLength > 5120) // 5 MB = 1024 * 5
+                    //{
+                    //    DocFailedCntSize += 1;
+                    //}
+                    //else
+                    //{
+
+                    strFileName = FielUpcaseDisposeOrderDoc.FileName.ToString();
+                    strExtension = Path.GetExtension(strFileName);
+                    strTimeStamp = DateTime.Now.ToString();
+                    strTimeStamp = strTimeStamp.Replace("/", "-");
+                    strTimeStamp = strTimeStamp.Replace(" ", "-");
+                    strTimeStamp = strTimeStamp.Replace(":", "-");
+                    string strName = Path.GetFileNameWithoutExtension(strFileName);
+                    strFileName = strName + "-CaseDispose-" + strTimeStamp + strExtension;
+                    string path = Path.Combine(Server.MapPath("../Legal/DisposalDocs/"), strFileName);
+                    FielUpcaseDisposeOrderDoc.SaveAs(path);
+
+                    ViewState["DisposeDOC"] = strFileName;
+                    path = "";
+                    strFileName = "";
+                    strName = "";
+                    //}
+                }
+                if (ComplianceDoc.HasFile)     // CHECK IF ANY FILE HAS BEEN SELECTED.
+                {
+
+                    string fileExt = System.IO.Path.GetExtension(ComplianceDoc.FileName).Substring(1);
+                    string[] supportedTypes = { "PDF", "pdf" };
+                    if (!supportedTypes.Contains(fileExt))
+                    {
+                        DocFailedCntExt += 1;
+                    }
+                    //else if (FielUpcaseDisposeOrderDoc.PostedFile.ContentLength > 5120) // 5 MB = 1024 * 5
+                    //{
+                    //    DocFailedCntSize += 1;
+                    //}
+                    //else
+                    //{
+
+                    strFileName = ComplianceDoc.FileName.ToString();
+                    strExtension = Path.GetExtension(strFileName);
+                    strTimeStamp = DateTime.Now.ToString();
+                    strTimeStamp = strTimeStamp.Replace("/", "-");
+                    strTimeStamp = strTimeStamp.Replace(" ", "-");
+                    strTimeStamp = strTimeStamp.Replace(":", "-");
+                    string strName = Path.GetFileNameWithoutExtension(strFileName);
+                    strFileName = strName + "-CaseDispose-" + strTimeStamp + strExtension;
+                    string path = Path.Combine(Server.MapPath("../Legal/DisposalDocs/"), strFileName);
+                    ComplianceDoc.SaveAs(path);
+
+                    ViewState["ComplianceDOC"] = strFileName;
+                    path = "";
+                    strFileName = "";
+                    strName = "";
+                    //}
+                }
+                if (RejoinderDoc.HasFile)     // CHECK IF ANY FILE HAS BEEN SELECTED.
+                {
+
+                    string fileExt = System.IO.Path.GetExtension(RejoinderDoc.FileName).Substring(1);
+                    string[] supportedTypes = { "PDF", "pdf" };
+                    if (!supportedTypes.Contains(fileExt))
+                    {
+                        DocFailedCntExt += 1;
+                    }
+                    //else if (FielUpcaseDisposeOrderDoc.PostedFile.ContentLength > 5120) // 5 MB = 1024 * 5
+                    //{
+                    //    DocFailedCntSize += 1;
+                    //}
+                    //else
+                    //{
+
+                    strFileName = RejoinderDoc.FileName.ToString();
+                    strExtension = Path.GetExtension(strFileName);
+                    strTimeStamp = DateTime.Now.ToString();
+                    strTimeStamp = strTimeStamp.Replace("/", "-");
+                    strTimeStamp = strTimeStamp.Replace(" ", "-");
+                    strTimeStamp = strTimeStamp.Replace(":", "-");
+                    string strName = Path.GetFileNameWithoutExtension(strFileName);
+                    strFileName = strName + "-CaseDispose-" + strTimeStamp + strExtension;
+                    string path = Path.Combine(Server.MapPath("../Legal/DisposalDocs/"), strFileName);
+                    RejoinderDoc.SaveAs(path);
+
+                    ViewState["RejoinderDOC"] = strFileName;
+                    path = "";
+                    strFileName = "";
+                    strName = "";
+                    //}
+                }
+                if (AdditionalDoc.HasFile)     // CHECK IF ANY FILE HAS BEEN SELECTED.
+                {
+
+                    string fileExt = System.IO.Path.GetExtension(AdditionalDoc.FileName).Substring(1);
+                    string[] supportedTypes = { "PDF", "pdf" };
+                    if (!supportedTypes.Contains(fileExt))
+                    {
+                        DocFailedCntExt += 1;
+                    }
+                    //else if (FielUpcaseDisposeOrderDoc.PostedFile.ContentLength > 5120) // 5 MB = 1024 * 5
+                    //{
+                    //    DocFailedCntSize += 1;
+                    //}
+                    //else
+                    //{
+
+                    strFileName = AdditionalDoc.FileName.ToString();
+                    strExtension = Path.GetExtension(strFileName);
+                    strTimeStamp = DateTime.Now.ToString();
+                    strTimeStamp = strTimeStamp.Replace("/", "-");
+                    strTimeStamp = strTimeStamp.Replace(" ", "-");
+                    strTimeStamp = strTimeStamp.Replace(":", "-");
+                    string strName = Path.GetFileNameWithoutExtension(strFileName);
+                    strFileName = strName + "-CaseDispose-" + strTimeStamp + strExtension;
+                    string path = Path.Combine(Server.MapPath("../Legal/DisposalDocs/"), strFileName);
+                    AdditionalDoc.SaveAs(path);
+
+                    ViewState["AdditionalDOC"] = strFileName;
+                    path = "";
+                    strFileName = "";
+                    strName = "";
+                    //}
+                }
+                string errormsg = "";
+                if (DocFailedCntExt > 0) { errormsg += "Only upload Document in( PDF) Formate.\\n"; }
+                if (DocFailedCntSize > 0) { errormsg += "Uploaded Document size should be less than 5 MB \\n"; }
+
+                if (errormsg == "")
+                {
+                    if (btnCaseDisposeFirst.Text == "Update")
+                    {
+                        //if (ViewState["Department"].ToString() == "NA")
+                        //{
+                        //    ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Alert!', 'Fill Case Details', 'info')", true);
+                        //}
+                        //else
+                        //{
+                        string DisposalDate = txtCaseDisposeDateFirst.Text != "" ? Convert.ToDateTime(txtCaseDisposeDateFirst.Text, cult).ToString("yyyy/MM/dd") : "";
+                        string ComplianceDate = txtCompianceDate.Text != "" ? Convert.ToDateTime(txtCompianceDate.Text, cult).ToString("yyyy/MM/dd") : "";
+                        string RejoinderDate = txtRejoinderDate.Text != "" ? Convert.ToDateTime(txtRejoinderDate.Text, cult).ToString("yyyy/MM/dd") : "";
+                        string AdditionalDate = txtAdditionalDate.Text != "" ? Convert.ToDateTime(txtAdditionalDate.Text, cult).ToString("yyyy/MM/dd") : "";
+                        ds = obj.ByProcedure("USP_Update_CaseRegisDtl", new string[] { "flag", "Case_ID", "UniqueNo", "CaseDisposal_Status",
+                                "CaseDisposalType_Id", "CaseDisposal_Date", "CaseDisposal_Doc", "OrderSummary","ComplianceNo","ComplianceDate",
+                                "ComplianceDoc","ComplianceRemark","AnyRejoinder_ID","RejoinderNo","RejoinderDate","RejoinderDoc","RejoinderRemark","AdditionalReturn_ID","AdditionalNo"
+                                ,"AdditionalDate","AdditionalDoc","AdditionalRemark","OrderWithDirection_ID","LastupdatedBy", "LastupdatedByIP" }
+                            , new string[] { "2", ViewState["ID"].ToString(), ViewState["UniqueNO"].ToString(), rdCaseDispose.SelectedItem.Text,
+                                    ddlCaseDisposdType_First.SelectedValue, DisposalDate,  ViewState["DisposeDOC"].ToString(), txtorderSummaryFirst.Text.Trim(),
+                                    txtComplianceNo.Text.Trim(),ComplianceDate, ViewState["ComplianceDOC"].ToString(),txtComplianceRemark.Text.Trim(),
+                                    ddlAnyRejoinder.SelectedValue,txtRejoinderNo.Text.Trim(),RejoinderDate,ViewState["RejoinderDOC"].ToString(),txtRejoinderRemark.Text.Trim(),
+                                    ddlAdditionalReturn.SelectedValue,txtAdditionalNo.Text.Trim(),AdditionalDate,ViewState["AdditionalDOC"].ToString(),txtAdditionalRemar.Text.Trim(),
+                                    ddlOrderWith.SelectedValue,ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
+                        //}
+                    }
+                    if (ds != null)
+                    {
+                        if (ds.Tables[0].Rows.Count > 0)
+                        {
+                            string ErrMsg = ds.Tables[0].Rows[0]["ErrMsg"].ToString();
+                            if (ds.Tables[0].Rows[0]["Msg"].ToString() == "OK")
+                            {
+                                //lblMsg.Text = obj.Alert("fa-check", "alert-success", "Thanks !", ErrMsg);
+                                //txtOrderimpletimeline.Text = "";
+
+                                rdCaseDispose.ClearSelection();
+                                ddlDisponsType.ClearSelection();
+                                txtCaseDisposeDate.Text = "";
+                                ViewState["DisposeDOC"] = "";
+                                BindDetails(sender, e);
+                                btnCaseDisposeFirst.Text = "Update";
+                                rdCaseDispose_SelectedIndexChanged(sender, e);
+                                FirstHearingDisposd.Visible = false;
+                                ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Alert!', '" + "Case Update Successfully" + "', 'success')", true);
+                                fillWPRemainingdays();
+                            }
+                            else
+                                ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Warning!','" + ErrMsg + "' , 'warning')", true);
+                        }
+
+                    }
+                }
+                else
+                {
+                    ViewState["DisposeDOC"] = "";
+                    ScriptManager.RegisterClientScriptBlock(Page, Page.GetType(), "alertMessage", "alert('Please Select \\n " + errormsg + "')", true);
+                }
+            }
+        }
+
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+
+    protected void btnBackPage_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            Response.Redirect("~/Legal/WPCaseList.aspx?CourtId=" + Request.QueryString["CourtId"].ToString() + "&Caseyear=" + Request.QueryString["Caseyear"].ToString() + "&CaseType=" + Request.QueryString["CaseType"].ToString() +  "&CaseStatus=" + Request.QueryString["CaseStatus"].ToString(), false);
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
     }
 }
 

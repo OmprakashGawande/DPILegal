@@ -28,7 +28,7 @@ public partial class Legal_Case_SubSubjectMaster : System.Web.UI.Page
         }
         else
         {
-            Response.Redirect("~/Login.aspx",false);
+            Response.Redirect("~/Login.aspx", false);
         }
     }
 
@@ -44,12 +44,11 @@ public partial class Legal_Case_SubSubjectMaster : System.Web.UI.Page
                 grdSub_Subect.HeaderRow.TableSection = TableRowSection.TableHeader;
                 grdSub_Subect.UseAccessibleHeader = true;
             }
-            
+
         }
         catch (Exception ex)
         {
             ErrorLogCls.SendErrorToText(ex);
-            //lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry !", ex.Message.ToString());
         }
     }
 

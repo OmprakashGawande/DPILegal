@@ -37,10 +37,14 @@ public partial class Legal_DepartmentWiseMasterReport : System.Web.UI.Page
     protected void FillYear()
     {
         ddlCaseYear.Items.Clear();
-        for (int i = 2000; i <= DateTime.Now.Year; i++)
+        for (int i = DateTime.Now.Year; i >= 2000; i--)
         {
             ddlCaseYear.Items.Add(i.ToString());
         }
+        //for (int i = 2000; i <= DateTime.Now.Year; i++)
+        //{
+        //    ddlCaseYear.Items.Add(i.ToString());
+        //}
         ddlCaseYear.Items.Insert(0, new ListItem("Select", "0"));
 
     }

@@ -167,7 +167,7 @@
                                     <div class="form-group">
                                         <label>District</label><%--<span style="color: red;"> *</span>--%>
                                         <span class="pull-right">
-                                          <%--  <asp:RequiredFieldValidator ID="Rfv_division" ValidationGroup="Save"
+                                            <%--  <asp:RequiredFieldValidator ID="Rfv_division" ValidationGroup="Save"
                                                 ErrorMessage="Select District" Text="<i class='fa fa-exclamation-circle' title='Select Division'></i>"
                                                 ControlToValidate="ddlDistrict" ForeColor="Red" Display="Dynamic" runat="server" InitialValue="0">
                                             </asp:RequiredFieldValidator>--%>
@@ -204,7 +204,7 @@
                                         <asp:DropDownList ID="ddlCaseYear" runat="server" CssClass="form-control select2"></asp:DropDownList>
                                     </div>
                                 </div>
-                              <%--  <div class="col-md-3">
+                                <%--  <div class="col-md-3">
                                     <div class="form-group">
                                         <label>High Priority Case</label>
                                         <asp:DropDownList ID="ddlHighprioritycase" runat="server" CssClass="form-control">
@@ -298,6 +298,11 @@
                                                     <asp:Label ID="lblRespondentName" runat="server" Text='<%# Eval("RespondentName") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Case Registration Date">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblcaseRegistrationDate" runat="server" Text='<%# Eval("CaseRegDate") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
                                             <asp:TemplateField HeaderText="HOD Name">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblhod" runat="server" Text='<%# Eval("HodName1") %>'></asp:Label>
@@ -313,6 +318,11 @@
                                                     <asp:Label ID="lblCaseSubject" runat="server" Text='<%# Eval("CaseSubject") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Case Sub Subject">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCaseSubSubject" runat="server" Text='<%# Eval("CaseSubSubject") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Next Hearing Date">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblNextHearingDate" runat="server" Text='<%# Eval("NextHearingDate") %>'></asp:Label>
@@ -323,12 +333,12 @@
                                                     <asp:Label ID="lblReplyCompliance" runat="server" Text='<%# Eval("ActionYesOrNo") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                           <%-- <asp:TemplateField HeaderText="Action expected From">
+                                            <%-- <asp:TemplateField HeaderText="Action expected From">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblActionAppealedFrom" runat="server" Text='<%# Eval("ActionAppealedFrom") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>--%>
-                                           <%-- <asp:TemplateField HeaderText="File Movement">
+                                            <%-- <asp:TemplateField HeaderText="File Movement">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblHodName" runat="server" Text='<%# Eval("FileMoment") %>'></asp:Label>
 
@@ -349,6 +359,22 @@
                                                     <asp:Label ID="lblPolicyMatter" runat="server" Text='<%# Eval("PolicyMeterStatus") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="WP Number">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblWPNumber" runat="server" Text='<%# Eval("OldCaseNo") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="WP Year">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblWPYear" runat="server" Text='<%# Eval("oldCaseYear") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="WP Order date">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblWPdate" runat="server" Text='<%# Eval("OrderDate") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+
                                             <asp:TemplateField HeaderText="View" ItemStyle-Width="5%">
                                                 <ItemTemplate>
                                                     <asp:LinkButton ID="lnkbtnView" runat="server" CommandName="ViewDetail" CommandArgument='<%# Eval("Case_ID") %>' ToolTip="View"><i class="fa fa-eye"></i></asp:LinkButton>
@@ -357,7 +383,6 @@
                                         </Columns>
                                         <EmptyDataTemplate>No record Found</EmptyDataTemplate>
                                     </asp:GridView>
-
                                 </div>
                             </div>
                         </fieldset>
@@ -381,50 +406,6 @@
     <script src="../DataTable_CssJs/buttons.print.min.js"></script>
     <script src="../DataTable_CssJs/buttons.colVis.min.js"></script>
     <script src="../Main_plugins/bootstrap/js/bootstrap-multiselect.js"></script>
-    <%--<script type="text/javascript">
-        $('.datatable').DataTable({
-            paging: true,
-            PageLength: 15,
-            columnDefs: [{
-                targets: 'no-sort',
-                orderable: false
-            }],
-            dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>>' +
-                '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
-                '<"row"<"col-sm-5"i><"col-sm-7"p>>',
-            fixedHeader: {
-                header: true
-            },
-            buttons: {
-                buttons: [{
-                    extend: 'print',
-                    text: '<i class="fa fa-print"></i> Print',
-                    title: 'Pending Case Report',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-                    },
-                    footer: true,
-                    autoPrint: true
-                }, {
-                    extend: 'excel',
-                    text: '<i class="fa fa-file-excel-o"></i> Excel',
-                    title: $('h3').text(),
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-                    },
-                    footer: true
-                }],
-                dom: {
-                    container: {
-                        className: 'dt-buttons'
-                    },
-                    button: {
-                        className: 'btn btn-default'
-                    }
-                }
-            }
-        });
-    </script>--%>
     <script type="text/javascript">
         $('.datatable').DataTable({
             paging: true,
@@ -445,7 +426,7 @@
                     text: '<i class="fa fa-print"></i> Print',
                     title: 'Pending Case Report',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
                     },
                     footer: true,
                     autoPrint: true
@@ -454,7 +435,7 @@
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
                     title: 'Pending Case Report',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
                     },
                     footer: true
                 }],

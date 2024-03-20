@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Reflection;
-using System.IO;
 
 public partial class Legal_AddNewCase2 : System.Web.UI.Page
 {
@@ -44,10 +40,15 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
     protected void FillYear()
     {
         ddlCaseYear.Items.Clear();
-        for (int i = 2000; i <= DateTime.Now.Year; i++)
+
+        for (int i = DateTime.Now.Year; i >= 2000; i--)
         {
             ddlCaseYear.Items.Add(i.ToString());
         }
+        //for (int i = 2000; i <= DateTime.Now.Year; i++)
+        //{
+        //    ddlCaseYear.Items.Add(i.ToString());
+        //}
         ddlCaseYear.Items.Insert(0, new ListItem("Select", "0"));
     }
     #region CaseType
@@ -199,10 +200,10 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
             ds = objdb.ByProcedure("Usp_Select_CourtDistrictLocation", new string[] { "CourtType_ID" }, new string[] { ddlCourtType.SelectedValue }, "dataset");
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
-				     ddlCourtLocation.DataTextField = "District_Name";
-                    ddlCourtLocation.DataValueField = "District_Id";
-                    ddlCourtLocation.DataSource = ds.Tables[1];
-                    ddlCourtLocation.DataBind();
+                ddlCourtLocation.DataTextField = "District_Name";
+                ddlCourtLocation.DataValueField = "District_Id";
+                ddlCourtLocation.DataSource = ds.Tables[1];
+                ddlCourtLocation.DataBind();
                 if (ddlCourtType.SelectedValue == "2")
                 {
                     ds = objdb.ByProcedure("Usp_Select_CourtDistrictLocation", new string[] { }, new string[] { }, "dataset");
@@ -360,7 +361,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
         ViewState["Responder"] = dtCol;
     }
     #endregion
-    #region Doc Datatable
+    #region Doc Datatablelk
     protected void DtColumn()
     {
         DataTable dtcol = new DataTable();
@@ -466,7 +467,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
                         dt.Rows.Add(
                             ddlResDepartment.SelectedValue,
                             ddlHodName.SelectedValue,
-                             
+
                             ddlHodName.SelectedItem.Text,
                             ddlOfficetypeName.SelectedValue,
                             ddlOfficeName.SelectedValue,
@@ -474,7 +475,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
                             ddlDesignation.SelectedItem.Text,
                             txtResponderName.Text.Trim(),
                             txtMobileNo.Text.Trim(),
-							ddlResDepartment.SelectedItem.Text,
+                            ddlResDepartment.SelectedItem.Text,
                             txtAddress.Text.Trim(),
                             ddlOfficetypeName.SelectedItem.Text.Trim(),
                             ddlOfficeName.SelectedItem.Text.Trim());
@@ -548,7 +549,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
 
                     if (GrdPetitionerDtl.Rows.Count > 0)
                     {
-                        if (GrdRespondent.Rows.Count > 0 )
+                        if (GrdRespondent.Rows.Count > 0)
                         {
 
                             string errormsg = "";
@@ -646,7 +647,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
         GrdViewDoc.DataBind();
         ddlDepartment.ClearSelection();
         ddlDistrict.ClearSelection();
-    }
+    }     
     protected void ddlResDepartment_SelectedIndexChanged(object sender, EventArgs e)
     {
         try

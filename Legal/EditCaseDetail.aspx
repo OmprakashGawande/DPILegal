@@ -170,7 +170,7 @@
                                                 <label>
                                                     Present posting District<span style="color: red"><b>*</b></span></label>
                                                 <asp:RequiredFieldValidator runat="server" ID="rfvPetiAdd" Display="Dynamic" ForeColor="Red" SetFocusOnError="true"
-                                                    ControlToValidate="ddlPetitionerPresentDistrict" ValidationGroup="Petitioner" ErrorMessage="Select Petitioner Present District"
+                                                    ControlToValidate="ddlPetitionerPresentDistrict" ValidationGroup="Petitioner" ErrorMessage="Select Petitioner Present District" InitialValue="0"
                                                     Text="<i class='fa fa-exclamation-circle' title='Required !'></i>">
                                                 </asp:RequiredFieldValidator>
                                                 <asp:DropDownList runat="server" ID="ddlPetitionerPresentDistrict" CssClass="form-control select2" AutoPostBack="true"></asp:DropDownList>
@@ -182,7 +182,18 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-10">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>
+                                                    Present posting address<span style="color: red"><b>*</b></span></label>
+                                                <asp:RequiredFieldValidator runat="server" ID="RequiredFieldValidator12" Display="Dynamic" ForeColor="Red" SetFocusOnError="true"
+                                                    ControlToValidate="txtPetiAddRess" ValidationGroup="Petitioner" ErrorMessage="Enter Present posting address"
+                                                    Text="<i class='fa fa-exclamation-circle' title='Required !'></i>">
+                                                </asp:RequiredFieldValidator>
+                                                <asp:TextBox ID="txtPetiAddRess" runat="server" placeholder="Address" AutoComplete="off" CssClass="form-control" TextMode="MultiLine" onkeyup="javascript:capFirst(this);"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label>Remark</label>
                                                 <asp:TextBox ID="txtPetitionerRemark" TextMode="MultiLine" runat="server" CssClass="form-control" MaxLength="200" AutoComplete="off"></asp:TextBox>
@@ -225,6 +236,11 @@
                                                             <ItemTemplate>
                                                                 <asp:Label ID="lblAddress" runat="server" Text='<%# Eval("District_Name") %>'></asp:Label>
                                                                 <asp:Label ID="lblPresentpostDisID" runat="server" Text='<%# Eval("District_ID") %>' Visible="false"></asp:Label>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Present posting address">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblPresentpostingAddress" runat="server" Text='<%# Eval("PetitionerAddress") %>'></asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="Remark">
@@ -395,6 +411,13 @@
                                                 <asp:TextBox ID="txtResAddress" runat="server" CssClass="form-control" onkeyup="javascript:capFirst(this);" onkeypress="return chcode();" AutoComplete="off" MaxLength="500"></asp:TextBox>
                                             </div>
                                         </div>
+
+                                        <div class="col-md-10">
+                                            <div class="form-group">
+                                                <label>Respondent Details as per High Court site</label>
+                                                <asp:TextBox ID="txtRespondentRemark" runat="server" CssClass="form-control" onkeyup="javascript:capFirst(this);" onkeypress="return chcode();" AutoComplete="off" MaxLength="500" TextMode="MultiLine"></asp:TextBox>
+                                            </div>
+                                        </div>
                                         <div class="col-md-1" style="padding-top: 2rem! important;">
                                             <asp:Button runat="server" CssClass="btn btn-primary" Text="Save" ID="btnRespondent" ValidationGroup="Responder" OnClick="btnRespondent_Click" />
                                         </div>
@@ -406,10 +429,10 @@
                                                     <Columns>
                                                         <asp:TemplateField HeaderText="Sr#" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="5%">
                                                             <ItemTemplate>
-                                                                <asp:Label ID="lblId" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                                                <asp:Label ID="Label1" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
                                                                 <asp:Label ID="lblResponderID" runat="server" Text='<%# Eval("Respondent_ID") %>' Visible="false"></asp:Label>
-                                                                <asp:Label ID="lblCaseID" runat="server" Text='<%# Eval("Case_ID") %>' Visible="false"></asp:Label>
-                                                                <asp:Label ID="lblUniqNO" runat="server" Text='<%# Eval("UniqueNo") %>' Visible="false"></asp:Label>
+                                                                <asp:Label ID="Label2" runat="server" Text='<%# Eval("Case_ID") %>' Visible="false"></asp:Label>
+                                                                <asp:Label ID="Label3" runat="server" Text='<%# Eval("UniqueNo") %>' Visible="false"></asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="Department">
@@ -457,10 +480,16 @@
                                                                 <asp:Label ID="lblAddress" runat="server" Text='<%# Eval("Address") %>'></asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Respondend Details as per High Court site">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblRespondendDetailsasperHighCourtsite" runat="server" Text='<%# Eval("RespondentRemark") %>'></asp:Label>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="Action" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="5%">
                                                             <ItemTemplate>
-                                                                <asp:LinkButton ID="lnkEditView" runat="server" CommandArgument='<%# Eval("Respondent_ID") %>' CommandName="EditRecord" ToolTip="Edit" CssClass="fa fa-edit"></asp:LinkButton>&nbsp;
-                                                                <asp:LinkButton ID="lnkDisable" runat="server" CommandArgument='<%# Eval("Respondent_ID") %>' CommandName="DeleteRecord" ToolTip="Delete" CssClass="fa fa-trash" OnClientClick="return confirm('Are you sure you want to delete this record?');"></asp:LinkButton>
+                                                                <asp:LinkButton ID="LinkButton3" runat="server" CommandArgument='<%# Eval("Respondent_ID") %>' CommandName="EditRecord" ToolTip="Edit" CssClass="fa fa-edit"></asp:LinkButton>
+
+                                                                <asp:LinkButton ID="LinkButton4" runat="server" CommandArgument='<%# Eval("Respondent_ID") %>' CommandName="DeleteRecord" ToolTip="Delete" CssClass="fa fa-trash" OnClientClick="return confirm('Are you sure you want to delete this record?');"></asp:LinkButton>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                     </Columns>
@@ -549,11 +578,11 @@
                                     <div class="row">
                                         <div class="col-md-3" runat="server" id="divRealtion">
                                             <div class="form-group">
-                                                <label style="color: blue">Related to School Edu Dep</label><span style="color: red;"><b>*</b></span>
-                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator13" ValidationGroup="CaseDtl"
+                                                <label style="color: blue">Related to School Edu Dep</label><%--<span style="color: red;"><b>*</b></span>--%>
+                                                <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator13" ValidationGroup="CaseDtl"
                                                     ErrorMessage="Select Related" ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                     ControlToValidate="ddlCaserRelated" Display="Dynamic" runat="server" InitialValue="0">
-                                                </asp:RequiredFieldValidator>
+                                                </asp:RequiredFieldValidator>--%>
                                                 <asp:DropDownList runat="server" ID="ddlCaserRelated" OnSelectedIndexChanged="ddlCaserRelated_SelectedIndexChanged" AutoPostBack="true" CssClass="form-control">
                                                     <asp:ListItem Value="0">Select</asp:ListItem>
                                                     <asp:ListItem Value="1">Yes</asp:ListItem>
@@ -618,7 +647,7 @@
                                                         ControlToValidate="ddlDistrict" ForeColor="Red" Display="Dynamic" runat="server" InitialValue="0">
                                                     </asp:RequiredFieldValidator>
                                                 </span>--%>
-                                                <asp:DropDownList runat="server" ID="ddlDistrict" CssClass="form-control select2" OnSelectedIndexChanged="ddlDistrict_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlDistrict" CssClass="form-control select2"></asp:DropDownList>
                                             </div>
                                         </div>
                                     </div>
@@ -657,10 +686,21 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-12">
+                                        <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>
-                                                    Case Matter Detail/Remark</label><span style="color: red;"><b> *</b></span><br />
+                                                    Case Registration Date</label><%--<span style="color: red;"><b> *</b></span><br />
+                                                <asp:RequiredFieldValidator ID="rfvCaseRegistrationDate" ValidationGroup="CaseDtl"
+                                                    ErrorMessage="Enter Case Registration Date." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
+                                                    ControlToValidate="txtCaseRegistrationDate" Display="Dynamic" runat="server">
+                                                </asp:RequiredFieldValidator>--%>
+                                                <asp:TextBox ID="txtCaseRegistrationDate" runat="server" data-provide="datepicker" placeholder="DD/MM/YYYY" data-date-format="dd/mm/yyyy" data-date-autoclose="true" CssClass="form-control" AutoComplete="off"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="form-group">
+                                                <label>
+                                                    Case Matter Detail/Remark</label><span style="color: red;"><b> *</b></span>
                                                 <asp:RequiredFieldValidator ID="RFVActionByDistrict" ValidationGroup="CaseDtl"
                                                     ErrorMessage="Enter Case Detail." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                     ControlToValidate="txtCaseDetail" Display="Dynamic" runat="server">
@@ -680,6 +720,17 @@
                                 <fieldset id="FieldOicDeteail" runat="server">
                                     <legend>Current OIC Details</legend>
                                     <div runat="server" id="divOIC" class="row">
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>OIC District</label>
+                                                <span style="color: red;"><b>*</b></span>
+                                                <asp:RequiredFieldValidator ID="rfvOICDistrict" ValidationGroup="VDSOIC"
+                                                    ErrorMessage="Select OIC District." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
+                                                    ControlToValidate="ddlOICDisrtrict" Display="Dynamic" runat="server" InitialValue="0">
+                                                </asp:RequiredFieldValidator>
+                                                <asp:DropDownList ID="ddlOICDisrtrict" runat="server" CssClass="form-control select2" AutoPostBack="true" OnSelectedIndexChanged="ddlOICDisrtrict_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                        </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label>OIC Name/Nodel Officer</label>
@@ -735,14 +786,15 @@
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>OIC Order Documnet<span style="color: red;"> *</span></label>
-                                                <span class="pull-right">
+                                                <label>OIC Order Documnet<%--<span style="color: red;"> *</span>--%></label>
+                                                <%--<span class="pull-right">
                                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator12" ValidationGroup="VDSOIC"
                                                         ErrorMessage="Uplode OICDocument" Text="<i class='fa fa-exclamation-circle' title='Uplode OICDocument'></i>"
                                                         ControlToValidate="fuOICDocument" ForeColor="Red" Display="Dynamic" runat="server">
                                                     </asp:RequiredFieldValidator>
-                                                </span>
+                                                </span>--%>
                                                 <asp:HyperLink runat="server" ID="hyperlinkOICdoc" Target="_blank" Text="view"></asp:HyperLink>
+
                                                 <asp:FileUpload runat="server" ID="fuOICDocument" CssClass="form-control"></asp:FileUpload>
                                             </div>
                                         </div>
@@ -1243,7 +1295,23 @@
                                                             ErrorMessage="Select HOD." Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                             ValidationGroup="a" ControlToValidate="ddlNameHod" InitialValue="0">
                                                         </asp:RequiredFieldValidator>
-                                                        <asp:DropDownList runat="server" ID="ddlNameHod" CssClass="form-control"></asp:DropDownList>
+                                                        <asp:DropDownList runat="server" ID="ddlNameHod" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlNameHod_SelectedIndexChanged"></asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3" runat="server" id="div_HODSection" visible="false">
+                                                    <div class="form-group">
+                                                        <label>Section</label>
+                                                        <asp:DropDownList runat="server" ID="ddlSection" CssClass="form-control">
+                                                            <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                                            <asp:ListItem Text="EST-1" Value="1"></asp:ListItem>
+                                                            <asp:ListItem Text="EST-2" Value="2"></asp:ListItem>
+                                                            <asp:ListItem Text="EST-3" Value="3"></asp:ListItem>
+                                                            <asp:ListItem Text="EST-4" Value="4"></asp:ListItem>
+                                                            <asp:ListItem Text="Manyata" Value="5"></asp:ListItem>
+                                                            <asp:ListItem Text="Anudaan" Value="6"></asp:ListItem>
+                                                            <asp:ListItem Text="Vidya" Value="7"></asp:ListItem>
+                                                            <asp:ListItem Text="UCR" Value="8"></asp:ListItem>
+                                                        </asp:DropDownList>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -1335,21 +1403,21 @@
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="col-md-3" id="OrderWithDir_Div" runat="server" visible="false">
+                                        <%--<div class="col-md-3" id="OrderWithDir_Div" runat="server" visible="false">
                                             <div class="form-group">
                                                 <label>Order With Direction Post</label>
                                                 <span style="color: red;"><b>*</b></span>
                                                 <asp:DropDownList runat="server" ID="ddlOrderWith" CssClass="form-control" OnSelectedIndexChanged="ddlOrderWith_SelectedIndexChanged" AutoPostBack="true">
                                                 </asp:DropDownList>
                                             </div>
-                                        </div>
+                                        </div>--%>
                                         <div class="col-md-3" id="CimplianceSt_Div" runat="server" visible="false">
                                             <div class="form-group">
                                                 <label>
                                                     Compliance Status
                                                 </label>
                                                 <span style="color: red;"><b>*</b></span>
-                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator10" ValidationGroup="CaseDispose" Enabled="false"
+                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator10" ValidationGroup="CaseDispose"
                                                     ErrorMessage="Select Compliance" ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                     ControlToValidate="ddlCompliaceSt" Display="Dynamic" InitialValue="0" runat="server">
                                                 </asp:RequiredFieldValidator>
@@ -1652,11 +1720,11 @@
                                                                 <asp:Label ID="lblDisposaltype" runat="server" Text='<%# Eval("CaseDisposeType") %>'></asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="Order With<br />Direction" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="15%">
+                                                        <%-- <asp:TemplateField HeaderText="Order With<br />Direction" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="15%">
                                                             <ItemTemplate>
                                                                 <asp:Label ID="lblOrderDirection" runat="server" Text='<%# Eval("OrderWithDirection") %>'></asp:Label>
                                                             </ItemTemplate>
-                                                        </asp:TemplateField>
+                                                        </asp:TemplateField>--%>
                                                         <asp:TemplateField HeaderText="Compliance<br />Number" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="15%">
                                                             <ItemTemplate>
                                                                 <asp:Label ID="lblComolianceNo" runat="server" Text='<%# Eval("ComplianceNo") %>'></asp:Label>
@@ -1827,7 +1895,10 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-3" id="Div_Doc1" runat="server">
-                                                <label>Case Details</label><br />
+                                                <label>
+                                                    Case Details
+                                                </label>
+                                                <br />
                                                 <asp:FileUpload ID="FU1" runat="server" CssClass="form-control" />
                                             </div>
                                             <div class="col-md-3" id="Div_Doc2" runat="server">

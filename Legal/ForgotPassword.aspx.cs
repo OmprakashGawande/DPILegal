@@ -71,7 +71,7 @@ public partial class Legal_ForgotPassword : System.Web.UI.Page
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
                     string url = HttpContext.Current.Request.Url.AbsoluteUri;
-                    string RPurl = (url.Contains("localhost") ? "http://localhost:54327/" : "https://dpilegal.deptapp.in/") + "ResetPassword.aspx?" + ConvertText_SHA512_And_Salt("num=" + ds.Tables[0].Rows[0]["userid"].ToString());
+                    string RPurl = (url.Contains("localhost") ? "http://localhost:54327/" : "https://dpi.legalmonitoring.in/") + "ResetPassword.aspx?" + ConvertText_SHA512_And_Salt("num=" + ds.Tables[0].Rows[0]["userid"].ToString());
 
                     content = content
                        .Replace("{{ResetPasswordLink}}", RPurl)
@@ -105,7 +105,7 @@ public partial class Legal_ForgotPassword : System.Web.UI.Page
                         }
 
                         obj.ByTextQuery("insert into tblManageResetPassword(UserId, UserEmail, Isactive,ResetPasswordLink) values(" + ds.Tables[0].Rows[0]["userid"].ToString() + ",'" + ds.Tables[0].Rows[0]["UserEmail"].ToString() + "',1, '" + RPurl.ToString() + "')");
-                        Page.ClientScript.RegisterStartupScript(this.GetType(), "alertMessage", "alert('Forget Password Link Successfully Sent on your Registerd Email ID & Whatsapp No.!');", true);
+                        Page.ClientScript.RegisterStartupScript(this.GetType(), "alertMessage", "alert('Forget Password Link Successfully Sent on your Registerd Email ID. Do Not Share the link with Others.');", true);
                     }
                 }
                 //else

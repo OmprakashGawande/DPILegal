@@ -370,7 +370,7 @@ public partial class mis_Legal_OldCaseDashBoard : System.Web.UI.Page
         {
             int CaseCount1 = 0;
             DataSet dsCase = new DataSet();
-            dsCase = objdb.ByDataSet("Select case when Compliance_Status  = 1 then 'Yes' when Compliance_Status =2 then 'No' when Compliance_Status = 3 then 'Pending' else Compliance_Status end as IsComplaince,COUNT(distinct UniqueNo ) OrderBydirectComplaincesStatus from tblLegalCaseRegistration where CaseDisposalType_Id='2'   group by Compliance_Status");
+            dsCase = objdb.ByDataSet("Select case when Compliance_Status  = 1 then 'Yes' when Compliance_Status =2 then 'No' when Compliance_Status = 3 then 'Pending' when Compliance_Status IS NULL then 'Not Update' else Compliance_Status end as IsComplaince,COUNT(distinct UniqueNo ) OrderBydirectComplaincesStatus from tblLegalCaseRegistration where CaseDisposalType_Id='2'   group by Compliance_Status");
             StringBuilder Sb1 = new StringBuilder();
             Sb1.Append("<script type='text/javascript' src='https://www.gstatic.com/charts/loader.js'></script>");
             Sb1.Append("<script type='text/javascript'>");
@@ -390,7 +390,7 @@ public partial class mis_Legal_OldCaseDashBoard : System.Web.UI.Page
             Sb1.Append("]);");
             Sb1.Append("var options = {");
             Sb1.Append(" 'title':  'COURT WISE CASE No.',");
-            Sb1.Append("colors: ['#35de79', '#d63e27', '#e5e823'],"); // Using To Apply Chart Colors .
+            Sb1.Append("colors: ['#008080', '#d63e27', '#e5e823'],"); // Using To Apply Chart Colors .
             Sb1.Append("chartArea: {");
             Sb1.Append("height: '100%',");
             Sb1.Append("width: '100%',");

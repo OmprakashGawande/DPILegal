@@ -138,7 +138,7 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" runat="Server">
-<asp:ValidationSummary ID="VDS" runat="server" ShowMessageBox="true" ShowSummary="false" ValidationGroup="Save" />
+    <asp:ValidationSummary ID="VDS" runat="server" ShowMessageBox="true" ShowSummary="false" ValidationGroup="Save" />
     <div class="content-wrapper">
         <section class="content">
             <div class="container-fluid">
@@ -221,10 +221,25 @@
                                                     <asp:Label ID="lblCaseNO" runat="server" Text='<%# Eval("CaseNo") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Case Subject">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCaseSubject" runat="server" Text='<%# Eval("CaseSubject") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Case Sub Subject">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCaseSubSubject" runat="server" Text='<%# Eval("CaseSubSubject") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
 
                                             <asp:TemplateField HeaderText="HOD Name">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblHodName" runat="server" Text='<%# Eval("HodName") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Section">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblHOD_Section" runat="server" Text='<%# Eval("HOD_Section") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Dispatch Number">
@@ -249,7 +264,7 @@
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="View">
                                                 <ItemTemplate>
-                                                    <asp:HyperLink ID="hyperViewDoc" runat="server"  CssClass="fa fa-eye" Target="_blank" Enabled='<%#  Eval("Action_Doc").ToString() == "" ? false : true %>' NavigateUrl='<%# "../Legal/DisposalDocs/" + Eval("Action_Doc")  %>'></asp:HyperLink>
+                                                    <asp:HyperLink ID="hyperViewDoc" runat="server" CssClass="fa fa-eye" Target="_blank" Enabled='<%#  Eval("Action_Doc").ToString() == "" ? false : true %>' NavigateUrl='<%# "../Legal/DisposalDocs/" + Eval("Action_Doc")  %>'></asp:HyperLink>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
 
@@ -296,18 +311,18 @@
                 buttons: [{
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
-                    title: $('h3').text(),
+                    title: 'File Movement Report',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                     },
                     footer: true,
                     autoPrint: true
                 }, {
                     extend: 'excel',
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
-                    title: $('h3').text(),
+                    title: 'File Movement Report',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
                     },
                     footer: true
                 }],

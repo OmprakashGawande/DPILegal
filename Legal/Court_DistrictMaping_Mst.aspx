@@ -184,12 +184,12 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label>Court Name<span style="color: red;">*</span></label>
+                                                <label>Court<span style="color: red;">*</span></label>
                                                 <asp:RequiredFieldValidator runat="server" ID="rfvCourtName"
                                                     Display="Dynamic" ControlToValidate="ddlCourtName" ValidationGroup="a" InitialValue="0"
                                                     Text="<i class='fa fa-exclamation-circle'></i>" ErrorMessage="Select Court Name" ForeColor="Red">
                                                 </asp:RequiredFieldValidator>
-                                                <asp:DropDownList runat="server" ID="ddlCourtName" CssClass="form-control">
+                                                <asp:DropDownList runat="server" ID="ddlCourtName" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlCourtName_SelectedIndexChanged">
                                                 </asp:DropDownList>
                                             </div>
                                         </div>

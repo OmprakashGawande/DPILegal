@@ -4,16 +4,8 @@
     <link href="../DataTable_CssJs/dataTables.bootstrap.min.css" rel="stylesheet" />
     <link href="../DataTable_CssJs/buttons.dataTables.min.css" rel="stylesheet" />
     <link href="../DataTable_CssJs/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="../Main_plugins/bootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
     <style>
-        /*.datepicker tbody {
-            background-color: #ecfce6 !important;
-            color: black;
-        }
-
-        .datepicker th {
-            background-color: #608640 !important;
-        }*/
-
         .label-orange {
             background-color: #f5ac45;
         }
@@ -108,7 +100,7 @@
         .sorting_desc_disabled {
             cursor: pointer;
             position: relative;
-            &:after;
+            &:after
 
         {
             position: absolute;
@@ -163,6 +155,16 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
+                                        <label>Case type</label><span style="color: red;"><b> *</b></span>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="Save"
+                                            ErrorMessage="Select Case type." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
+                                            ControlToValidate="ddlCaseType" Display="Dynamic" runat="server" InitialValue="0">
+                                        </asp:RequiredFieldValidator>
+                                        <asp:DropDownList ID="ddlCaseType" OnSelectedIndexChanged="ddlCaseType_SelectedIndexChanged" AutoPostBack="true" runat="server" CssClass="form-control"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
                                         <label>Case Disposal Type</label><span style="color: red;"><b> *</b></span>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Save"
                                             ErrorMessage="Select Case Dispose type." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
@@ -175,11 +177,11 @@
                                 <div class="col-md-3" id="OrderWithDir_Div" runat="server" visible="false">
                                     <div class="form-group">
                                         <label>Order With Direction Post</label>
-                                        <span style="color: red;"><b>*</b></span>
+                                        <%--  <span style="color: red;"><b>*</b></span>
                                         <asp:RequiredFieldValidator ID="rfvOrderWith" ValidationGroup="Save"
                                             ErrorMessage="Select Order With Direction Post." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                             ControlToValidate="ddlOrderWith" Display="Dynamic" runat="server" InitialValue="0">
-                                        </asp:RequiredFieldValidator>
+                                        </asp:RequiredFieldValidator>--%>
                                         <asp:DropDownList runat="server" ID="ddlOrderWith" CssClass="form-control">
                                         </asp:DropDownList>
                                     </div>
@@ -202,16 +204,7 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Case type</label><span style="color: red;"><b> *</b></span>
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="Save"
-                                            ErrorMessage="Select Case type." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
-                                            ControlToValidate="ddlCaseType" Display="Dynamic" runat="server" InitialValue="0">
-                                        </asp:RequiredFieldValidator>
-                                        <asp:DropDownList ID="ddlCaseType" runat="server" CssClass="form-control"></asp:DropDownList>
-                                    </div>
-                                </div>
+
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>
@@ -236,6 +229,9 @@
                                         <div class="col-md-4 mt-2">
                                             <a href="DisposeCaseRpt.aspx" class="btn btn-default btn-block">Clear</a>
                                         </div>
+                                        <div class="col-md-4 mt-2">
+                                            <asp:LinkButton ID="lnkbtnExport" runat="server" Visible="false" Text="<i class='btn btn-success fa fa-file-excel'>Export</i>" OnClick="lnkbtnExport_Click"></asp:LinkButton>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -246,7 +242,7 @@
                                 <div class="col-md-12">
                                     <div class="table-responsive">
                                         <asp:GridView ID="grdSubjectWiseCasedtl" runat="server" CssClass="datatable table table-bordered" AutoGenerateColumns="false"
-                                            OnRowCommand="grdSubjectWiseCasedtl_RowCommand" DataKeyNames="Case_ID" EmptyDataText="NO RECORD FOUND" OnPageIndexChanging="grdSubjectWiseCasedtl_PageIndexChanging" AllowPaging="true" PageSize="10">
+                                            OnRowCommand="grdSubjectWiseCasedtl_RowCommand" DataKeyNames="Case_ID" EmptyDataText="NO RECORD FOUND">
                                             <Columns>
                                                 <asp:TemplateField HeaderText="S.No." ItemStyle-HorizontalAlign="Center" ItemStyle-Width="5%">
                                                     <ItemTemplate>
@@ -258,14 +254,9 @@
                                                         <asp:Label ID="lblCaseNO" runat="server" Text='<%# Eval("CaseNo") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Case Year" ItemStyle-HorizontalAlign="Center">
+                                                <asp:TemplateField HeaderText="Case Year" Visible="false" ItemStyle-HorizontalAlign="Center">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblCaseYear" runat="server" Text='<%# Eval("CaseYear") %>'></asp:Label>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Case Subject" Visible="false">
-                                                    <ItemTemplate>
-                                                        <asp:Label ID="lblCaseSubject" runat="server" Text='<%# Eval("CaseSubject") %>' Visible="false"></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Petitioner Name" ItemStyle-HorizontalAlign="Left">
@@ -273,9 +264,24 @@
                                                         <asp:Label ID="lblPetitionerName" runat="server" Text='<%# Eval("PetitonerName") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Court Name" ItemStyle-HorizontalAlign="Left">
+                                                <asp:TemplateField HeaderText="Case Disposal Type" ItemStyle-HorizontalAlign="Center">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblCaseDisposeType" runat="server" Text='<%# Eval("CaseDisposeType") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Case Subject" Visible="false">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblCaseSubject" runat="server" Text='<%# Eval("CaseSubject") %>' Visible="false"></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Court Name" Visible="false" ItemStyle-HorizontalAlign="Left">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblCourtName" runat="server" Text='<%# Eval("CourtTypeName") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Case Direction type" ItemStyle-HorizontalAlign="Left">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblCaseDirectiontype" runat="server" Text='<%# Eval("OrderWithDirection") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Case Status" ItemStyle-HorizontalAlign="Center">
@@ -312,6 +318,7 @@
     <script src="../DataTable_CssJs/buttons.html5.min.js"></script>
     <script src="../DataTable_CssJs/buttons.print.min.js"></script>
     <script src="../DataTable_CssJs/buttons.colVis.min.js"></script>
+    <script src="../Main_plugins/bootstrap/js/bootstrap-multiselect.js"></script>
     <script type="text/javascript">
         $('.datatable').DataTable({
             paging: true,
@@ -330,7 +337,7 @@
                 buttons: [{
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
-                    title: $('h3').text(),
+                    title: 'Disposal Case Report',
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4, 5]
                     },
@@ -339,7 +346,7 @@
                 }, {
                     extend: 'excel',
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
-                    title: $('h3').text(),
+                    title: 'Disposal Case Report',
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4, 5]
                     },
