@@ -1046,14 +1046,9 @@ public partial class Legal_EditDisposeCase : System.Web.UI.Page
                     txtPetiName.Text = lblPetitionerName.Text;
                     txtPetiMobileNo.Text = lblPetitionermobileNo.Text;
                     txtPetiAddRess.Text = lblAddress.Text;
-                    if (!string.IsNullOrEmpty(lblDesignation_Id.Text))
-                    {
+                    if (lblDesignation_Id.Text != "")
                         ddlPetiDesigNation.ClearSelection();
-                        ddlPetiDesigNation.Items.FindByValue(lblDesignation_Id.Text).Selected = true;
-                    }
-                    //if (lblDesignation_Id.Text != "")
-                    //    ddlPetiDesigNation.ClearSelection();
-                    //ddlPetiDesigNation.Items.FindByValue(lblDesignation_Id.Text).Selected = true;
+                    ddlPetiDesigNation.Items.FindByValue(lblDesignation_Id.Text).Selected = true;
                     btnPetitioner.Text = "Update";
                 }
                 if (e.CommandName == "DeleteRecord")

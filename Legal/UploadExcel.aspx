@@ -174,6 +174,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-2"></div>
+
                                 </div>
                                 <div class="row" id="divFill" runat="server">
                                     <div class="col-md-12">
@@ -187,6 +188,7 @@
                                                     </asp:RequiredFieldValidator>
                                                 </div>
                                             </div>
+
                                             <div class="col-md-3 mt-4">
                                                 <div class="row">
                                                     <div class="col-md-6 mt-2">
@@ -200,6 +202,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <fieldset id="Field_ExistRecord" runat="server" visible="false">
                                     <legend>Existing Record</legend>
                                     <div class="row">
@@ -317,6 +320,21 @@
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="Fotter" runat="Server">
+    <script>
+        <%-- function ValidatePage() {
+            if (typeof (Page_ClientValidate) == 'function') {
+                Page_ClientValidate('Save');
+            }
+            if (Page_IsValid) {
+                debugger;
+                if (document.getElementById('<%=btnSave.ClientID%>').value.trim() == "Save") {
+                    document.getElementById('<%=lblPopupAlert.ClientID%>').textContent = "Are you sure you want to Save this record?";
+                    $('#myModal').modal('show');
+                    return false;
+                }
+            }
+        }--%>
+    </script>
     <script src="../DataTable_CssJs/jquery.js"></script>
     <script src="../DataTable_CssJs/jquery.dataTables.min.js"></script>
     <script src="../DataTable_CssJs/dataTables.bootstrap.min.js"></script>
@@ -337,8 +355,8 @@
                 orderable: false
             }],
             dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>>' +
-                '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
-                '<"row"<"col-sm-5"i><"col-sm-7"p>>',
+              '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+              '<"row"<"col-sm-5"i><"col-sm-7"p>>',
             fixedHeader: {
                 header: true
             },

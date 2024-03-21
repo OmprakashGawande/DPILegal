@@ -18,6 +18,15 @@
         }
     </style>
     <style>
+        /*.datepicker tbody {
+            background-color: #ecfce6 !important;
+            color: black;
+        }
+
+        .datepicker th {
+            background-color: #608640 !important;
+        }*/
+
         .label-orange {
             background-color: #f5ac45;
         }
@@ -275,8 +284,8 @@
                 orderable: false
             }],
             dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>>' +
-                '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
-                '<"row"<"col-sm-5"i><"col-sm-7"p>>',
+              '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+              '<"row"<"col-sm-5"i><"col-sm-7"p>>',
             fixedHeader: {
                 header: true
             },

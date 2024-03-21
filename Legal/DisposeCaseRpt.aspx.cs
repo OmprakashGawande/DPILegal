@@ -54,7 +54,7 @@ public partial class Legal_DisposeCaseRpt : System.Web.UI.Page
             ErrorLogCls.SendErrorToText(ex);
         }
     }
-    protected void FillCourt() //added by Omprakash 21/06/2023
+    protected void FillCourt() //added by omprakash 21/06/2023
     {
         try
         {
@@ -299,6 +299,8 @@ public partial class Legal_DisposeCaseRpt : System.Web.UI.Page
         }
         return clearText;
     }
+
+
     protected void lnkbtnExport_Click(object sender, EventArgs e)
     {
         try
@@ -371,6 +373,8 @@ public partial class Legal_DisposeCaseRpt : System.Web.UI.Page
         }
         return originalDataTable;
     }
+    //public override void VerifyRenderingInServerForm(Control control) { }
+
     protected void ddlCaseType_SelectedIndexChanged(object sender, EventArgs e)
     {
         try

@@ -183,6 +183,9 @@
             max-width: 50%;
         }
     </style>
+
+
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" runat="Server">
     <asp:ScriptManager runat="server" />
@@ -278,6 +281,8 @@
 
                             </div>
                             <br />
+
+
                             <div class="row form-group" style="text-align: left;">
                                 <div class="col-lg-6 col-md-12 col-sm-12 mt-2 ">
 
@@ -321,8 +326,8 @@
                                     <i class="fa-solid fa-thumbs-up" style="font-size: x-large"></i>
                                     <%--<img src="../image/Legal%201.png" style="height: 25px;" />--%>&nbsp;&nbsp;<span class="Heading">ORDER BY DIRECTION COMPLIANCES :
                                     
-                                        <asp:LinkButton runat="server" ID="btnComplainces" CssClass="btn-sm label label-warning" OnClick="btnComplainces_Click">
-                                            <asp:Label ID="lblCaseCount3" runat="server" CssClass="Heading" Style="color: white;" />
+                                        <asp:LinkButton runat="server" id="btnComplainces" CssClass="btn-sm label label-warning" OnClick="btnComplainces_Click">
+                                        <asp:Label ID="lblCaseCount3" runat="server" CssClass="Heading" Style="color: white;" />
                                         </asp:LinkButton>
                                     </span>
                                     <div id="sbid3" runat="server" class="dvpading"></div>
@@ -368,8 +373,17 @@
 
                 </div>
             </div>
+
+
+
+
+
         </section>
+
     </div>
+
+
+
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="Fotter" runat="Server">
     <link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap.min.css" rel="stylesheet" />

@@ -39,7 +39,8 @@ public partial class Legal_JDLegalDashBoard : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+           // lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+		   ErrorLogCls.SendErrorToText(ex);
         }
 
     }
@@ -144,7 +145,8 @@ public partial class Legal_JDLegalDashBoard : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+           // lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+		   ErrorLogCls.SendErrorToText(ex);
         }
 
     }
@@ -208,7 +210,8 @@ public partial class Legal_JDLegalDashBoard : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+          //  lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+		  ErrorLogCls.SendErrorToText(ex);
         }
 
     }
@@ -274,7 +277,8 @@ public partial class Legal_JDLegalDashBoard : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+          //  lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+		  ErrorLogCls.SendErrorToText(ex);
         }
 
     }
@@ -337,7 +341,8 @@ public partial class Legal_JDLegalDashBoard : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+          //  lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+		  ErrorLogCls.SendErrorToText(ex);
         }
 
     }
@@ -400,7 +405,8 @@ public partial class Legal_JDLegalDashBoard : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+          //  lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+		  ErrorLogCls.SendErrorToText(ex);
         }
 
     }
@@ -449,7 +455,8 @@ public partial class Legal_JDLegalDashBoard : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+          //  lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry!", ex.Message.ToString());
+		  ErrorLogCls.SendErrorToText(ex);
         }
     }
 
@@ -480,7 +487,8 @@ public partial class Legal_JDLegalDashBoard : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry !", ex.Message.ToString());
+          //  lblMsg.Text = objdb.Alert("fa-ban", "alert-danger", "Sorry !", ex.Message.ToString());
+		  ErrorLogCls.SendErrorToText(ex);
         }
     }
 
