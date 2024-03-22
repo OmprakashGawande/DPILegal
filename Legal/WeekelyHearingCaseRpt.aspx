@@ -319,7 +319,7 @@
                     text: '<i class="fa fa-print"></i> Print',
                     title: 'Weekely Hearing Case Detail',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                     },
                     footer: true,
                     autoPrint: true
@@ -328,7 +328,7 @@
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
                     title: 'Weekely Hearing Case Detail',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                     },
                     footer: true
                 }],
