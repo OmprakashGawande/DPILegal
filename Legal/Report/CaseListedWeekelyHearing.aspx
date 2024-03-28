@@ -148,7 +148,7 @@
                 <asp:Label ID="lblMsg" runat="server" Text=""></asp:Label>
                 <div class="card">
                     <div class="card-header">
-                        Weekly Hearing Case
+                        Weekely Hearing Case
                     </div>
                     <div class="card-body">
                         <fieldset>
@@ -303,7 +303,7 @@
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Case Status" ItemStyle-HorizontalAlign="Left">
                                                     <ItemTemplate>
-                                                        <asp:Label ID="lblCaseStatus" runat="server" Font-Bold="true" ForeColor='<%# Eval("CaseStatus").ToString() == "Pending" || Eval("CaseStatus").ToString() == "pending" ? System.Drawing.Color.Red : System.Drawing.Color.Green %>' Text='<%# Eval("CaseStatus") %>'></asp:Label>
+                                                        <asp:Label ID="lblCaseStatus" runat="server" Font-Bold="true" ForeColor='<%# Eval("CaseStatus").ToString() == "Pending" ? System.Drawing.Color.Red : System.Drawing.Color.Green %>' Text='<%# Eval("CaseStatus") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Action" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="5%">
@@ -353,7 +353,7 @@
                 buttons: [{
                     extend: 'print',
                     text: '<i class="fa fa-print"></i> Print',
-                    title: 'Weekly Hearing Case',
+                    title: 'Weekely Hearing Case',
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
                     },
@@ -362,7 +362,7 @@
                 }, {
                     extend: 'excel',
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
-                    title: 'Weekly Hearing Case',
+                    title: 'Weekely Hearing Case',
                     exportOptions: {
                         columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
                     },

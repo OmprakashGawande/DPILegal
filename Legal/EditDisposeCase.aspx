@@ -1476,13 +1476,11 @@
                                 </fieldset>
                                 <%--End Here DeptAdv Detail --%>
                                 <%---End Here For Edit Case Details ---%>
-
-
                                 <fieldset id="Fieldset1" runat="server">
                                     <legend>Want To File WA/RP/SLP </legend>
 
                                     <div class=" row">
-                                        <p style="font-weight: bold"><span style="color: red; font-weight: bold">Note:- </span>Time limit for Filing WA/RP/SLP is 90 days from this oder date.</p>
+                                        <p style="font-weight: bold"><span style="color: red; font-weight: bold">Note:- </span>Time limit for Filing WA/RP/SLP is 90 days from this Order date.</p>
                                         <br />
                                     </div>
                                     <div class="row">
