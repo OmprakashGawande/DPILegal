@@ -203,7 +203,6 @@
                                 </div>
                             </div>
                         </fieldset>
-
                         <fieldset>
                             <legend>Report</legend>
                             <div class="row">
