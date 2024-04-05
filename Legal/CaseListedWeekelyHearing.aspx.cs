@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -105,11 +106,26 @@ public partial class Legal_CaseListedWeekelyHearing : System.Web.UI.Page
     {
         try
         {
-            string Curr_Week = "0";
+            string strFromDate = string.Empty;
+            string strToDate = string.Empty;
+            if (txtFromDate.Text != "")
+            {
+                string A_Date = txtFromDate.Text; // From Database
+                DateTime sdate = DateTime.ParseExact(A_Date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                strFromDate = sdate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+            }
+            if (txttodate.Text != "")
+            {
+                string A_Date = txttodate.Text; // From Database
+                DateTime sdate = DateTime.ParseExact(A_Date, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                strToDate = sdate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+            }
 
             string OIC_ID = Session["OICMaster_ID"] != null ? Session["OICMaster_ID"].ToString() : null;
-            ds = obj.ByProcedure("Usp_CaseListedWeekelyHearing", new string[] { "flag", "Casetype_ID", "CourtType_Id", "Curr_Week", "OICMaster_Id" },
-                new string[] { "1", ddlCaseType.SelectedItem.Value, ddlCourtName.SelectedItem.Value, Curr_Week, OIC_ID }, "dataset");
+            ds = obj.ByProcedure("Usp_CaseListedWeekelyHearing", new string[] { "flag", "Casetype_ID", "CourtType_Id",  "OICMaster_Id", "NFromDate", "NToDate" },
+                new string[] { "1", ddlCaseType.SelectedItem.Value, ddlCourtName.SelectedItem.Value, OIC_ID , strFromDate , strToDate }, "dataset");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 grdWeekelyWiseCasedtl.DataSource = ds;
