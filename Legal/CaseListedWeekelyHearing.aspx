@@ -167,7 +167,7 @@
                                         <asp:DropDownList ID="ddlCourtName" runat="server" CssClass="form-control"></asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                               <%-- <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Week List</label><span style="color: red;"><b> *</b></span>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Save"
@@ -177,10 +177,10 @@
                                         <asp:DropDownList ID="ddlWeek" runat="server" CssClass="form-control">
                                             <asp:ListItem Value="0">Select</asp:ListItem>
                                             <asp:ListItem Value="1">Current Week</asp:ListItem>
-                                            <%--<asp:ListItem Value="2">Coming Week</asp:ListItem>--%>
+                                           
                                         </asp:DropDownList>
                                     </div>
-                                </div>
+                                </div>--%>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>Case Type</label><span style="color: red;"><b> *</b></span>
@@ -193,17 +193,19 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>
-                                            From Date
-                                        </label>
+                                        <label> From Date</label><span style="color:red;"><b> *</b></span>
+                                        <asp:RequiredFieldValidator runat="server" ID="RFVFromDate" Display="Dynamic" ValidationGroup="Save" ControlToValidate="txtFromDate"
+                                           ErrorMessage="Enter From Date" ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"  >
+                                        </asp:RequiredFieldValidator>
                                         <asp:TextBox ID="txtFromDate" runat="server" date-provide="datepicker" AutoComplete="off" data-date-end-date="0d" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>
-                                            To Date
-                                        </label>
+                                        <label>To Date</label><span style="color:red;"><b> *</b></span>
+                                        <asp:RequiredFieldValidator runat="server" ID="RFVTodate" Display="Dynamic" ValidationGroup="Save" ControlToValidate="txttodate" 
+                                            ErrorMessage="Enter To Date" ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>" >
+                                        </asp:RequiredFieldValidator>
                                         <asp:TextBox ID="txttodate" runat="server" date-provide="datepicker" AutoComplete="off" data-date-end-date="0d" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>
                                     </div>
                                 </div>
