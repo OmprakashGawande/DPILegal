@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Legal/MainMaster.master" AutoEventWireup="true"  MaintainScrollPositionOnPostback="true" CodeFile="AddNewCase2.aspx.cs" Inherits="Legal_AddNewCase2" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Legal/MainMaster.master" AutoEventWireup="true" MaintainScrollPositionOnPostback="true" CodeFile="AddNewCase2.aspx.cs" Inherits="Legal_AddNewCase2" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 </asp:Content>
@@ -34,7 +34,7 @@
             </div>
         </div>
     </div>
-   
+
     <div class="content-wrapper">
         <section class="content">
             <div class="container-fluid">
@@ -127,14 +127,6 @@
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="col-md-3" style="display: none;">
-                                            <div class="form-group">
-                                                <div class="form-group">
-                                                    <label>Case Registration Date</label>
-                                                    <asp:TextBox ID="txtDateOfCaseReg" date-provide="datepicker" runat="server" data-date-end-date="0d" AutoComplete="off" placeholder="DD/MM/YYYY" class="form-control" ClientIDMode="Static"></asp:TextBox>
-                                                </div>
-                                            </div>
-                                        </div>
 
                                         <div class="col-md-3">
                                             <div class="form-group">
@@ -185,6 +177,15 @@
                                                 <asp:TextBox ID="txtDateOfLastHearing" runat="server" date-provide="datepicker" AutoComplete="off" data-date-end-date="0d" placeholder="DD/MM/YYYY" class="form-control" ClientIDMode="Static"></asp:TextBox>
                                             </div>
                                         </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <div class="form-group">
+                                                    <label>Case Registration Date</label>
+                                                    <asp:TextBox ID="txtDateOfCaseReg" date-provide="datepicker" runat="server" data-date-end-date="0d" AutoComplete="off" placeholder="DD/MM/YYYY" class="form-control" ClientIDMode="Static"></asp:TextBox>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
@@ -246,6 +247,18 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>
+                                                    Present posting District<span style="color: red"><b>*</b></span></label>
+                                                <asp:RequiredFieldValidator runat="server" ID="RequiredFieldValidator1" Display="Dynamic" ForeColor="Red" SetFocusOnError="true"
+                                                    ControlToValidate="ddlPetitionerPresentDistrict" ValidationGroup="Petitioner" ErrorMessage="Select Petitioner Present District" InitialValue="0"
+                                                    Text="<i class='fa fa-exclamation-circle' title='Required !'></i>">
+                                                </asp:RequiredFieldValidator>
+                                                <asp:DropDownList runat="server" ID="ddlPetitionerPresentDistrict" CssClass="form-control select2"></asp:DropDownList>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>
                                                     Present posting address<span style="color: red"><b>*</b></span></label>
                                                 <asp:RequiredFieldValidator runat="server" ID="rfvPetiAdd" Display="Dynamic" ForeColor="Red" SetFocusOnError="true"
                                                     ControlToValidate="txtPetiAddRess" ValidationGroup="Petitioner" ErrorMessage="Enter Present posting address"
@@ -254,7 +267,13 @@
                                                 <asp:TextBox ID="txtPetiAddRess" runat="server" placeholder="Address" AutoComplete="off" CssClass="form-control" TextMode="MultiLine" onkeyup="javascript:capFirst(this);"></asp:TextBox>
                                             </div>
                                         </div>
-                                        <div class="col-md-1">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Remark</label>
+                                                <asp:TextBox ID="txtPetitionerRemark" TextMode="MultiLine" runat="server" CssClass="form-control" MaxLength="200" AutoComplete="off"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1" style="padding-top: 2rem! important;">
                                             <asp:Button ID="btnPetitioner" runat="server" CssClass="btn btn-primary btn-block" Text="Add" ValidationGroup="Petitioner" OnClick="btnPetitioner_Click" />
                                         </div>
                                     </div>
@@ -282,6 +301,12 @@
                                                         <asp:TemplateField HeaderText="Mobile No.">
                                                             <ItemTemplate>
                                                                 <asp:Label ID="lblMobileno" runat="server" Text='<%# Eval("MobileNo") %>'></asp:Label>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Present posting District">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblDistrict_name" runat="server" Text='<%# Eval("District_Name") %>'></asp:Label>
+                                                                <asp:Label ID="lblDistrictID" runat="server" Text='<%# Eval("District_ID") %>' Visible="false"></asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:TemplateField HeaderText="Address">
@@ -367,6 +392,12 @@
                                             <div class="form-group">
                                                 <label>Address</label>
                                                 <asp:TextBox ID="txtAddress" runat="server" placeholder="Address" CssClass="form-control" onkeyup="javascript:capFirst(this);" AutoComplete="off" TextMode="MultiLine"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <div class="form-group">
+                                                <label>Respondent Details as per High Court site</label>
+                                                <asp:TextBox ID="txtRespondentRemark" runat="server" CssClass="form-control" onkeyup="javascript:capFirst(this);" onkeypress="return chcode();" AutoComplete="off" MaxLength="500" TextMode="MultiLine"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="col-md-1" style="padding-top: 2rem! important;">
@@ -510,7 +541,8 @@
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
-                                <asp:Button ID="btnClear" CssClass="btn btn-block btn-default" runat="server" Text="Clear" OnClick="btnClear_Click" />
+                                <a href="AddNewCase2.aspx" class="btn btn-default btn-block">Clear</a>
+                                <%-- <asp:Button ID="btnClear" CssClass="btn btn-block btn-default" runat="server" Text="Clear" OnClick="btnClear_Click" />--%>
                             </div>
                         </div>
 

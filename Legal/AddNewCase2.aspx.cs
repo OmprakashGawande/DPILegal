@@ -114,6 +114,29 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
             ErrorLogCls.SendErrorToText(ex);
         }
     }
+    protected void FillDitrictMapnig()
+    {
+        try
+        {
+            ddlDistrict.Items.Clear();
+            DataSet dsd = objdb.ByDataSet("select DM.District_ID, District_Name from  Mst_District DM inner join tbl_DistrictCourtMaping_Mst CMM on DM.District_ID=CMM.District_ID " +
+             "where CMM.CourtName_ID=" + ddlCourtType.SelectedValue + " order by District_ID asc");
+            if (dsd != null && dsd.Tables[0].Rows.Count > 0)
+            {
+                ddlPetitionerPresentDistrict.DataTextField = "District_Name";
+                ddlPetitionerPresentDistrict.DataValueField = "District_ID";
+                ddlPetitionerPresentDistrict.DataSource = dsd;
+                ddlPetitionerPresentDistrict.DataBind();
+                ddlPetitionerPresentDistrict.Items.Insert(0, new ListItem("Select", "0"));
+            }
+
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+
+    }
     #endregion
     protected void BindCaseSubject()
     {
@@ -222,6 +245,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
             }
             ddlCourtLocation.Items.Insert(0, new ListItem("Select", "0"));
             ddlDistrict.Items.Insert(0, new ListItem("Select", "0"));
+            FillDitrictMapnig();
         }
         catch (Exception ex)
         {
@@ -332,6 +356,9 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
             dtPeti.Columns.Add("MobileNo", typeof(string));
             dtPeti.Columns.Add("AddRess", typeof(string));
             dtPeti.Columns.Add("Designation_name", typeof(string));
+            dtPeti.Columns.Add("District_Name", typeof(string));
+            dtPeti.Columns.Add("District_ID", typeof(int));
+            dtPeti.Columns.Add("PetitionerRemark", typeof(string));
         }
         ViewState["Dtpeti"] = dtPeti;
     }
@@ -357,6 +384,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
             //dtCol.Columns.Add("RespondenttypeName", typeof(string));
             dtCol.Columns.Add("OfficeTypeName", typeof(string));
             dtCol.Columns.Add("OfficeName", typeof(string));
+            dtCol.Columns.Add("RespondentRemark", typeof(string));
         }
         ViewState["Responder"] = dtCol;
     }
@@ -479,6 +507,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
                             txtAddress.Text.Trim(),
                             ddlOfficetypeName.SelectedItem.Text.Trim(),
                             ddlOfficeName.SelectedItem.Text.Trim());
+                        txtRespondentRemark.Text.Trim();
                     }
                     if (dt != null && dt.Rows.Count > 0)
                     {
@@ -493,7 +522,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
                         ddlOfficetypeName.ClearSelection();
                         txtResponderName.Text = "";
                         txtMobileNo.Text = "";
-
+                        txtRespondentRemark.Text = "";
                         txtAddress.Text = "";
                     }
                 }
@@ -514,7 +543,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
             DataTable dt2 = ViewState["Dtpeti"] as DataTable;
             if (dt2.Columns.Count > 0)
             {
-                dt2.Rows.Add(txtPetiName.Text.Trim(), ddlPetiDesigNation.SelectedValue, txtPetiMobileNo.Text.Trim(), txtPetiAddRess.Text.Trim(), ddlPetiDesigNation.SelectedItem.Text);
+                dt2.Rows.Add(txtPetiName.Text.Trim(), ddlPetiDesigNation.SelectedValue, txtPetiMobileNo.Text.Trim(), txtPetiAddRess.Text.Trim(), ddlPetiDesigNation.SelectedItem.Text, ddlPetitionerPresentDistrict.SelectedItem.Text, ddlPetitionerPresentDistrict.SelectedValue, txtPetitionerRemark.Text);
             }
             if (dt2 != null && dt2.Rows.Count > 0)
             {
@@ -525,6 +554,8 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
                 ddlPetiDesigNation.ClearSelection();
                 txtPetiMobileNo.Text = "";
                 txtPetiAddRess.Text = "";
+                ddlPetitionerPresentDistrict.ClearSelection();
+                txtPetitionerRemark.Text = "";
             }
         }
         catch (Exception ex)
@@ -557,6 +588,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
                             {
                                 //dtresponder.Columns.Remove("Dept_Name");
                                 dtresponder.Columns.Remove("HodName");
+                                dtPetitioner.Columns.Remove("District_Name");
                                 string PartyMaster = ddlParty.SelectedIndex > 0 ? ddlParty.SelectedValue : "";
                                 string HighPriorityCase = ddlHighprioritycase.SelectedIndex > 0 ? ddlHighprioritycase.SelectedItem.Text : "";
                                 string RegDate = txtDateOfCaseReg.Text != "" ? Convert.ToDateTime(txtDateOfCaseReg.Text, cult).ToString("yyyy/MM/dd") : "";
@@ -614,10 +646,10 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
             ErrorLogCls.SendErrorToText(ex);
         }
     }
-    protected void btnClear_Click(object sender, EventArgs e)
-    {
-        ClearText();
-    }
+    //protected void btnClear_Click(object sender, EventArgs e)
+    //{
+    //    ClearText();
+    //}
     protected void ClearText()
     {
         txtCaseNo.Text = "";
@@ -647,7 +679,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
         GrdViewDoc.DataBind();
         ddlDepartment.ClearSelection();
         ddlDistrict.ClearSelection();
-    }     
+    }
     protected void ddlResDepartment_SelectedIndexChanged(object sender, EventArgs e)
     {
         try

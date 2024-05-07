@@ -95,8 +95,9 @@ public partial class Legal_Login : System.Web.UI.Page
                                 Response.Redirect("~/Legal/OICWiseOldCaseDashBoard.aspx", false);
                             }
                             else if (Session["Role_ID"].ToString() == "1")
-                            { 
+                            {
                                 Response.Redirect("~/Legal/OldCaseDashBoard.aspx", false);
+                                //Response.Redirect("~/Legal/dpi-legal-dashboard.html",false);
                             }
                             else if (Session["Role_ID"].ToString() == "4")
                             {
@@ -106,7 +107,7 @@ public partial class Legal_Login : System.Web.UI.Page
                             {
                                 Response.Redirect("~/Legal/DivisionDashBoard.aspx", false);
                             }
-                            else 
+                            else
                             {
                                 Response.Redirect("~/Legal/JDLegalDashBoard.aspx", false);
                             }

@@ -215,7 +215,7 @@
                                             <asp:Button ID="btnSearch" runat="server" CssClass="btn btn-primary btn-block" Text="Search" ValidationGroup="Save" OnClick="btnSearch_Click" />
                                         </div>
                                         <div class="col-md-4">
-                                            <a href="WeekelyHearingCaseRpt.aspx" class="btn btn-default btn-block">Clear</a>
+                                            <a href="CaseListedWeekelyHearing.aspx" class="btn btn-default btn-block">Clear</a>
                                         </div>
                                     </div>
                                 </div>
