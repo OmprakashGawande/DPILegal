@@ -154,17 +154,17 @@
                                                 ControlToValidate="ddlCourtName" Display="Dynamic" runat="server" InitialValue="0">
                                             </asp:RequiredFieldValidator><br />
                                         </label>
-                                        <asp:DropDownList ID="ddlCourtName" runat="server" CssClass="form-control select2" OnSelectedIndexChanged="ddlCourtName_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                        <asp:DropDownList ID="ddlCourtName" runat="server" CssClass="form-control select2"></asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <%-- <div class="col-md-2">
                                     <div class="form-group">
                                         <label>
                                             Case No.
                                         </label>
                                         <asp:DropDownList ID="ddlCaseNo" runat="server" CssClass="form-control select2"></asp:DropDownList>
                                     </div>
-                                </div>
+                                </div>--%>
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>
@@ -189,7 +189,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>
-                                            From Date<span style="color: red;"><b> *</b></span>
+                                            From Date<%--<span style="color: red;"><b> *</b></span>--%>
                                             <%--     <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="Save"
                                                 ErrorMessage="Enter From Date." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                 ControlToValidate="txtFromDate" Display="Dynamic" runat="server">
@@ -202,7 +202,7 @@
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label>
-                                            To Date<span style="color: red;"><b> *</b></span>
+                                            To Date<%--<span style="color: red;"><b> *</b></span>--%>
                                             <%--  <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="Save"
                                                 ErrorMessage="Enter To Date." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                 ControlToValidate="txttodate" Display="Dynamic" runat="server">
@@ -211,13 +211,13 @@
                                         <asp:TextBox ID="txttodate" runat="server" date-provide="datepicker" AutoComplete="off" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-3" style="margin-top: 2rem">
                                     <div class="row">
-                                        <div class="col-md-5 mt-2">
+                                        <div class="col-md-5 ">
                                             <asp:Button ID="btnSearch" runat="server" CssClass="btn btn-primary btn-block" ValidationGroup="Save" Text="Search" OnClick="btnSearch_Click" />
                                         </div>
-                                        <div class="col-md-5 mt-2">
-                                            <a href="PendingWPReport.aspx" class="btn btn-default btn-block">Clear</a>
+                                        <div class="col-md-5">
+                                            <a href="InterimOrderRpt.aspx" class="btn btn-default btn-block">Clear</a>
                                         </div>
                                     </div>
                                 </div>
@@ -227,7 +227,6 @@
                             <legend>Report</legend>
                             <div class="row">
                                 <div class="col-md-12">
-
                                     <asp:GridView ID="GrdPendingReport" runat="server" CssClass="datatable table table-bordered" EmptyDataText="NO RECORD FOUND" AutoGenerateColumns="false" DataKeyNames="Case_ID" OnRowCommand="GrdPendingReport_RowCommand">
                                         <Columns>
                                             <asp:TemplateField HeaderText="S.No." ItemStyle-Width="5%">
@@ -241,7 +240,6 @@
                                                     <asp:Label ID="lblCaseNO" runat="server" Text='<%# Eval("CaseNo") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-
                                             <asp:TemplateField HeaderText="Petitioner Name">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblPetitionerName" runat="server" Text='<%# Eval("PetitonerName") %>'></asp:Label>
@@ -312,7 +310,6 @@
                                                     <asp:Label ID="lbloldWPOrderdate" runat="server" Text='<%# Eval("OrderDate") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-
                                             <asp:TemplateField HeaderText="View" ItemStyle-Width="5%">
                                                 <ItemTemplate>
                                                     <asp:LinkButton ID="lnkbtnView" runat="server" CommandName="ViewDetail" CommandArgument='<%# Eval("Case_ID") %>' ToolTip="View"><i class="fa fa-eye"></i></asp:LinkButton>

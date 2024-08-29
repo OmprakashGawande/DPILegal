@@ -4,6 +4,7 @@
     <link href="../DataTable_CssJs/dataTables.bootstrap.min.css" rel="stylesheet" />
     <link href="../DataTable_CssJs/buttons.dataTables.min.css" rel="stylesheet" />
     <link href="../DataTable_CssJs/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="../Main_plugins/bootstrap/css/bootstrap-multiselect.css" rel="stylesheet" />
     <style>
         /*.datepicker tbody {
             background-color: #ecfce6 !important;
@@ -164,7 +165,19 @@
                                             </asp:RequiredFieldValidator>
                                             <br />
                                         </label>
-                                        <asp:DropDownList ID="ddlCourtName" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        <asp:DropDownList ID="ddlCourtName" runat="server" CssClass="form-control" OnSelectedIndexChanged="ddlCourtName_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>District</label><span style="color: red;"> *</span>
+                                        <span class="pull-right">
+                                              <asp:RequiredFieldValidator ID="Rfv_division" ValidationGroup="Save"
+                                                ErrorMessage="Select District" Text="<i class='fa fa-exclamation-circle' title='Select District'></i>"
+                                                ControlToValidate="ddlDistrict" ForeColor="Red" Display="Dynamic" runat="server">
+                                            </asp:RequiredFieldValidator>
+                                        </span>
+                                        <asp:ListBox runat="server" ID="ddlDistrict" CssClass="form-control" SelectionMode="Multiple"></asp:ListBox>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -286,6 +299,7 @@
             </div>
         </section>
     </div>
+    <asp:HiddenField ID="hdnDistrict_Id" runat="server" />
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="Fotter" runat="Server">
     <script src="../DataTable_CssJs/jquery.js"></script>
@@ -299,6 +313,14 @@
     <script src="../DataTable_CssJs/buttons.html5.min.js"></script>
     <script src="../DataTable_CssJs/buttons.print.min.js"></script>
     <script src="../DataTable_CssJs/buttons.colVis.min.js"></script>
+    <script src="../Main_plugins/bootstrap/js/bootstrap-multiselect.js"></script>
+    <script type="text/javascript">
+        $('[id*=ddlDistrict]').multiselect({
+            includeSelectAllOption: true,
+            includeSelectAllOption: true,
+            buttonWidth: '100%'
+        });
+    </script>
     <script type="text/javascript">
         $('.datatable').DataTable({
             paging: true,

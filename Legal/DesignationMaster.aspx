@@ -209,7 +209,7 @@
                                             ErrorMessage="Enter Designation Name." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                             ControlToValidate="txtDeDesignation" Display="Dynamic" runat="server">
                                         </asp:RequiredFieldValidator>
-                                        <asp:TextBox ID="txtDeDesignation" runat="server" CssClass="form-control" AutoComplete="off" MaxLength="50" onkeyup="javascript:capFirst(this);" onkeypress="return chcode();"></asp:TextBox>
+                                        <asp:TextBox ID="txtDeDesignation" runat="server" CssClass="form-control" AutoComplete="off" MaxLength="50" onkeyup="javascript:capFirst(this);" placeholder="Enter Designation Name" onkeypress="return chcode();"></asp:TextBox>
                                         <%--<asp:RegularExpressionValidator runat="server" ID="revDesignationName" Display="Dynamic" ControlToValidate="txtDeDesignation"
                                             ValidationExpression="^[a-zA-Z]+(([\s][a-zA-Z])?[a-zA-Z]*)*$" ValidationGroup="Save" ForeColor="Red" ErrorMessage="Please Enter Valid Text">
                                         </asp:RegularExpressionValidator>--%>
@@ -225,6 +225,16 @@
                                             ControlToValidate="ddlOfficeLevel" Display="Dynamic" runat="server" InitialValue="0">
                                         </asp:RequiredFieldValidator>
                                         <asp:DropDownList runat="server" ID="ddlOfficeLevel" CssClass="form-control"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm">
+                                    <div class="form-group">
+                                        <label>Section</label><span style="color: red;"><b> *</b></span>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Save"
+                                            ErrorMessage="Enter Section" ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
+                                            ControlToValidate="txtSection" Display="Dynamic" runat="server">
+                                        </asp:RequiredFieldValidator>
+                                        <asp:TextBox ID="txtSection" runat="server" CssClass="form-control" AutoComplete="off" MaxLength="50" placeholder="Enter Section" onkeyup="javascript:capFirst(this);" onkeypress="return chcode();"></asp:TextBox>
                                     </div>
                                 </div>
                                 <div class="col-md-3 pt-4">
@@ -267,6 +277,11 @@
                                                 <asp:TemplateField HeaderText="Designation Name" ItemStyle-HorizontalAlign="Left">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblDesignationName" runat="server" Text='<%# Eval("Designation_Name") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="Section" ItemStyle-HorizontalAlign="Left">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblSection" runat="server" Text='<%# Eval("Section") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Office Level" ItemStyle-HorizontalAlign="Left">
@@ -316,8 +331,8 @@
                 orderable: false
             }],
             dom: '<"row"<"col-sm-6"Bl><"col-sm-6"f>>' +
-              '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
-              '<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                '<"row"<"col-sm-12"<"table-responsive"tr>>>' +
+                '<"row"<"col-sm-5"i><"col-sm-7"p>>',
             fixedHeader: {
                 header: true
             },
@@ -327,7 +342,7 @@
                     text: '<i class="fa fa-print"></i> Print',
                     title: $('h3').text(),
                     exportOptions: {
-                        columns: [0, 1, 2]
+                        columns: [0, 1, 2, 3]
                     },
                     footer: true,
                     autoPrint: true
@@ -336,7 +351,7 @@
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
                     title: $('h3').text(),
                     exportOptions: {
-                        columns: [0, 1, 2]
+                        columns: [0, 1, 2, 3]
                     },
                     footer: true
                 }],

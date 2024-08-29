@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using System;
 using System.Configuration;
 using System.Data;
 using System.Globalization;
@@ -51,6 +52,7 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
                 FillOrderWithDirection();
                 FillOldOICDetail();
                 WARPFiledOrNot(sender, e);
+                FillSection();
             }
         }
         else { Response.Redirect("../Login.aspx", false); }
@@ -170,7 +172,7 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
             ErrorLogCls.SendErrorToText(ex);
         }
     }
-    protected void CaseDisposeStatus() // Case Dispose By Default On NO condtiton
+    protected void CaseDisposeStatus()
     {
         try
         {
@@ -192,7 +194,7 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
         {
             ErrorLogCls.SendErrorToText(ex);
         }
-    }
+    }// Case Dispose By Default On NO condtiton
     protected void BindDisposalType()
     {
         try
@@ -554,9 +556,29 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
             ErrorLogCls.SendErrorToText(ex);
         }
     }
+    protected void FillSection()
+    {
+        try
+        {
+            lblMsg.Text = "";
+            ddlDesSection.Items.Clear();
+            DataSet ds = obj.ByDataSet("select DISTINCT Section from tblDesignationMaster where Isactive = 1 and Section is not null");
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                ddlDesSection.DataTextField = "Section";
+                ddlDesSection.DataValueField = "Section";
+                ddlDesSection.DataSource = ds;
+                ddlDesSection.DataBind();
+            }
+            ddlDesSection.Items.Insert(0, new ListItem("Select", "0"));
 
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
     #endregion
-
     #region Button Event
     protected void btnUpdate_Click(object sender, EventArgs e)
     {
@@ -739,13 +761,13 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
             DataSet dspeti = new DataSet();
             if (btnPetitioner.Text == "Save")
             {
-                dspeti = obj.ByProcedure("USP_InsertUpdate_PetiDtlForCaseRegi", new string[] { "flag", "UniqueNo", "Case_Id", "PetitionerName", "Designation_Id", "PetitionerMobileNo", "PetitionerAddress", "District_ID", "CreatedBy", "CreatedByIP", "PetitionerRemark" }
-                    , new string[] { "1", ViewState["UniqueNO"].ToString(), ViewState["ID"].ToString(), txtPetiName.Text.Trim(), ddlPetiDesigNation.SelectedValue, txtPetiMobileNo.Text.Trim(), txtPetiAddRess.Text.Trim(), ddlPetitionerPresentDistrict.SelectedValue, ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress(), txtPetitionerRemark.Text.Trim() }, "dataset");
+                dspeti = obj.ByProcedure("USP_InsertUpdate_PetiDtlForCaseRegi", new string[] { "flag", "UniqueNo", "Case_Id", "PetitionerName", "Designation_Id", "PetitionerMobileNo", "PetitionerAddress", "District_ID", "Section", "CreatedBy", "CreatedByIP", "PetitionerRemark" }
+                    , new string[] { "1", ViewState["UniqueNO"].ToString(), ViewState["ID"].ToString(), txtPetiName.Text.Trim(), ddlPetiDesigNation.SelectedValue, txtPetiMobileNo.Text.Trim(), txtPetiAddRess.Text.Trim(), ddlPetitionerPresentDistrict.SelectedValue, ddlDesSection.SelectedItem.Text, ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress(), txtPetitionerRemark.Text.Trim() }, "dataset");
             }
             else if (btnPetitioner.Text == "Update")
             {
-                dspeti = obj.ByProcedure("USP_InsertUpdate_PetiDtlForCaseRegi", new string[] { "flag", "UniqueNo", "Petitioner_Id", "PetitionerName", "Designation_Id", "PetitionerMobileNo", "PetitionerAddress", "District_ID", "LastupdatedBy", "LastupdatedByIP", "PetitionerRemark" }
-                  , new string[] { "2", ViewState["UniqueNO"].ToString(), ViewState["Petitioner_ID"].ToString(), txtPetiName.Text.Trim(), ddlPetiDesigNation.SelectedValue, txtPetiMobileNo.Text.Trim(), txtPetiAddRess.Text.Trim(), ddlPetitionerPresentDistrict.SelectedValue, ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress(), txtPetitionerRemark.Text.Trim() }, "dataset");
+                dspeti = obj.ByProcedure("USP_InsertUpdate_PetiDtlForCaseRegi", new string[] { "flag", "UniqueNo", "Petitioner_Id", "PetitionerName", "Designation_Id", "PetitionerMobileNo", "PetitionerAddress", "District_ID", "Section", "LastupdatedBy", "LastupdatedByIP", "PetitionerRemark" }
+                  , new string[] { "2", ViewState["UniqueNO"].ToString(), ViewState["Petitioner_ID"].ToString(), txtPetiName.Text.Trim(), ddlPetiDesigNation.SelectedValue, txtPetiMobileNo.Text.Trim(), txtPetiAddRess.Text.Trim(), ddlPetitionerPresentDistrict.SelectedValue, ddlDesSection.SelectedItem.Text, ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress(), txtPetitionerRemark.Text.Trim() }, "dataset");
             }
             if (dspeti != null && dspeti.Tables[0].Rows.Count > 0)
             {
@@ -760,6 +782,7 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
                     btnPetitioner.Text = "Save";
                     txtPetitionerRemark.Text = "";
                     txtPetiAddRess.Text = "";
+                    ddlDesSection.ClearSelection();
                     BindDetails(sender, e);
                     ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Alert!', '" + ErrMsg + "', 'success')", true);
                 }
@@ -1660,8 +1683,249 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
             ErrorLogCls.SendErrorToText(ex);
         }
     }
-    #endregion
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (Page.IsValid)
+            {
+                lblMsg.Text = "";
+                ViewState["ActionDoc"] = "";
+                //ViewState["WPRPDoc"] = "";
+                int DocFailedCntExt = 0;
+                int DocFailedCntSize = 0;
+                string strFileName = "";
+                string strExtension = "";
+                string strTimeStamp = "";
+                if (FileUp.HasFile)     // CHECK IF ANY FILE HAS BEEN SELECTED.
+                {
 
+                    string fileExt = System.IO.Path.GetExtension(FileUp.FileName).Substring(1);
+                    string[] supportedTypes = { "PDF", "pdf" };
+                    if (!supportedTypes.Contains(fileExt))
+                    {
+                        DocFailedCntExt += 1;
+                    }
+                    strFileName = FileUp.FileName.ToString();
+                    strExtension = Path.GetExtension(strFileName);
+                    strTimeStamp = DateTime.Now.ToString();
+                    strTimeStamp = strTimeStamp.Replace("/", "-");
+                    strTimeStamp = strTimeStamp.Replace(" ", "-");
+                    strTimeStamp = strTimeStamp.Replace(":", "-");
+                    string strName = Path.GetFileNameWithoutExtension(strFileName);
+                    strFileName = strName + "-FileMoment-" + strTimeStamp + strExtension;
+                    string path = Path.Combine(Server.MapPath("../Legal/DisposalDocs/"), strFileName);
+                    FileUp.SaveAs(path);
+
+                    ViewState["ActionDoc"] = strFileName;
+                    path = "";
+                    strFileName = "";
+                    strName = "";
+
+                }
+                //if (WPRPFileUp.HasFile)     // CHECK IF ANY FILE HAS BEEN SELECTED.
+                //{
+
+                //    string fileExt = System.IO.Path.GetExtension(WPRPFileUp.FileName).Substring(1);
+                //    string[] supportedTypes = { "PDF", "pdf" };
+                //    if (!supportedTypes.Contains(fileExt))
+                //    {
+                //        DocFailedCntExt += 1;
+                //    }
+                //    strFileName = WPRPFileUp.FileName.ToString();
+                //    strExtension = Path.GetExtension(strFileName);
+                //    strTimeStamp = DateTime.Now.ToString();
+                //    strTimeStamp = strTimeStamp.Replace("/", "-");
+                //    strTimeStamp = strTimeStamp.Replace(" ", "-");
+                //    strTimeStamp = strTimeStamp.Replace(":", "-");
+                //    string strName = Path.GetFileNameWithoutExtension(strFileName);
+                //    strFileName = strName + "-FileMoment-" + strTimeStamp + strExtension;
+                //    string path = Path.Combine(Server.MapPath("../Legal/DisposalDocs/"), strFileName);
+                //    FileUp.SaveAs(path);
+                //    ViewState["WPRPDoc"] = strFileName;
+                //    path = "";
+                //    strFileName = "";
+                //    strName = "";
+                //}
+                string errormsg = "";
+                if (DocFailedCntExt > 0) { errormsg += "Only upload Document in( PDF) Formate.\\n"; }
+                if (DocFailedCntSize > 0) { errormsg += "Uploaded Document size should be less than 5 MB \\n"; }
+                if (errormsg == "")
+                {
+                    string ReceiptDate = txtReceiptDate.Text != "" ? Convert.ToDateTime(txtReceiptDate.Text, cult).ToString("yyyy/MM/dd") : "";
+                    string DispatchDate = txtDispatchDate.Text != "" ? Convert.ToDateTime(txtDispatchDate.Text, cult).ToString("yyyy/MM/dd") : "";
+                    ds = obj.ByProcedure("USP_Insert_DistrictWiseReturnFileAndAppeal", new string[] { "Case_ID", "Action_ID", "ActionYesOrNo_ID", "ReceiptNo", "ReceiptDate", "ActionAppealedFrom",
+                                                                                                      "HOD_Id", "DispatchNo", "DispatchDate", "Action_Doc", "DistrictRemark", "Reason",
+                                                                                                      "FileMoment_ID","HOD_Section_ID","HOD_Section", "CreatedBy", "CreatedByIP" }
+                                                    , new string[] { ViewState["ID"].ToString(), ddlAction.SelectedValue, ddlYesOrNo.SelectedValue, txtReceiptNo.Text.Trim(), ReceiptDate, txtActionAppealedFrom.Text.Trim(), ddlNameHod.SelectedValue,
+                                                                     txtDispatchNo.Text.Trim(), DispatchDate, ViewState["ActionDoc"].ToString(), txtHODRemark.Text.Trim(), txtReason.Text.Trim()
+                                                                      ,RDFileMoment.SelectedValue,ddlSection.SelectedValue,ddlSection.SelectedItem.Text,ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
+
+                    if (ds != null)
+                    {
+                        if (ds.Tables[0].Rows.Count > 0)
+                        {
+                            string ErrMsg = ds.Tables[0].Rows[0]["ErrMsg"].ToString();
+                            if (ds.Tables[0].Rows[0]["Msg"].ToString() == "OK")
+                            {
+                                txtReceiptNo.Text = ""; ddlAction.ClearSelection(); ddlYesOrNo.ClearSelection();
+                                ddlWPRPFiledOrNot.ClearSelection(); txtCaseNo.Text = ""; ddlWPRPCaseYear.ClearSelection();
+                                txtWPRPRemark.Text = ""; txtReceiptDate.Text = ""; txtActionAppealedFrom.Text = "";
+                                ddlNameHod.ClearSelection(); txtDispatchNo.Text = ""; txtDispatchDate.Text = ""; RDFileMoment.ClearSelection();
+                                txtHODRemark.Text = ""; txtReason.Text = ""; ViewState["ActionDoc"] = ""; ViewState["WPRPDoc"] = "";
+                                GetReturnFileAppeal(sender, e); ddlSection.ClearSelection();
+                                ddlAction_SelectedIndexChanged(sender, e); ddlYesOrNo_SelectedIndexChanged(sender, e); RDFileMoment_SelectedIndexChanged(sender, e);
+                                ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Alert!', '" + ErrMsg + "', 'success')", true);
+                            }
+                            else
+                                ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Warning!','" + ErrMsg + "' , 'warning')", true);
+                        }
+                    }
+                }
+                else
+                {
+                    ViewState["ActionDoc"] = "";
+                    ScriptManager.RegisterClientScriptBlock(Page, Page.GetType(), "alertMessage", "alert('Please Select \\n " + errormsg + "')", true);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+    protected void BtnDisposedFirst_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string DisposalDate = txtFisrtDisDate.Text != "" ? Convert.ToDateTime(txtFisrtDisDate.Text, cult).ToString("yyyy/MM/dd") : "";
+            ds = obj.ByProcedure("USP_Update_CaseRegisDtl", new string[] { "flag", "CaseDisposal_Date", "OrderSummary", "Case_ID", "UniqueNo", "LastupdatedBy", "LastupdatedByIP" }
+                            , new string[] { "7",DisposalDate,txtFirstOrderSumm.Text.Trim(), ViewState["ID"].ToString(), ViewState["UniqueNO"].ToString(),
+                                    ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
+            if (ds != null)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    string ErrMsg = ds.Tables[0].Rows[0]["ErrMsg"].ToString();
+                    if (ds.Tables[0].Rows[0]["Msg"].ToString() == "OK")
+                    {
+                        ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Alert!', '" + ErrMsg + "', 'success')", true);
+                        Fieldset_CaseDispose.Visible = false;
+                        txtFisrtDisDate.Text = "";
+                        txtFirstOrderSumm.Text = "";
+                    }
+                    else
+                        ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Warning!','" + ErrMsg + "' , 'warning')", true);
+                }
+
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+    protected void btnYes_Click(object sender, EventArgs e)
+    {
+        if (ddlCaserRelated.SelectedValue == "2")
+        {
+            ds = obj.ByProcedure("USP_Update_CaseRegisDtl",
+            new string[] { "flag", "Case_ID", "UniqueNo", "LastupdatedBy", "LastupdatedByIP" }
+                           , new string[] { "3", ViewState["ID"].ToString(), ViewState["UniqueNO"].ToString(), ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+                string ErrMsg = ds.Tables[0].Rows[0]["ErrMsg"].ToString();
+                if (ds.Tables[0].Rows[0]["Msg"].ToString() == "OK")
+                {
+                    Response.Redirect("WPCaseList.aspx");
+                }
+                else ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Warning!','" + ErrMsg + "' , 'warning')", true);
+            }
+        }
+
+
+    }
+    protected void BtnAdd_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            if (Page.IsValid)
+            {
+                if (BtnAdd.Text == "Add")
+                {
+                    ds = obj.ByProcedure("USP_Update_CaseRegisDtl", new string[] { "flag", "CaseNo", "OldOICName", "OldOICDesignation_Id", "OldOICMobileNo", "OldOICEmailID", "OIdOICDistrict", "CreatedBy", "CreatedByIP" },
+                                                                new string[] { "5", ViewState["CaseNo"].ToString(), txtOldOicName.Text.Trim(), ddlOICDesignation.SelectedValue, txtOldOICMobileNu.Text.Trim(), txtOldOICEmailID.Text.Trim(), ddlOldOICDistrict.SelectedValue, ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
+                }
+                else if (BtnAdd.Text == "Update" && ViewState["Case_ID"].ToString() != "" && ViewState["Case_ID"].ToString() != null)
+                {
+                    ds = obj.ByProcedure("USP_Update_CaseRegisDtl", new string[] { "flag", "CaseNo", "OldOICName", "OldOICDesignation_Id", "OldOICMobileNo", "OldOICEmailID", "OIdOICDistrict", "LastupdatedBy", "LastupdatedByIP", "Case_ID" }
+                        , new string[] { "6", ViewState["CaseNo"].ToString(), txtOldOicName.Text.Trim(), ddlOICDesignation.SelectedValue, txtOldOICMobileNu.Text.Trim(), txtOldOICEmailID.Text.Trim(), ddlOldOICDistrict.SelectedValue, ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress(), ViewState["Case_ID"].ToString() }, "dataset");
+                }
+                if (ds != null)
+                {
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        string ErrMsg = ds.Tables[0].Rows[0]["ErrMsg"].ToString();
+                        if (ds.Tables[0].Rows[0]["Msg"].ToString() == "OK")
+                        {
+                            FillOldOICDetail(); BtnAdd.Text = "Add";
+                            txtOldOicName.Text = ""; txtOldOICMobileNu.Text = ""; ddlOldOICDistrict.ClearSelection(); ddlOICDesignation.ClearSelection(); txtOldOICEmailID.Text = "";
+                            ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Alert!', '" + ErrMsg + "', 'success')", true);
+                        }
+                        else ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Warning!','" + ErrMsg + "' , 'warning')", true);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+
+    }
+    protected void btnBackPage_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            Response.Redirect("~/Legal/WPCaseList.aspx?CourtId=" + Request.QueryString["CourtId"].ToString() + "&Caseyear=" + Request.QueryString["Caseyear"].ToString() + "&CaseType=" + Request.QueryString["CaseType"].ToString() + "&CaseStatus=" + Request.QueryString["CaseStatus"].ToString(), false);
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+    protected void btnCasePendingwhichlevel_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            lblMsg.Text = "";
+            if (btnCasePendingwhichlevel.Text == "Update" && ViewState["ID"].ToString() != null && ViewState["ID"].ToString() != "")
+            {
+                ds = obj.ByProcedure("USP_UpdateCasePendingWhichlevel",
+                          new string[] { "Case_ID", "UniqueNo", "CasePendingwhichlevel", "LastupdatedBy", "LastupdatedByIP" }
+                        , new string[] { ViewState["ID"].ToString(), ViewState["UniqueNO"].ToString(), ddlCasePendingwhichlevel.SelectedItem.Text, ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
+            }
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                string ErrMsg = ds.Tables[0].Rows[0]["ErrMsg"].ToString();
+                if (ds.Tables[0].Rows[0]["Msg"].ToString() == "OK")
+                {
+                    BindDetails(sender, e);
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Alert!', '" + ErrMsg + "', 'success')", true);
+                }
+                else
+                {
+                    ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Warning!','" + ErrMsg + "' , 'warning')", true);
+                }
+            }
+
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+    #endregion
     #region RowCommand Event
     protected void GrdPetiDtl_RowCommand(object sender, GridViewCommandEventArgs e)
     {
@@ -1674,8 +1938,6 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
             }
             else
             {
-
-
                 if (e.CommandName == "EditRecord")
                 {
                     ViewState["Petitioner_ID"] = "";
@@ -1686,10 +1948,15 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
                     Label lblPetitionermobileNo = (Label)row.FindControl("lblPetitionermobileNo");
                     Label lblPresentpostDisID = (Label)row.FindControl("lblPresentpostDisID");
                     Label lblPresentpostingAddress = (Label)row.FindControl("lblPresentpostingAddress");
+                    Label lblDesSection = (Label)row.FindControl("lblDesSection");
                     Label lblRemark = (Label)row.FindControl("lblRemark");
+
                     ViewState["Petitioner_ID"] = e.CommandArgument;
                     hdnUniqueNo.Value = !string.IsNullOrEmpty(lblUniqNO.Text) ? lblUniqNO.Text : null;
+
                     txtPetiName.Text = !string.IsNullOrEmpty(lblPetitionerName.Text) ? lblPetitionerName.Text : null;
+
+
                     txtPetiMobileNo.Text = !string.IsNullOrEmpty(lblPetitionermobileNo.Text) ? lblPetitionermobileNo.Text : null;
                     txtPetiAddRess.Text = !string.IsNullOrEmpty(lblPresentpostingAddress.Text) ? lblPresentpostingAddress.Text : null;
                     //txtPetiAddRess.Text = !string.IsNullOrEmpty(lblAddress.Text) ? lblAddress.Text : null;
@@ -1703,6 +1970,12 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
                     {
                         ddlPetiDesigNation.ClearSelection();
                         ddlPetiDesigNation.Items.FindByValue(lblDesignation_Id.Text).Selected = true;
+                    }
+                    if (!string.IsNullOrEmpty(lblDesSection.Text))
+                    {
+                        ddlDesSection.ClearSelection();
+                        FillSection();
+                        ddlDesSection.Items.FindByText(lblDesSection.Text).Selected = true;
                     }
                     btnPetitioner.Text = "Update";
                 }
@@ -2124,218 +2397,7 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
             ErrorLogCls.SendErrorToText(ex);
         }
     }
-    protected void btnSave_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            if (Page.IsValid)
-            {
-                lblMsg.Text = "";
-                ViewState["ActionDoc"] = "";
-                //ViewState["WPRPDoc"] = "";
-                int DocFailedCntExt = 0;
-                int DocFailedCntSize = 0;
-                string strFileName = "";
-                string strExtension = "";
-                string strTimeStamp = "";
-                if (FileUp.HasFile)     // CHECK IF ANY FILE HAS BEEN SELECTED.
-                {
-
-                    string fileExt = System.IO.Path.GetExtension(FileUp.FileName).Substring(1);
-                    string[] supportedTypes = { "PDF", "pdf" };
-                    if (!supportedTypes.Contains(fileExt))
-                    {
-                        DocFailedCntExt += 1;
-                    }
-                    strFileName = FileUp.FileName.ToString();
-                    strExtension = Path.GetExtension(strFileName);
-                    strTimeStamp = DateTime.Now.ToString();
-                    strTimeStamp = strTimeStamp.Replace("/", "-");
-                    strTimeStamp = strTimeStamp.Replace(" ", "-");
-                    strTimeStamp = strTimeStamp.Replace(":", "-");
-                    string strName = Path.GetFileNameWithoutExtension(strFileName);
-                    strFileName = strName + "-FileMoment-" + strTimeStamp + strExtension;
-                    string path = Path.Combine(Server.MapPath("../Legal/DisposalDocs/"), strFileName);
-                    FileUp.SaveAs(path);
-
-                    ViewState["ActionDoc"] = strFileName;
-                    path = "";
-                    strFileName = "";
-                    strName = "";
-
-                }
-                //if (WPRPFileUp.HasFile)     // CHECK IF ANY FILE HAS BEEN SELECTED.
-                //{
-
-                //    string fileExt = System.IO.Path.GetExtension(WPRPFileUp.FileName).Substring(1);
-                //    string[] supportedTypes = { "PDF", "pdf" };
-                //    if (!supportedTypes.Contains(fileExt))
-                //    {
-                //        DocFailedCntExt += 1;
-                //    }
-                //    strFileName = WPRPFileUp.FileName.ToString();
-                //    strExtension = Path.GetExtension(strFileName);
-                //    strTimeStamp = DateTime.Now.ToString();
-                //    strTimeStamp = strTimeStamp.Replace("/", "-");
-                //    strTimeStamp = strTimeStamp.Replace(" ", "-");
-                //    strTimeStamp = strTimeStamp.Replace(":", "-");
-                //    string strName = Path.GetFileNameWithoutExtension(strFileName);
-                //    strFileName = strName + "-FileMoment-" + strTimeStamp + strExtension;
-                //    string path = Path.Combine(Server.MapPath("../Legal/DisposalDocs/"), strFileName);
-                //    FileUp.SaveAs(path);
-                //    ViewState["WPRPDoc"] = strFileName;
-                //    path = "";
-                //    strFileName = "";
-                //    strName = "";
-                //}
-                string errormsg = "";
-                if (DocFailedCntExt > 0) { errormsg += "Only upload Document in( PDF) Formate.\\n"; }
-                if (DocFailedCntSize > 0) { errormsg += "Uploaded Document size should be less than 5 MB \\n"; }
-                if (errormsg == "")
-                {
-                    string ReceiptDate = txtReceiptDate.Text != "" ? Convert.ToDateTime(txtReceiptDate.Text, cult).ToString("yyyy/MM/dd") : "";
-                    string DispatchDate = txtDispatchDate.Text != "" ? Convert.ToDateTime(txtDispatchDate.Text, cult).ToString("yyyy/MM/dd") : "";
-                    ds = obj.ByProcedure("USP_Insert_DistrictWiseReturnFileAndAppeal", new string[] { "Case_ID", "Action_ID", "ActionYesOrNo_ID", "ReceiptNo", "ReceiptDate", "ActionAppealedFrom",
-                                                                                                      "HOD_Id", "DispatchNo", "DispatchDate", "Action_Doc", "DistrictRemark", "Reason",
-                                                                                                      "FileMoment_ID","HOD_Section_ID","HOD_Section", "CreatedBy", "CreatedByIP" }
-                                                    , new string[] { ViewState["ID"].ToString(), ddlAction.SelectedValue, ddlYesOrNo.SelectedValue, txtReceiptNo.Text.Trim(), ReceiptDate, txtActionAppealedFrom.Text.Trim(), ddlNameHod.SelectedValue,
-                                                                     txtDispatchNo.Text.Trim(), DispatchDate, ViewState["ActionDoc"].ToString(), txtHODRemark.Text.Trim(), txtReason.Text.Trim()
-                                                                      ,RDFileMoment.SelectedValue,ddlSection.SelectedValue,ddlSection.SelectedItem.Text,ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
-
-                    if (ds != null)
-                    {
-                        if (ds.Tables[0].Rows.Count > 0)
-                        {
-                            string ErrMsg = ds.Tables[0].Rows[0]["ErrMsg"].ToString();
-                            if (ds.Tables[0].Rows[0]["Msg"].ToString() == "OK")
-                            {
-                                txtReceiptNo.Text = ""; ddlAction.ClearSelection(); ddlYesOrNo.ClearSelection();
-                                ddlWPRPFiledOrNot.ClearSelection(); txtCaseNo.Text = ""; ddlWPRPCaseYear.ClearSelection();
-                                txtWPRPRemark.Text = ""; txtReceiptDate.Text = ""; txtActionAppealedFrom.Text = "";
-                                ddlNameHod.ClearSelection(); txtDispatchNo.Text = ""; txtDispatchDate.Text = ""; RDFileMoment.ClearSelection();
-                                txtHODRemark.Text = ""; txtReason.Text = ""; ViewState["ActionDoc"] = ""; ViewState["WPRPDoc"] = "";
-                                GetReturnFileAppeal(sender, e); ddlSection.ClearSelection();
-                                ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Alert!', '" + ErrMsg + "', 'success')", true);
-                            }
-                            else
-                                ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Warning!','" + ErrMsg + "' , 'warning')", true);
-                        }
-                    }
-                }
-                else
-                {
-                    ViewState["ActionDoc"] = "";
-                    ScriptManager.RegisterClientScriptBlock(Page, Page.GetType(), "alertMessage", "alert('Please Select \\n " + errormsg + "')", true);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            ErrorLogCls.SendErrorToText(ex);
-        }
-    }
-    protected void BtnDisposedFirst_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            string DisposalDate = txtFisrtDisDate.Text != "" ? Convert.ToDateTime(txtFisrtDisDate.Text, cult).ToString("yyyy/MM/dd") : "";
-            ds = obj.ByProcedure("USP_Update_CaseRegisDtl", new string[] { "flag", "CaseDisposal_Date", "OrderSummary", "Case_ID", "UniqueNo", "LastupdatedBy", "LastupdatedByIP" }
-                            , new string[] { "7",DisposalDate,txtFirstOrderSumm.Text.Trim(), ViewState["ID"].ToString(), ViewState["UniqueNO"].ToString(),
-                                    ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
-            if (ds != null)
-            {
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    string ErrMsg = ds.Tables[0].Rows[0]["ErrMsg"].ToString();
-                    if (ds.Tables[0].Rows[0]["Msg"].ToString() == "OK")
-                    {
-                        ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Alert!', '" + ErrMsg + "', 'success')", true);
-                        Fieldset_CaseDispose.Visible = false;
-                        txtFisrtDisDate.Text = "";
-                        txtFirstOrderSumm.Text = "";
-                    }
-                    else
-                        ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Warning!','" + ErrMsg + "' , 'warning')", true);
-                }
-
-            }
-        }
-        catch (Exception ex)
-        {
-            ErrorLogCls.SendErrorToText(ex);
-        }
-    }
-    protected void btnYes_Click(object sender, EventArgs e)
-    {
-        if (ddlCaserRelated.SelectedValue == "2")
-        {
-            ds = obj.ByProcedure("USP_Update_CaseRegisDtl",
-            new string[] { "flag", "Case_ID", "UniqueNo", "LastupdatedBy", "LastupdatedByIP" }
-                           , new string[] { "3", ViewState["ID"].ToString(), ViewState["UniqueNO"].ToString(), ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
-            if (ds != null && ds.Tables[0].Rows.Count > 0)
-            {
-                string ErrMsg = ds.Tables[0].Rows[0]["ErrMsg"].ToString();
-                if (ds.Tables[0].Rows[0]["Msg"].ToString() == "OK")
-                {
-                    Response.Redirect("WPCaseList.aspx");
-                }
-                else ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Warning!','" + ErrMsg + "' , 'warning')", true);
-            }
-        }
-
-
-    }
-    protected void BtnAdd_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            if (Page.IsValid)
-            {
-                if (BtnAdd.Text == "Add")
-                {
-                    ds = obj.ByProcedure("USP_Update_CaseRegisDtl", new string[] { "flag", "CaseNo", "OldOICName", "OldOICDesignation_Id", "OldOICMobileNo", "OldOICEmailID", "OIdOICDistrict", "CreatedBy", "CreatedByIP" },
-                                                                new string[] { "5", ViewState["CaseNo"].ToString(), txtOldOicName.Text.Trim(), ddlOICDesignation.SelectedValue, txtOldOICMobileNu.Text.Trim(), txtOldOICEmailID.Text.Trim(), ddlOldOICDistrict.SelectedValue, ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress() }, "dataset");
-                }
-                else if (BtnAdd.Text == "Update" && ViewState["Case_ID"].ToString() != "" && ViewState["Case_ID"].ToString() != null)
-                {
-                    ds = obj.ByProcedure("USP_Update_CaseRegisDtl", new string[] { "flag", "CaseNo", "OldOICName", "OldOICDesignation_Id", "OldOICMobileNo", "OldOICEmailID", "OIdOICDistrict", "LastupdatedBy", "LastupdatedByIP", "Case_ID" }
-                        , new string[] { "6", ViewState["CaseNo"].ToString(), txtOldOicName.Text.Trim(), ddlOICDesignation.SelectedValue, txtOldOICMobileNu.Text.Trim(), txtOldOICEmailID.Text.Trim(), ddlOldOICDistrict.SelectedValue, ViewState["Emp_Id"].ToString(), obj.GetLocalIPAddress(), ViewState["Case_ID"].ToString() }, "dataset");
-                }
-                if (ds != null)
-                {
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        string ErrMsg = ds.Tables[0].Rows[0]["ErrMsg"].ToString();
-                        if (ds.Tables[0].Rows[0]["Msg"].ToString() == "OK")
-                        {
-                            FillOldOICDetail(); BtnAdd.Text = "Add";
-                            txtOldOicName.Text = ""; txtOldOICMobileNu.Text = ""; ddlOldOICDistrict.ClearSelection(); ddlOICDesignation.ClearSelection(); txtOldOICEmailID.Text = "";
-                            ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Alert!', '" + ErrMsg + "', 'success')", true);
-                        }
-                        else ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "swal('Warning!','" + ErrMsg + "' , 'warning')", true);
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            ErrorLogCls.SendErrorToText(ex);
-        }
-
-    }
-    protected void btnBackPage_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            Response.Redirect("~/Legal/WPCaseList.aspx?CourtId=" + Request.QueryString["CourtId"].ToString() + "&Caseyear=" + Request.QueryString["Caseyear"].ToString() + "&CaseType=" + Request.QueryString["CaseType"].ToString() + "&CaseStatus=" + Request.QueryString["CaseStatus"].ToString(), false);
-        }
-        catch (Exception ex)
-        {
-            ErrorLogCls.SendErrorToText(ex);
-        }
-    }
     #endregion
-
     #region DropDown Selected Event
     protected void ddlDepartment_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -2471,7 +2533,7 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
     {
         try
         {
-            if (ddlAction.SelectedValue == "1")
+            if (ddlAction.SelectedIndex > 0)
             {
                 divYasOrNo.Visible = true;
                 divReturnAndReply.Visible = false; RDFileMoment.ClearSelection();
@@ -2524,6 +2586,9 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
         try
         {
             FillOicName();
+            txtOicMobileNo.Text = "";
+            txtOicEmailId.Text = "";
+            txtOICDesignation.Text = "";
         }
         catch (Exception ex)
         {
@@ -2721,6 +2786,7 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
             {
                 txtOicMobileNo.Text = "";
                 txtOicEmailId.Text = "";
+                txtOICDesignation.Text = "";
 
             }
         }
@@ -2868,61 +2934,66 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
     {
         try
         {
+            grvReturnFile.DataSource = null;
+            grvReturnFile.DataBind();
             ds = obj.ByProcedure("Usp_GetReturnFileAppeal", new string[] { "flag", "Case_ID" }
              , new string[] { "1", ViewState["ID"].ToString() }, "dataset");
             if (ds != null && ds.Tables[0].Rows.Count > 0)
             {
-                if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["Action_ID"].ToString()))
-                {
-                    ddlAction.ClearSelection();
-                    ddlAction.Items.FindByValue(ds.Tables[0].Rows[0]["Action_ID"].ToString().Trim()).Selected = true;
-                    ddlAction_SelectedIndexChanged(sender, e);
-                }
-                if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["ActionYesOrNo_ID"].ToString()))
-                {
-                    ddlYesOrNo.ClearSelection();
-                    ddlYesOrNo.Items.FindByValue(ds.Tables[0].Rows[0]["ActionYesOrNo_ID"].ToString().Trim()).Selected = true;
-                    ddlYesOrNo_SelectedIndexChanged(sender, e);
-                }
-                txtReceiptNo.Text = ds.Tables[0].Rows[0]["ReceiptNo"].ToString();
-                txtReceiptDate.Text = ds.Tables[0].Rows[0]["ReceiptDate"].ToString();
-                txtActionAppealedFrom.Text = ds.Tables[0].Rows[0]["ActionAppealedFrom"].ToString();
-                txtDispatchNo.Text = ds.Tables[0].Rows[0]["DispatchNo"].ToString();
-                txtDispatchDate.Text = ds.Tables[0].Rows[0]["DispatchDate"].ToString();
-                if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["FileMoment_ID"].ToString()))
-                {
-                    RDFileMoment.ClearSelection();
-                    RDFileMoment.Items.FindByValue(ds.Tables[0].Rows[0]["FileMoment_ID"].ToString().Trim()).Selected = true;
-                    RDFileMoment_SelectedIndexChanged(sender, e);
-                }
+
+                grvReturnFile.DataSource = ds.Tables[0];
+                grvReturnFile.DataBind();
+                //if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["Action_ID"].ToString()))
+                //{
+                //    ddlAction.ClearSelection();
+                //    ddlAction.Items.FindByValue(ds.Tables[0].Rows[0]["Action_ID"].ToString().Trim()).Selected = true;
+                //    ddlAction_SelectedIndexChanged(sender, e);
+                //}
+                //if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["ActionYesOrNo_ID"].ToString()))
+                //{
+                //    ddlYesOrNo.ClearSelection();
+                //    ddlYesOrNo.Items.FindByValue(ds.Tables[0].Rows[0]["ActionYesOrNo_ID"].ToString().Trim()).Selected = true;
+                //    ddlYesOrNo_SelectedIndexChanged(sender, e);
+                //}
+                //txtReceiptNo.Text = ds.Tables[0].Rows[0]["ReceiptNo"].ToString();
+                //txtReceiptDate.Text = ds.Tables[0].Rows[0]["ReceiptDate"].ToString();
+                //txtActionAppealedFrom.Text = ds.Tables[0].Rows[0]["ActionAppealedFrom"].ToString();
+                //txtDispatchNo.Text = ds.Tables[0].Rows[0]["DispatchNo"].ToString();
+                //txtDispatchDate.Text = ds.Tables[0].Rows[0]["DispatchDate"].ToString();
+                //if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["FileMoment_ID"].ToString()))
+                //{
+                //    RDFileMoment.ClearSelection();
+                //    RDFileMoment.Items.FindByValue(ds.Tables[0].Rows[0]["FileMoment_ID"].ToString().Trim()).Selected = true;
+                //    RDFileMoment_SelectedIndexChanged(sender, e);
+                //}
 
 
-                txtHODRemark.Text = ds.Tables[0].Rows[0]["DistrictRemark"].ToString();
+                //txtHODRemark.Text = ds.Tables[0].Rows[0]["DistrictRemark"].ToString();
 
-                if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["Reason"].ToString()))
-                {
-                    txtReason.Text = ds.Tables[0].Rows[0]["Reason"].ToString();
-                }
-                if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["Action_Doc"].ToString()))
-                {
-                    string Link = ds.Tables[0].Rows[0]["Action_Doc"].ToString();
-                    string lbldoc = "DisposalDocs/" + Link;
-                    ViewState["Action_Doc"] = Link;
-                    FileHpView.NavigateUrl = lbldoc;
-                    FileHpView.Visible = true;
+                //if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["Reason"].ToString()))
+                //{
+                //    txtReason.Text = ds.Tables[0].Rows[0]["Reason"].ToString();
+                //}
+                //if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["Action_Doc"].ToString()))
+                //{
+                //    string Link = ds.Tables[0].Rows[0]["Action_Doc"].ToString();
+                //    string lbldoc = "DisposalDocs/" + Link;
+                //    ViewState["Action_Doc"] = Link;
+                //    FileHpView.NavigateUrl = lbldoc;
+                //    FileHpView.Visible = true;
 
-                }
-                if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["HOD_Id"].ToString()))
-                {
-                    ddlNameHod.ClearSelection();
-                    ddlNameHod.Items.FindByValue(ds.Tables[0].Rows[0]["HOD_Id"].ToString().Trim()).Selected = true;
-                }
-                if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["HOD_Section_ID"].ToString()))
-                {
-                    ddlNameHod_SelectedIndexChanged(sender, e);
-                    ddlSection.ClearSelection();
-                    ddlSection.Items.FindByValue(ds.Tables[0].Rows[0]["HOD_Section_ID"].ToString().Trim()).Selected = true;
-                }
+                //}
+                //if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["HOD_Id"].ToString()))
+                //{
+                //    ddlNameHod.ClearSelection();
+                //    ddlNameHod.Items.FindByValue(ds.Tables[0].Rows[0]["HOD_Id"].ToString().Trim()).Selected = true;
+                //}
+                //if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["HOD_Section_ID"].ToString()))
+                //{
+                //    ddlNameHod_SelectedIndexChanged(sender, e);
+                //    ddlSection.ClearSelection();
+                //    ddlSection.Items.FindByValue(ds.Tables[0].Rows[0]["HOD_Section_ID"].ToString().Trim()).Selected = true;
+                //}
             }
         }
         catch (Exception ex)
@@ -2987,6 +3058,7 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
                 string PolicyMeter = ds.Tables[0].Rows[0]["PolicyMeterStatus"].ToString();
                 if (!string.IsNullOrEmpty(PolicyMeter)) { ddlPolicyMeter.ClearSelection(); ddlPolicyMeter.Items.FindByText(PolicyMeter).Selected = true; }
                 //End Here Add DropDown Bind Methods by bhanu on 09/05/2023
+
                 BindCourtName();
                 ddlCourtType.ClearSelection();
                 if (ddlCourtType.Items.Count > 0)
@@ -3015,6 +3087,11 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
                 {
                     ddlCaseSubject.ClearSelection();
                     ddlCaseSubject.Items.FindByValue(ds.Tables[0].Rows[0]["CaseSubjectID"].ToString().Trim()).Selected = true;
+                }
+                if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["CasePendingwhichlevel"].ToString()))
+                {
+                    ddlCasePendingwhichlevel.ClearSelection();
+                    ddlCasePendingwhichlevel.Items.FindByText(ds.Tables[0].Rows[0]["CasePendingwhichlevel"].ToString().Trim()).Selected = true;
                 }
                 if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["CaseSubSubj_Id"].ToString()))
                 {
@@ -3061,8 +3138,6 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
                     ddlCaseBelongto.Items.FindByValue(ds.Tables[0].Rows[0]["CaseBelongto_Id"].ToString().Trim()).Selected = true;
                     ddlCaseBelogto_SelectedIndexChanged(sender, e);
                 }
-
-
                 if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["Party_Id"].ToString()))
                 {
                     ddlParty.ClearSelection();
@@ -3233,7 +3308,6 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
             return null;
         }
     }
-
     public DataTable ReutrnSubSubjectID()
     {
         try
@@ -3252,4 +3326,7 @@ public partial class Legal_EditCaseDetail_WP : System.Web.UI.Page
             return null;
         }
     }
+
+
+
 }

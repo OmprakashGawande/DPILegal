@@ -202,6 +202,21 @@
                                         <asp:DropDownList ID="ddlCaseYear" runat="server" CssClass="form-control select2"></asp:DropDownList>
                                     </div>
                                 </div>
+                                <div class="col-md-3 col-sm">
+                                    <div class="form-group">
+                                        <label>Case Status </label>
+                                       <%-- <span style="color: red;"><b>*</b></span>
+                                        <asp:RequiredFieldValidator ID="rfvcasetype" ValidationGroup="Save" CssClass="fa fa-pull-right"
+                                            ErrorMessage="Select Case Status." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
+                                            ControlToValidate="ddlCaseStatus" Display="Dynamic" runat="server" InitialValue="0">
+                                        </asp:RequiredFieldValidator>--%>
+                                        <asp:DropDownList ID="ddlCaseStatus" runat="server" CssClass="form-control">
+                                            <asp:ListItem Value="0">All</asp:ListItem>
+                                            <asp:ListItem Value="1">Pending</asp:ListItem>
+                                            <asp:ListItem Value="2">Disposed</asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
                                 <div class="col-md-3 mt-4">
                                     <div class="row">
                                         <div class="col-md-6 mt-2">

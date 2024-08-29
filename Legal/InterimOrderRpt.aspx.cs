@@ -94,55 +94,55 @@ public partial class Legal_InterimOrderRpt : System.Web.UI.Page
         }
     }
 
-    protected void FillCaseNo()
-    {
-        try
-        {
-            ddlCaseNo.Items.Clear();
-            DataTable dtCN = new DataTable();
-            Helper CaseNo = new Helper();
-            if (Session["Role_ID"].ToString() == "4")
-            {
-                dtCN = CaseNo.GetDistrictWiseCaseNo(Session["District_Id"].ToString()) as DataTable;
-            }
-            else if (Session["Role_ID"].ToString() == "2")
-            {
-                string Division_Id = Session["Division_Id"].ToString();
-                dtCN = CaseNo.GetDvisionWiseCaseNo(Division_Id) as DataTable;
-            }
-            else if (Session["Role_ID"].ToString() == "5")
-            {
-                string District_Id = Session["District_Id"].ToString();
-                dtCN = CaseNo.GetCourtWiseCaseNo(District_Id) as DataTable;
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(Session["OICMaster_ID"].ToString()))
-                {
-                    dtCN = CaseNo.GetOICWiseCaseNo(Session["OICMaster_ID"].ToString()) as DataTable;
-                }
-                else
-                {
-                    string CourtType_Id = ddlCourtName.SelectedValue;
-                    dtCN = CaseNo.GetCaseNoByCourt(CourtType_Id) as DataTable;
+    //protected void FillCaseNo()
+    //{
+    //    try
+    //    {
+    //       // ddlCaseNo.Items.Clear();
+    //        DataTable dtCN = new DataTable();
+    //        Helper CaseNo = new Helper();
+    //        if (Session["Role_ID"].ToString() == "4")
+    //        {
+    //            dtCN = CaseNo.GetDistrictWiseCaseNo(Session["District_Id"].ToString()) as DataTable;
+    //        }
+    //        else if (Session["Role_ID"].ToString() == "2")
+    //        {
+    //            string Division_Id = Session["Division_Id"].ToString();
+    //            dtCN = CaseNo.GetDvisionWiseCaseNo(Division_Id) as DataTable;
+    //        }
+    //        else if (Session["Role_ID"].ToString() == "5")
+    //        {
+    //            string District_Id = Session["District_Id"].ToString();
+    //            dtCN = CaseNo.GetCourtWiseCaseNo(District_Id) as DataTable;
+    //        }
+    //        else
+    //        {
+    //            if (!string.IsNullOrEmpty(Session["OICMaster_ID"].ToString()))
+    //            {
+    //                dtCN = CaseNo.GetOICWiseCaseNo(Session["OICMaster_ID"].ToString()) as DataTable;
+    //            }
+    //            else
+    //            {
+    //                string CourtType_Id = ddlCourtName.SelectedValue;
+    //                dtCN = CaseNo.GetCaseNoByCourt(CourtType_Id) as DataTable;
 
-                }
-            }
+    //            }
+    //        }
 
-            if (dtCN != null && dtCN.Rows.Count > 0)
-            {
-                ddlCaseNo.DataValueField = "Case_ID";
-                ddlCaseNo.DataTextField = "CaseNo";
-                ddlCaseNo.DataSource = dtCN;
-                ddlCaseNo.DataBind();
-            }
-            ddlCaseNo.Items.Insert(0, new ListItem("Select", "0"));
-        }
-        catch (Exception ex)
-        {
-            ErrorLogCls.SendErrorToText(ex);
-        }
-    }
+    //        if (dtCN != null && dtCN.Rows.Count > 0)
+    //        {
+    //            ddlCaseNo.DataValueField = "Case_ID";
+    //            ddlCaseNo.DataTextField = "CaseNo";
+    //            ddlCaseNo.DataSource = dtCN;
+    //            ddlCaseNo.DataBind();
+    //        }
+    //        ddlCaseNo.Items.Insert(0, new ListItem("Select", "0"));
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        ErrorLogCls.SendErrorToText(ex);
+    //    }
+    //}
     #region Fill Case type
     protected void FillCasetype()
     {
@@ -181,27 +181,27 @@ public partial class Legal_InterimOrderRpt : System.Web.UI.Page
                 if (Session["Role_ID"].ToString() == "4")
                 {
                     string District_Id = Session["District_Id"].ToString();
-                    ds = obj.ByProcedure("USP_InterimOrderRpt", new string[] { "Casetype_ID", "District_Id", "flag", "Court_Id", "CaseNo", "Fromdate", "Todate" }
-                        , new string[] { ddlCasetype.SelectedValue, District_Id, "2", ddlCourtName.SelectedValue, ddlCaseNo.SelectedItem.Text, FromDate, Todate }, "dataset");
+                    ds = obj.ByProcedure("USP_InterimOrderRpt", new string[] { "Casetype_ID", "District_Id", "flag", "Court_Id", "Fromdate", "Todate" }
+                        , new string[] { ddlCasetype.SelectedValue, District_Id, "2", ddlCourtName.SelectedValue,  FromDate, Todate }, "dataset");
                 }
                 else if (Session["Role_ID"].ToString() == "2")
                 {
                     string Division_Id = Session["Division_Id"].ToString();
-                    ds = obj.ByProcedure("USP_InterimOrderRpt", new string[] { "Casetype_ID", "Division_Id", "flag", "Court_Id", "CaseNo", "Fromdate", "Todate" }
-                       , new string[] { ddlCasetype.SelectedValue, Division_Id, "3", ddlCourtName.SelectedValue, ddlCaseNo.SelectedItem.Text, FromDate, Todate }, "dataset");
+                    ds = obj.ByProcedure("USP_InterimOrderRpt", new string[] { "Casetype_ID", "Division_Id", "flag", "Court_Id", "Fromdate", "Todate" }
+                       , new string[] { ddlCasetype.SelectedValue, Division_Id, "3", ddlCourtName.SelectedValue, FromDate, Todate }, "dataset");
                 }
                 else if (Session["Role_ID"].ToString() == "5")
                 {
                     string District_Id = Session["District_Id"].ToString();
-                    ds = obj.ByProcedure("USP_InterimOrderRpt", new string[] { "Casetype_ID", "CourtLocation_Id", "flag", "Court_Id", "CaseNo", "Fromdate", "Todate" }
-                       , new string[] { ddlCasetype.SelectedValue, District_Id, "4", ddlCourtName.SelectedValue, ddlCaseNo.SelectedItem.Text, FromDate, Todate }, "dataset");
+                    ds = obj.ByProcedure("USP_InterimOrderRpt", new string[] { "Casetype_ID", "CourtLocation_Id", "flag", "Court_Id", "Fromdate", "Todate" }
+                       , new string[] { ddlCasetype.SelectedValue, District_Id, "4", ddlCourtName.SelectedValue,FromDate, Todate }, "dataset");
                 }
                 else
                 {
                     if (Session["OICMaster_ID"] != "" && Session["OICMaster_ID"] != null)
                         OIC = Session["OICMaster_ID"].ToString();
-                    ds = obj.ByProcedure("USP_InterimOrderRpt", new string[] { "Casetype_ID", "OICMaster_Id", "flag", "Court_Id", "CaseNo", "Fromdate", "Todate" }
-                        , new string[] { ddlCasetype.SelectedValue, OIC, "1", ddlCourtName.SelectedValue, ddlCaseNo.SelectedItem.Text, FromDate, Todate }, "dataset");
+                    ds = obj.ByProcedure("USP_InterimOrderRpt", new string[] { "Casetype_ID", "OICMaster_Id", "flag", "Court_Id", "Fromdate", "Todate" }
+                        , new string[] { ddlCasetype.SelectedValue, OIC, "1", ddlCourtName.SelectedValue, FromDate, Todate }, "dataset");
                 }
                 if (ds != null)
                 {
@@ -272,16 +272,16 @@ public partial class Legal_InterimOrderRpt : System.Web.UI.Page
         }
         return clearText;
     }
-    protected void ddlCourtName_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        try
-        {
-            FillCaseNo();
-        }
-        catch (Exception ex)
-        {
+    //protected void ddlCourtName_SelectedIndexChanged(object sender, EventArgs e)
+    //{
+    //    try
+    //    {
+    //        FillCaseNo();
+    //    }
+    //    catch (Exception ex)
+    //    {
 
-            throw;
-        }
-    }
+    //        throw;
+    //    }
+    //}
 }

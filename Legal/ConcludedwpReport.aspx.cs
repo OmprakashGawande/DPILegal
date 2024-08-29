@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 public partial class mis_Legal_ConcludedwpReport : System.Web.UI.Page
 {
     APIProcedure obj = new APIProcedure();
-   
+
     DataSet ds = new DataSet();
     CultureInfo cult = new CultureInfo("gu-IN");
 
@@ -21,14 +21,54 @@ public partial class mis_Legal_ConcludedwpReport : System.Web.UI.Page
         {
             if (!IsPostBack)
             {
+                FillCourt();
                 FillCasetype();
                 FillYear();
                 ViewState["OIC_ID"] = Session["OICMaster_ID"];
+                ddlDistrict.Items.Insert(0, new ListItem("Select", "0"));
             }
         }
         else
         {
             Response.Redirect("~/Legal/Login.aspx", false);
+        }
+    }
+    protected void FillCourt()
+    {
+        try
+        {
+            ddlCourt.Items.Clear();
+            Helper court = new Helper();
+            DataTable dtCourt = new DataTable();
+            if (Session["Role_ID"].ToString() == "5")// JD Legal.
+            {
+                string District_Id = Session["District_Id"].ToString();
+                dtCourt = court.GetCourtForCourt(District_Id) as DataTable;
+            }
+            else if (Session["Role_ID"].ToString() == "4")// District Office.
+            {
+                string District_Id = Session["District_Id"].ToString();
+                dtCourt = court.GetCourtForCourt(District_Id) as DataTable;
+
+            }
+            else if (Session["Role_ID"].ToString() == "3")// District Office.
+            {
+                string District_Id = Session["District_Id"].ToString();
+                dtCourt = court.GetCourtForCourt(District_Id) as DataTable;
+            }
+            else dtCourt = court.GetCourt() as DataTable;
+            if (dtCourt.Rows.Count > 0)
+            {
+                ddlCourt.DataValueField = "CourtType_ID";
+                ddlCourt.DataTextField = "CourtTypeName";
+                ddlCourt.DataSource = dtCourt;
+                ddlCourt.DataBind();
+                ddlCourt.Items.Insert(0, new ListItem("Select", "0"));
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
         }
     }
     #region Fill Year
@@ -83,32 +123,33 @@ public partial class mis_Legal_ConcludedwpReport : System.Web.UI.Page
                 if (Session["Role_ID"].ToString() == "2")
                 {
                     string Division_Id = Session["Division_Id"].ToString();
-                    ds = obj.ByProcedure("USP_GetWPConcludeRpt", new string[] { "CaseYear", "Casetype_ID", "Division_ID", "flag" }
-                , new string[] { ddlCaseYear.SelectedValue, ddlCasetype.SelectedValue, Division_Id, "2" }, "dataset");
+                    ds = obj.ByProcedure("USP_GetWPConcludeRpt", new string[] { "CaseYear", "Casetype_ID", "Division_ID", "flag", "CourtType_Id", "District_ID" }
+                , new string[] { ddlCaseYear.SelectedValue, ddlCasetype.SelectedValue, Division_Id, "2", ddlCourt.SelectedValue, ddlDistrict.SelectedValue }, "dataset");
                 }
                 else if (Session["Role_ID"].ToString() == "4")
                 {
                     string District_ID = Session["District_Id"].ToString();
-                    ds = obj.ByProcedure("USP_GetWPConcludeRpt", new string[] { "CaseYear", "Casetype_ID", "District_ID", "flag" }
-                , new string[] { ddlCaseYear.SelectedValue, ddlCasetype.SelectedValue, District_ID, "3" }, "dataset");
+                    ds = obj.ByProcedure("USP_GetWPConcludeRpt", new string[] { "CaseYear", "Casetype_ID", "District_ID", "flag", "CourtType_Id" }
+                , new string[] { ddlCaseYear.SelectedValue, ddlCasetype.SelectedValue, District_ID, "3", ddlCourt.SelectedValue }, "dataset");
                 }
                 else if (Session["Role_ID"].ToString() == "5")
                 {
                     string District_ID = Session["District_Id"].ToString();
-                    ds = obj.ByProcedure("USP_GetWPConcludeRpt", new string[] { "CaseYear", "Casetype_ID", "CourtLocation_Id", "flag" }
-                , new string[] { ddlCaseYear.SelectedValue, ddlCasetype.SelectedValue, District_ID, "4" }, "dataset");
+                    ds = obj.ByProcedure("USP_GetWPConcludeRpt", new string[] { "CaseYear", "Casetype_ID", "CourtLocation_Id", "flag", "CourtType_Id" }
+                , new string[] { ddlCaseYear.SelectedValue, ddlCasetype.SelectedValue, District_ID, "4", ddlCourt.SelectedValue }, "dataset");
                 }
                 else
                 {
-                    ds = obj.ByProcedure("USP_GetWPConcludeRpt", new string[] { "CaseYear", "Casetype_ID", "OICMaster_Id", "flag" }
-                , new string[] { ddlCaseYear.SelectedValue, ddlCasetype.SelectedValue, OIC, "1" }, "dataset");
-                }
+                    ds = obj.ByProcedure("USP_GetWPConcludeRpt", new string[] { "CaseYear", "Casetype_ID", "OICMaster_Id", "flag", "CourtType_Id", "District_ID" }
+                , new string[] { ddlCaseYear.SelectedValue, ddlCasetype.SelectedValue, OIC, "1", ddlCourt.SelectedValue, ddlDistrict.SelectedValue }, "dataset");
+                } 
                 if (ds != null && ds.Tables[0].Rows.Count > 0)
                 {
                     GrdConcludeReport.DataSource = ds;
                     GrdConcludeReport.DataBind();
                     GrdConcludeReport.HeaderRow.TableSection = TableRowSection.TableHeader;
                     GrdConcludeReport.UseAccessibleHeader = true;
+                    //ddlCourt_SelectedIndexChanged(sender, e);
                 }
                 else
                 {
@@ -147,7 +188,7 @@ public partial class mis_Legal_ConcludedwpReport : System.Web.UI.Page
         {
             if (e.CommandName == "ViewDetail")
             {
-               
+
                 GridViewRow row = (GridViewRow)((LinkButton)e.CommandSource).NamingContainer;
                 GrdConcludeReport.HeaderRow.TableSection = TableRowSection.TableHeader;
                 GrdConcludeReport.UseAccessibleHeader = true;
@@ -155,9 +196,9 @@ public partial class mis_Legal_ConcludedwpReport : System.Web.UI.Page
                 string pageID = HttpUtility.UrlEncode(Encrypt("pageID"));
                 string page_ID = HttpUtility.UrlEncode(Encrypt("2"));
                 string CaseID = HttpUtility.UrlEncode(Encrypt("CaseID"));
-                Response.Redirect("../Legal/ViewWPPendingCaseDetail.aspx?"+CaseID+"=" + ID + "&"+pageID+"=" + page_ID, false);
+                Response.Redirect("../Legal/ViewWPPendingCaseDetail.aspx?" + CaseID + "=" + ID + "&" + pageID + "=" + page_ID, false);
 
-             
+
             }
         }
         catch (Exception ex)
@@ -186,5 +227,42 @@ public partial class mis_Legal_ConcludedwpReport : System.Web.UI.Page
             }
         }
         return clearText;
+    }
+
+    protected void ddlCourt_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            ddlDistrict.Items.Clear();
+            DataSet ds1 = new DataSet();
+            ds1 = obj.ByProcedure("USP_Legal_Select_CourtType", new string[] { "flag", "CourtName_ID" }, new string[] { "2", ddlCourt.SelectedValue }, "dataset");
+            if (ds1 != null && ds1.Tables[1].Rows.Count > 0)
+            {
+                ddlDistrict.DataValueField = "District_ID";
+                ddlDistrict.DataTextField = "District_Name";
+                ddlDistrict.DataSource = ds1.Tables[1];
+                ddlDistrict.DataBind();
+                if (Session["Role_ID"].ToString() == "4")// District Office.
+                {
+                    string District_Id = Session["District_Id"].ToString();
+                    ddlDistrict.ClearSelection();
+                    ddlDistrict.Items.FindByValue(District_Id).Selected = true;
+
+                    ddlDistrict.Enabled = false;
+                }
+                else if (Session["Role_ID"].ToString() == "3")//OIC Login
+                {
+                    string District_Id = Session["District_Id"].ToString();
+                    ddlDistrict.ClearSelection();
+                    ddlDistrict.Items.FindByValue(District_Id).Selected = true;
+                    ddlDistrict.Enabled = false;
+                }
+            }
+            ddlDistrict.Items.Insert(0, new ListItem("Select", "0"));
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
     }
 }

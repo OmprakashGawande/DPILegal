@@ -26,6 +26,7 @@ public partial class Legal_DepartmentWiseMasterReport : System.Web.UI.Page
                 FillYear();
                 FillDepartment();
                 FillDistrict();
+                FillHODName();
             }
         }
         else
@@ -48,12 +49,38 @@ public partial class Legal_DepartmentWiseMasterReport : System.Web.UI.Page
         ddlCaseYear.Items.Insert(0, new ListItem("Select", "0"));
 
     }
+
+    protected void FillHODName()
+    {
+        try
+        {
+            ddlHOD.Items.Clear();
+            DataSet dsHOD = obj.ByDataSet("select HOD_Id,HodName from tblHODMaster where Isactive=1");
+            if (dsHOD.Tables.Count > 0 && dsHOD.Tables[0].Rows.Count > 0)
+            {
+                ddlHOD.DataSource = dsHOD.Tables[0];
+                ddlHOD.DataTextField = "HodName";
+                ddlHOD.DataValueField = "HOD_Id";
+                ddlHOD.DataBind();
+            }
+            else
+            {
+                ddlHOD.DataSource = null;
+                ddlHOD.DataBind();
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
     protected void FillDepartment()
     {
         try
         {
             ddlDepartment.Items.Clear();
             DataSet dsDept = obj.ByDataSet("select Dept_ID, Dept_Name from tblDepartmentMaster where Isactive = 1");
+
             if (dsDept.Tables.Count > 0)
             {
                 if (dsDept.Tables[0].Rows.Count > 0)
@@ -113,19 +140,30 @@ public partial class Legal_DepartmentWiseMasterReport : System.Web.UI.Page
         {
             if (Page.IsValid)
             {
+
                 lblMsg.Text = "";
+
+                string HOD_ID = "";
+                foreach (ListItem item in ddlHOD.Items)
+                {
+                    if (item.Selected)
+                    {
+                        HOD_ID += item.Value + ",";
+                    }
+                }
                 if (btnSearch.Text == "Export")
                 {
                     if (Session["Role_ID"].ToString() == "1")// Admin
                     {
-                        ds = obj.ByProcedure("USP_GetDepartmentWiseRpt", new string[] { "District_Id", "CaseYear", "Department_Id", "flag" },
-                          new string[] { ddlDistrict.SelectedValue, ddlCaseYear.SelectedItem.Text.Trim(), ddlDepartment.SelectedValue,"1" }, "dataset");
+                        ds = obj.ByProcedure("USP_GetDepartmentWiseRpt", new string[] { "District_Id", "CaseYear", "Department_Id", "HOD_Id", "flag"  },
+                          new string[] { ddlDistrict.SelectedValue, ddlCaseYear.SelectedItem.Text.Trim(), ddlDepartment.SelectedValue, HOD_ID, "1" }, "dataset");
                     }
                     else if (Session["Role_ID"].ToString() == "4")//District 
                     {
+                        ddlDistrict.Items.FindByValue(hdnDistrict_Id.Value).Selected = true;
                         string District_Id = Session["District_Id"].ToString() != "" ? Session["District_Id"].ToString() : null;
-                        ds = obj.ByProcedure("USP_GetDepartmentWiseRpt", new string[] { "District_Id", "CaseYear", "Department_Id", "flag" },
-                          new string[] { ddlDistrict.SelectedValue, ddlCaseYear.SelectedItem.Text.Trim(), ddlDepartment.SelectedValue,"1" }, "dataset");
+                        ds = obj.ByProcedure("USP_GetDepartmentWiseRpt", new string[] { "District_Id", "CaseYear", "Department_Id", "HOD_Id", "flag" },
+                          new string[] { ddlDistrict.SelectedValue, ddlCaseYear.SelectedItem.Text.Trim(), ddlDepartment.SelectedValue, hdnDistrict_Id.Value, "1" }, "dataset");
                     }
                 }
                 if (ds.Tables.Count > 0)

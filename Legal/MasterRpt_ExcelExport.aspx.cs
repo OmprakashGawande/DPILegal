@@ -31,8 +31,12 @@ public partial class Legal_MasterRpt_ExcelExport : System.Web.UI.Page
             {
                 ViewState["Emp_Id"] = Session["Emp_Id"].ToString();
                 ViewState["Office_Id"] = Session["Office_Id"].ToString();
+                FillCourt();
                 FillCaseType();
                 FillYear();
+                GetCaseSubject();
+                ddlDistrict.Items.Insert(0, new ListItem("Select", "0"));
+                ddlCaseSubSubject.Items.Insert(0, new ListItem("Select", "0"));
             }
         }
         else
@@ -40,7 +44,70 @@ public partial class Legal_MasterRpt_ExcelExport : System.Web.UI.Page
             Response.Redirect("../Login.aspx", false);
         }
     }
+    protected void FillCourt()
+    {
+        try
+        {
+            ddlCourt.Items.Clear();
+            Helper court = new Helper();
+            DataTable dtCourt = new DataTable();
+            if (Session["Role_ID"].ToString() == "5")// JD Legal.
+            {
+                string District_Id = Session["District_Id"].ToString();
+                dtCourt = court.GetCourtForCourt(District_Id) as DataTable;
+            }
+            else if (Session["Role_ID"].ToString() == "4")// District Office.
+            {
+                string District_Id = Session["District_Id"].ToString();
+                dtCourt = court.GetCourtForCourt(District_Id) as DataTable;
 
+            }
+            else if (Session["Role_ID"].ToString() == "3")// District Office.
+            {
+                string District_Id = Session["District_Id"].ToString();
+                dtCourt = court.GetCourtForCourt(District_Id) as DataTable;
+            }
+            else dtCourt = court.GetCourt() as DataTable;
+            if (dtCourt.Rows.Count > 0)
+            {
+                ddlCourt.DataValueField = "CourtType_ID";
+                ddlCourt.DataTextField = "CourtTypeName";
+                ddlCourt.DataSource = dtCourt;
+                ddlCourt.DataBind();
+                ddlCourt.Items.Insert(0, new ListItem("Select", "0"));
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+    private void GetCaseSubject()
+    {
+        try
+        {
+            ds = obj.ByDataSet("select * from tbl_LegalMstCaseSubject");
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                ddlCaseSubject.DataSource = ds.Tables[0];
+                ddlCaseSubject.DataTextField = "CaseSubject";
+                ddlCaseSubject.DataValueField = "CaseSubjectID";
+                ddlCaseSubject.DataBind();
+                ddlCaseSubject.Items.Insert(0, new ListItem("Select", "0"));
+            }
+            else
+            {
+                ddlCaseSubject.DataSource = null;
+                ddlCaseSubject.DataBind();
+                ddlCaseSubject.Items.Insert(0, new ListItem("Select", "0"));
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+
+    }
     #region Fill Casetype
     protected void FillCaseType()
     {
@@ -56,7 +123,7 @@ public partial class Legal_MasterRpt_ExcelExport : System.Web.UI.Page
                 ddlCasetype.DataSource = ds;
                 ddlCasetype.DataBind();
             }
-            ddlCasetype.Items.Insert(0, new ListItem("All", "0"));
+            ddlCasetype.Items.Insert(0, new ListItem("Select", "0"));
         }
         catch (Exception ex)
         {
@@ -86,142 +153,154 @@ public partial class Legal_MasterRpt_ExcelExport : System.Web.UI.Page
         {
             if (Session["Role_ID"].ToString() == "1")//Admin
             {
-                ds = obj.ByProcedure("USP_GetMasterReportForExcl", new string[] { "Casetype_ID", "CaseYear", "flag" },
-                    new string[] { ddlCasetype.SelectedValue, ddlYear.SelectedItem.Text.Trim(), "1" }, "dataset");
+                ds = obj.ByProcedure("USP_GetMasterReportForExcl", new string[] { "Casetype_ID", "CaseYear", "flag", "CourtType_Id", "District_ID", "CaseSubject_Id", "CaseSubSubj_Id", "CaseStatus" },
+                    new string[] { ddlCasetype.SelectedValue, ddlYear.SelectedItem.Text.Trim(), "1", ddlCourt.SelectedValue, ddlDistrict.SelectedValue, ddlCaseSubject.SelectedValue, ddlCaseSubSubject.SelectedValue, ddlCaseStatus.SelectedItem.Text }, "dataset");
             }
             else if (Session["Role_ID"].ToString() == "2")// Division
             {
                 string Division_ID = Session["Division_Id"].ToString();
-                ds = obj.ByProcedure("USP_GetMasterReportForExcl", new string[] { "Casetype_ID", "CaseYear", "Division_ID", "flag" },
-                    new string[] { ddlCasetype.SelectedValue, ddlYear.SelectedItem.Text.Trim(), Division_ID, "2" }, "dataset");
+                ds = obj.ByProcedure("USP_GetMasterReportForExcl", new string[] { "Casetype_ID", "CaseYear", "Division_ID", "flag", "CourtType_Id", "District_ID", "CaseSubject_Id", "CaseSubSubj_Id", "CaseStatus" },
+                    new string[] { ddlCasetype.SelectedValue, ddlYear.SelectedItem.Text.Trim(), Division_ID, "2", ddlCourt.SelectedValue, ddlDistrict.SelectedValue, ddlCaseSubject.SelectedValue, ddlCaseSubSubject.SelectedValue, ddlCaseStatus.SelectedItem.Text }, "dataset");
             }
             else if (Session["Role_ID"].ToString() == "4")// District
             {
                 string District_Id = Session["District_Id"].ToString();
-                ds = obj.ByProcedure("USP_GetMasterReportForExcl", new string[] { "Casetype_ID", "CaseYear", "District_ID", "flag" },
-                    new string[] { ddlCasetype.SelectedValue, ddlYear.SelectedItem.Text.Trim(), District_Id, "3" }, "dataset");
+                ds = obj.ByProcedure("USP_GetMasterReportForExcl", new string[] { "Casetype_ID", "CaseYear", "District_ID", "flag", "CourtType_Id", "CaseSubject_Id", "CaseSubSubj_Id", "CaseStatus" },
+                    new string[] { ddlCasetype.SelectedValue, ddlYear.SelectedItem.Text.Trim(), District_Id, "3",ddlCourt.SelectedValue,ddlCaseSubSubject.SelectedValue,ddlCaseSubSubject.SelectedValue,ddlCaseStatus.SelectedItem.Text }, "dataset");
             }
             else if (Session["Role_ID"].ToString() == "5")// Court
             {
                 string District_Id = Session["District_Id"].ToString();
-                ds = obj.ByProcedure("USP_GetMasterReportForExcl", new string[] { "Casetype_ID", "CaseYear", "District_ID", "flag" },
-                    new string[] { ddlCasetype.SelectedValue, ddlYear.SelectedItem.Text.Trim(), District_Id, "4" }, "dataset");
+                ds = obj.ByProcedure("USP_GetMasterReportForExcl", new string[] { "Casetype_ID", "CaseYear", "District_ID", "flag", "CourtType_Id", "CaseSubject_Id", "CaseSubSubj_Id", "CaseStatus" },
+                    new string[] { ddlCasetype.SelectedValue, ddlYear.SelectedItem.Text.Trim(), ddlDistrict.SelectedValue, "4", ddlCourt.SelectedValue, ddlCaseSubSubject.SelectedValue, ddlCaseSubSubject.SelectedValue, ddlCaseStatus.SelectedItem.Text }, "dataset");
             }
-            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            if (ds.Tables[0].Rows.Count > 0)
             {
-                ViewState["dt"] = ds.Tables[0];
-            }
-            if (ViewState["dt"] != null)
-            {
-                DataTable dtG = (DataTable)ViewState["dt"];
-                string fileName = "BonusSheet_Accepted_" + DateTime.Now.ToString() + ".xls";
-                //Add Response header
-                Response.Clear();
-                Response.AddHeader("content-disposition", "attachment;filename=" + "MasterReport" + "_" + DateTime.Now.ToString("dd/MM/yyyyhh_mm_ss") + ".csv");
-                System.Type.GetType("System.String");
-                Response.Charset = "";
-                Response.ContentType = "application/vnd.xls";
-                Response.ContentEncoding = System.Text.Encoding.Unicode;
-                Response.BinaryWrite(System.Text.Encoding.Unicode.GetPreamble());
-              
-                int ig = 0;
-                try
-                {
-                    //SqlDataReader dr = command.ExecuteReader();
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("Sr#"
-                        + "\t  CaseNo "
-                        + "\t PetitionerName"
-                        + "\t PetitionerMobileNo"
-                        + "\t Designation"
-                        + "\t RepondentName"
-                        + "\t RespondentMobileNo"
-                        + "\t RespondentDepartment"
-                        + "\t RepondentAddress"
-                        + "\t NodalOfficerName"
-                        + "\t NodalOfficerMobileNo"
-                        + "\t petiAdvocateName"
-                        + "\t OICNAME"
-                        + "\t OICMobile"
-                        + "\t CaseSubject"
-                        + "\t CaseSubSubject"
-                        + "\t PetiAdvocateMobile"
-                        + "\t DeptAdvocateName"
-                        + "\t DeptAdvocateMobileNO"
-                        + "\t NextHearingDate"
-                        + "\t HearingDtl"
-                        + "\t HighPriorityCase"
-                        + "\t CaseStatus"
-                        + "\t CaseDisposeType"
-                        + "\t CaseDisposeDate"
-                        + "\t CaseDisposal_Status"
-                        + "\t ImplementDays"
-                        + "\t CaseDetail"
-                       );
-                    Response.Write(sb.ToString() + "\n");
-                    Response.Flush();
-                    int Sr = 1;
-                    foreach (DataRow table in dtG.Rows)
-                    {
-                        sb = new StringBuilder();
-                        ig++;
-                        sb.Append(Sr.ToString()
-                            + "\t" + (table["CaseNo"].ToString() == "" ? "NA" : table["CaseNo"].ToString())
-                       + "\t" + (table["PetitionerName"].ToString() == "" ? "NA" : table["PetitionerName"].ToString())
-                       + "\t" + (table["PetitionerMobileNo"].ToString() == "" ? "NA" : table["PetitionerMobileNo"].ToString())
-                       + "\t" + (table["Designation"].ToString() == "" ? "NA" : table["Designation"].ToString())
-                       + "\t" + (table["RepondentName"].ToString() == "" ? "NA" : table["RepondentName"].ToString())
-                       + "\t" + (table["RespondentMobileNo"].ToString() == "" ? "NA" : table["RespondentMobileNo"].ToString())
-                       + "\t" + (table["RespondentDepartment"].ToString() == "" ? "NA" : table["RespondentDepartment"].ToString())
-                       + "\t" + (table["RepondentAddress"].ToString() == "" ? "NA" : table["RepondentAddress"].ToString())
-                       + "\t" + (table["NodalOfficerName"].ToString() == "" ? "NA" : table["NodalOfficerName"].ToString())
-                       + "\t" + (table["NodalOfficerMobileNo"].ToString() == "" ? "NA" : table["NodalOfficerMobileNo"].ToString())
-                       + "\t" + (table["petiAdvocateName"].ToString() == "" ? "NA" : table["petiAdvocateName"].ToString())
-
-                       + "\t" + (table["OICNAME"].ToString() == "" ? "NA" : table["OICNAME"].ToString())
-                       + "\t" + (table["OICMobile"].ToString() == "" ? "NA" : table["OICMobile"].ToString())
-                       + "\t" + (table["CaseSubject"].ToString() == "" ? "NA" : table["CaseSubject"].ToString())
-                       + "\t" + (table["CaseSubSubject"].ToString() == "" ? "NA" : table["CaseSubSubject"].ToString())
-                       + "\t" + (table["PetiAdvocateMobile"].ToString() == "" ? "NA" : table["PetiAdvocateMobile"].ToString())
-
-                       + "\t" + (table["DeptAdvocateName"].ToString() == "" ? "NA" : table["DeptAdvocateName"].ToString())
-                       + "\t" + (table["DeptAdvocateMobileNO"].ToString() == "" ? "NA" : table["DeptAdvocateMobileNO"].ToString())
-                       + "\t" + (table["NextHearingDate"].ToString() == "" ? "NA" : table["NextHearingDate"].ToString())
-                       + "\t" + (table["HearingDtl"].ToString() == "" ? "NA" : table["HearingDtl"].ToString())
-                       + "\t" + (table["HighPriorityCase"].ToString() == "" ? "NA" : table["HighPriorityCase"].ToString())
-                       + "\t" + (table["CaseStatus"].ToString() == "" ? "NA" : table["CaseStatus"].ToString())
-                       + "\t" + (table["CaseDisposeType"].ToString() == "" ? "NA" : table["CaseDisposeType"].ToString())
-                       + "\t" + (table["CaseDisposeDate"].ToString() == "" ? "NA" : table["CaseDisposeDate"].ToString())
-                       + "\t" + (table["CaseDisposal_Status"].ToString() == "" ? "NA" : table["CaseDisposal_Status"].ToString())
-                       + "\t" + (table["ImplementDays"].ToString() == "" ? "NA" : table["ImplementDays"].ToString())
-                       + "\t" + (table["CaseDetail"].ToString() == "" ? "NA" : table["CaseDetail"].ToString())
-                       );
-
-                        Response.Write(sb.ToString() + "\n");
-                        Response.Flush();
-                        Sr++;
-                    }
-                    // }
-                    //string a = sb.ToString();
-                    // dr.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    string aa = ig.ToString();
-                    Response.Write(ex.Message);
-                }
-                finally
-                {
-                    //command.Connection.Close();
-                    //connection.Close();
-                }
-             
-                Response.End();
+                grdMasterData.DataSource = ds;
+                grdMasterData.DataBind();
+                grdMasterData.HeaderRow.TableSection = TableRowSection.TableHeader;
+                grdMasterData.UseAccessibleHeader = true;
             }
             else
             {
-                ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Record Not Found.')", true);
+                grdMasterData.DataSource = null;
+                grdMasterData.DataBind();
             }
+            //if (ds != null && ds.Tables[0].Rows.Count > 0)
+            //{
+            //    ViewState["dt"] = ds.Tables[0];
+            //}
+            //if (ViewState["dt"] != null)
+            //{
+            //    DataTable dtG = (DataTable)ViewState["dt"];
+            //    string fileName = "BonusSheet_Accepted_" + DateTime.Now.ToString() + ".xls";
+            //    //Add Response header
+            //    Response.Clear();
+            //    Response.AddHeader("content-disposition", "attachment;filename=" + "MasterReport" + "_" + DateTime.Now.ToString("dd/MM/yyyyhh_mm_ss") + ".csv");
+            //    System.Type.GetType("System.String");
+            //    Response.Charset = "";
+            //    Response.ContentType = "application/vnd.xls";
+            //    Response.ContentEncoding = System.Text.Encoding.Unicode;
+            //    Response.BinaryWrite(System.Text.Encoding.Unicode.GetPreamble());
+
+            //    int ig = 0;
+            //    try
+            //    {
+            //        //SqlDataReader dr = command.ExecuteReader();
+            //        StringBuilder sb = new StringBuilder();
+            //        sb.Append("Sr#"
+            //            + "\t  CaseNo "
+            //            + "\t PetitionerName"
+            //            + "\t PetitionerMobileNo"
+            //            + "\t Designation"
+            //            + "\t RepondentName"
+            //            + "\t RespondentMobileNo"
+            //            + "\t RespondentDepartment"
+            //            + "\t RepondentAddress"
+            //            + "\t NodalOfficerName"
+            //            + "\t NodalOfficerMobileNo"
+            //            + "\t petiAdvocateName"
+            //            + "\t OICNAME"
+            //            + "\t OICMobile"
+            //            + "\t CaseSubject"
+            //            + "\t CaseSubSubject"
+            //            + "\t PetiAdvocateMobile"
+            //            + "\t DeptAdvocateName"
+            //            + "\t DeptAdvocateMobileNO"
+            //            + "\t NextHearingDate"
+            //            + "\t HearingDtl"
+            //            + "\t HighPriorityCase"
+            //            + "\t CaseStatus"
+            //            + "\t CaseDisposeType"
+            //            + "\t CaseDisposeDate"
+            //            + "\t CaseDisposal_Status"
+            //            + "\t ImplementDays"
+            //            + "\t CaseDetail"
+            //           );
+            //        Response.Write(sb.ToString() + "\n");
+            //        Response.Flush();
+            //        int Sr = 1;
+            //        foreach (DataRow table in dtG.Rows)
+            //        {
+            //            sb = new StringBuilder();
+            //            ig++;
+            //            sb.Append(Sr.ToString()
+            //                + "\t" + (table["CaseNo"].ToString() == "" ? "NA" : table["CaseNo"].ToString())
+            //           + "\t" + (table["PetitionerName"].ToString() == "" ? "NA" : table["PetitionerName"].ToString())
+            //           + "\t" + (table["PetitionerMobileNo"].ToString() == "" ? "NA" : table["PetitionerMobileNo"].ToString())
+            //           + "\t" + (table["Designation"].ToString() == "" ? "NA" : table["Designation"].ToString())
+            //           + "\t" + (table["RepondentName"].ToString() == "" ? "NA" : table["RepondentName"].ToString())
+            //           + "\t" + (table["RespondentMobileNo"].ToString() == "" ? "NA" : table["RespondentMobileNo"].ToString())
+            //           + "\t" + (table["RespondentDepartment"].ToString() == "" ? "NA" : table["RespondentDepartment"].ToString())
+            //           + "\t" + (table["RepondentAddress"].ToString() == "" ? "NA" : table["RepondentAddress"].ToString())
+            //           + "\t" + (table["NodalOfficerName"].ToString() == "" ? "NA" : table["NodalOfficerName"].ToString())
+            //           + "\t" + (table["NodalOfficerMobileNo"].ToString() == "" ? "NA" : table["NodalOfficerMobileNo"].ToString())
+            //           + "\t" + (table["petiAdvocateName"].ToString() == "" ? "NA" : table["petiAdvocateName"].ToString())
+
+            //           + "\t" + (table["OICNAME"].ToString() == "" ? "NA" : table["OICNAME"].ToString())
+            //           + "\t" + (table["OICMobile"].ToString() == "" ? "NA" : table["OICMobile"].ToString())
+            //           + "\t" + (table["CaseSubject"].ToString() == "" ? "NA" : table["CaseSubject"].ToString())
+            //           + "\t" + (table["CaseSubSubject"].ToString() == "" ? "NA" : table["CaseSubSubject"].ToString())
+            //           + "\t" + (table["PetiAdvocateMobile"].ToString() == "" ? "NA" : table["PetiAdvocateMobile"].ToString())
+
+            //           + "\t" + (table["DeptAdvocateName"].ToString() == "" ? "NA" : table["DeptAdvocateName"].ToString())
+            //           + "\t" + (table["DeptAdvocateMobileNO"].ToString() == "" ? "NA" : table["DeptAdvocateMobileNO"].ToString())
+            //           + "\t" + (table["NextHearingDate"].ToString() == "" ? "NA" : table["NextHearingDate"].ToString())
+            //           + "\t" + (table["HearingDtl"].ToString() == "" ? "NA" : table["HearingDtl"].ToString())
+            //           + "\t" + (table["HighPriorityCase"].ToString() == "" ? "NA" : table["HighPriorityCase"].ToString())
+            //           + "\t" + (table["CaseStatus"].ToString() == "" ? "NA" : table["CaseStatus"].ToString())
+            //           + "\t" + (table["CaseDisposeType"].ToString() == "" ? "NA" : table["CaseDisposeType"].ToString())
+            //           + "\t" + (table["CaseDisposeDate"].ToString() == "" ? "NA" : table["CaseDisposeDate"].ToString())
+            //           + "\t" + (table["CaseDisposal_Status"].ToString() == "" ? "NA" : table["CaseDisposal_Status"].ToString())
+            //           + "\t" + (table["ImplementDays"].ToString() == "" ? "NA" : table["ImplementDays"].ToString())
+            //           + "\t" + (table["CaseDetail"].ToString() == "" ? "NA" : table["CaseDetail"].ToString())
+            //           );
+
+            //            Response.Write(sb.ToString() + "\n");
+            //            Response.Flush();
+            //            Sr++;
+            //        }
+            //        // }
+            //        //string a = sb.ToString();
+            //        // dr.Dispose();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        string aa = ig.ToString();
+            //        Response.Write(ex.Message);
+            //    }
+            //    finally
+            //    {
+            //        //command.Connection.Close();
+            //        //connection.Close();
+            //    }
+
+            //    Response.End();
+            //}
+            //else
+            //{
+            //    ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Record Not Found.')", true);
+            //}
         }
         catch (Exception ex)
         {
@@ -232,18 +311,8 @@ public partial class Legal_MasterRpt_ExcelExport : System.Web.UI.Page
     #region ExportExcel Function
     protected void btnAcceptExport_Click(object sender, EventArgs e)
     {
-       
+
     }
-
-
-
-
-
-
-
-
-
-
     private void ExportExcel(DataSet dsfilewise, string Table_Name)
     {
 
@@ -289,4 +358,68 @@ public partial class Legal_MasterRpt_ExcelExport : System.Web.UI.Page
 
     }
     #endregion
+    protected void ddlCourt_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            ddlDistrict.Items.Clear();
+            DataSet ds1 = new DataSet();
+            ds1 = obj.ByProcedure("USP_Legal_Select_CourtType", new string[] { "flag", "CourtName_ID" }, new string[] { "2", ddlCourt.SelectedValue }, "dataset");
+            if (ds1 != null && ds1.Tables[1].Rows.Count > 0)
+            {
+                ddlDistrict.DataValueField = "District_ID";
+                ddlDistrict.DataTextField = "District_Name";
+                ddlDistrict.DataSource = ds1.Tables[1];
+                ddlDistrict.DataBind();
+                if (Session["Role_ID"].ToString() == "4")// District Office.
+                {
+                    string District_Id = Session["District_Id"].ToString();
+                    ddlDistrict.ClearSelection();
+                    ddlDistrict.Items.FindByValue(District_Id).Selected = true;
+
+                    // ddlDistrict.Attributes.Add("disabled", "disable");
+                    ddlDistrict.Enabled = false;
+                }
+                else if (Session["Role_ID"].ToString() == "3")//OIC Login
+                {
+                    string District_Id = Session["District_Id"].ToString();
+                    ddlDistrict.ClearSelection();
+                    ddlDistrict.Items.FindByValue(District_Id).Selected = true;
+                    //ddlDistrict.Attributes.Add("disabled", "disable");
+                    ddlDistrict.Enabled = false;
+                }
+            }
+            ddlDistrict.Items.Insert(0, new ListItem("Select", "0"));
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+    protected void ddlCaseSubject_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            ddlCaseSubSubject.Items.Clear();
+            ds = obj.ByDataSet("select CaseSubSubj_Id,CaseSubSubject from tbl_CaseSubSubjectMaster where CaseSubjectID=" + ddlCaseSubject.SelectedValue);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                ddlCaseSubSubject.DataSource = ds.Tables[0];
+                ddlCaseSubSubject.DataTextField = "CaseSubSubject";
+                ddlCaseSubSubject.DataValueField = "CaseSubSubj_Id";
+                ddlCaseSubSubject.DataBind();
+                ddlCaseSubSubject.Items.Insert(0, new ListItem("Select", "0"));
+            }
+            else
+            {
+                ddlCaseSubSubject.DataSource = null;
+                ddlCaseSubSubject.DataBind();
+                ddlCaseSubSubject.Items.Insert(0, new ListItem("Select", "0"));
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
 }

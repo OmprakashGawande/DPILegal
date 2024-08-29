@@ -189,6 +189,18 @@
                                         <asp:DropDownList ID="ddlCourt" runat="server" CssClass="form-control" OnSelectedIndexChanged="ddlCourt_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                                     </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>
+                                            District</label>
+                                        <%--<asp:RequiredFieldValidator runat="server" ID="RequiredFieldValidator3" Display="Dynamic" ForeColor="Red" SetFocusOnError="true"
+                                            ControlToValidate="ddlDistrict" ValidationGroup="Petitioner" ErrorMessage="Select District" InitialValue="0"
+                                            Text="<i class='fa fa-exclamation-circle' title='Required !'></i>">
+                                        </asp:RequiredFieldValidator>--%>
+                                        <asp:DropDownList runat="server" ID="ddlDistrict" CssClass="form-control select2"></asp:DropDownList>
+
+                                    </div>
+                                </div>
                                 <div class="col-md-3 col-sm">
                                     <div class="form-group">
                                         <label>Case type </label>

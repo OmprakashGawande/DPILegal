@@ -23,6 +23,7 @@ public partial class Legal_RespondentWiseCaseRpt : System.Web.UI.Page
             if (!IsPostBack)
             {
                 //FillDitrict();
+                FillYear();
                 FillDesignation();
                 GetCaseType();
                 FillCourt();
@@ -31,6 +32,26 @@ public partial class Legal_RespondentWiseCaseRpt : System.Web.UI.Page
         else Response.Redirect("/Login.aspx", false);
     }
 
+    protected void FillYear()
+    {
+        try
+        {
+            ddlCaseYear.Items.Clear();
+            DataSet dsCase = obj.ByDataSet("with yearlist as (select 1950 as year union all select yl.year + 1 as year from yearlist yl where yl.year + 1 <= YEAR(GetDate())) select year from yearlist order by year desc");
+            if (dsCase.Tables.Count > 0 && dsCase.Tables[0].Rows.Count > 0)
+            {
+                ddlCaseYear.DataSource = dsCase.Tables[0];
+                ddlCaseYear.DataTextField = "year";
+                ddlCaseYear.DataValueField = "year";
+                ddlCaseYear.DataBind();
+            }
+            ddlCaseYear.Items.Insert(0, new ListItem("Select", "0"));
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
     private void GetCaseType()
     {
         try
@@ -118,8 +139,8 @@ public partial class Legal_RespondentWiseCaseRpt : System.Web.UI.Page
     {
         try
         {
-            string FromDate = !string.IsNullOrEmpty(txtFromDate.Text) ? Convert.ToDateTime(txtFromDate.Text, cult).ToString("yyyy/MM/dd") : "";
-            string Todate = !string.IsNullOrEmpty(txttodate.Text) ? Convert.ToDateTime(txttodate.Text, cult).ToString("yyyy/MM/dd") : "";
+            //string FromDate = !string.IsNullOrEmpty(txtFromDate.Text) ? Convert.ToDateTime(txtFromDate.Text, cult).ToString("yyyy/MM/dd") : "";
+            //string Todate = !string.IsNullOrEmpty(txttodate.Text) ? Convert.ToDateTime(txttodate.Text, cult).ToString("yyyy/MM/dd") : "";
             string OICID = Session["OICMaster_ID"] != null ? Session["OICMaster_ID"].ToString() : null;
             //if (Session["Role_ID"].ToString() == "4")
             //{
@@ -133,8 +154,8 @@ public partial class Legal_RespondentWiseCaseRpt : System.Web.UI.Page
             //}
             //else
             //{
-            ds = obj.ByProcedure("USP_RespondentWIseCaseList", new string[] { "flag", "Casetype_ID", "CourtType_Id", "Designation_Id", "OICMaster_Id", "Fromdate", "Todate" },
-                                                               new string[] { "1", ddlCaseType.SelectedValue, ddlCourtName.SelectedValue,  ddlDesigNation.SelectedValue, OICID, FromDate, Todate }, "dataset");
+            ds = obj.ByProcedure("USP_RespondentWIseCaseList", new string[] { "flag", "Casetype_ID", "CourtType_Id", "Designation_Id", "OICMaster_Id", "CaseYear", "District_ID", "Respondent_ID" },
+                                                               new string[] { "1", ddlCaseType.SelectedValue, ddlCourtName.SelectedValue, ddlDesigNation.SelectedValue, OICID, ddlCaseYear.SelectedValue,ddlDistrict.SelectedValue,ddlRespondent.SelectedValue }, "dataset");
             //}
 
             if (ds.Tables[0].Rows.Count > 0)
@@ -214,5 +235,67 @@ public partial class Legal_RespondentWiseCaseRpt : System.Web.UI.Page
         return clearText;
     }
 
-   
+
+
+    protected void ddlDesigNation_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            ddlRespondent.Items.Clear();
+            ds = obj.ByDataSet("select Respondent_ID ,RespondentName from tbl_LegalCaseRespondentDetail where Isactive = 1 and Designation_Id = " + ddlDesigNation.SelectedValue + "");
+            if (ds != null && ds.Tables[0].Rows.Count > 0)
+            {
+
+                ddlRespondent.DataTextField = "RespondentName";
+                ddlRespondent.DataValueField = "Respondent_ID";
+                ddlRespondent.DataSource = ds;
+                ddlRespondent.DataBind();
+            }
+            ddlRespondent.Items.Insert(0, new ListItem("Select", "0"));
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+    }
+    protected void ddlCourt_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            ddlDistrict.Items.Clear();
+            DataSet ds1 = new DataSet();
+            ds1 = obj.ByProcedure("USP_Legal_Select_CourtType", new string[] { "flag", "CourtName_ID" }, new string[] { "2", ddlCourtName.SelectedValue }, "dataset");
+            if (ds1 != null && ds1.Tables[1].Rows.Count > 0)
+            {
+                ddlDistrict.DataValueField = "District_ID";
+                ddlDistrict.DataTextField = "District_Name";
+                ddlDistrict.DataSource = ds1.Tables[1];
+                ddlDistrict.DataBind();
+                if (Session["Role_ID"].ToString() == "4")// District Office.
+                {
+                    string District_Id = Session["District_Id"].ToString();
+                    ddlDistrict.ClearSelection();
+                    ddlDistrict.Items.FindByValue(District_Id).Selected = true;
+
+                    // ddlDistrict.Attributes.Add("disabled", "disable");
+                    ddlDistrict.Enabled = false;
+                }
+                else if (Session["Role_ID"].ToString() == "3")//OIC Login
+                {
+                    string District_Id = Session["District_Id"].ToString();
+                    ddlDistrict.ClearSelection();
+                    ddlDistrict.Items.FindByValue(District_Id).Selected = true;
+                    //ddlDistrict.Attributes.Add("disabled", "disable");
+                    ddlDistrict.Enabled = false;
+                }
+            }
+            ddlDistrict.Items.Insert(0, new ListItem("Select", "0"));
+        }
+        catch (Exception ex)
+        {
+            ErrorLogCls.SendErrorToText(ex);
+        }
+
+
+    }
 }

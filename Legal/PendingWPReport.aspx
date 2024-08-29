@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Legal/MainMaster.master" AutoEventWireup="true" CodeFile="PendingWPReport.aspx.cs" Inherits="mis_Legal_PendingWPReport" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Legal/MainMaster.master" AutoEventWireup="true" EnableEventValidation="false" CodeFile="PendingWPReport.aspx.cs" Inherits="mis_Legal_PendingWPReport" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <link href="../DataTable_CssJs/dataTables.bootstrap.min.css" rel="stylesheet" />
@@ -163,7 +163,7 @@
                                         <asp:DropDownList ID="ddlCourtName" runat="server" CssClass="form-control" OnSelectedIndexChanged="ddlCourtName_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>District</label><%--<span style="color: red;"> *</span>--%>
                                         <span class="pull-right">
@@ -173,10 +173,10 @@
                                             </asp:RequiredFieldValidator>--%>
                                         </span>
                                         <%--<asp:DropDownList runat="server" ID="ddlDistrict" CssClass="form-control select2"></asp:DropDownList>--%>
-                                        <asp:ListBox runat="server" ID="ddlDistrict" CssClass="form-control" SelectionMode="Multiple" ClientIDMode="Static"></asp:ListBox>
+                                        <asp:ListBox runat="server" ID="ddlDistrict" CssClass="form-control" SelectionMode="Multiple"></asp:ListBox>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label>
                                             Case type<span style="color: red;"><b> *</b></span>
@@ -188,7 +188,7 @@
                                         <asp:DropDownList ID="ddlCasetype" runat="server" CssClass="form-control select2"></asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2" hidden="hidden">
                                     <div class="form-group">
                                         <label>
                                             Case No.
@@ -224,7 +224,7 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>--%>
-                                <div class="col-md-3">
+                                <div class="col-md-3" hidden="hidden">
                                     <div class="form-group">
                                         <label>
                                             From Date<%--<span style="color: red;"><b> *</b></span>--%>
@@ -236,7 +236,7 @@
                                         <asp:TextBox ID="txtFromDate" runat="server" date-provide="datepicker" AutoComplete="off" data-date-end-date="0d" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-3" hidden="hidden">
                                     <div class="form-group">
                                         <label>
                                             To Date<%--<span style="color: red;"><b> *</b></span>--%>
@@ -288,11 +288,27 @@
                                                     <asp:Label ID="lblDesignation" runat="server" Text='<%# Eval("Designation_Name") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Section">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblSection" runat="server" Text='<%# Eval("Section") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Present posting address">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblPetitionerAddress" runat="server" Text='<%# Eval("PetitionerAddress") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Remark">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblPetitionerRemark" runat="server" Text='<%# Eval("PetitionerRemark") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
                                             <asp:TemplateField HeaderText="District">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lbldistrict" runat="server" Text='<%# Eval("District_Name") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+
                                             <asp:TemplateField HeaderText="Respondent Name">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblRespondentName" runat="server" Text='<%# Eval("RespondentName") %>'></asp:Label>
@@ -306,6 +322,11 @@
                                             <asp:TemplateField HeaderText="HOD Name">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblhod" runat="server" Text='<%# Eval("HodName1") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Case Pending at which level">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblCasePendingwhichlevel" runat="server" Text='<%# Eval("CasePendingwhichlevel") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <%--<asp:TemplateField HeaderText="Case Status">
@@ -331,6 +352,16 @@
                                             <asp:TemplateField HeaderText="Return File/Compliance">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblReplyCompliance" runat="server" Text='<%# Eval("ActionYesOrNo") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Receipt Number">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblReceiptNumber" runat="server" Text='<%# Eval("ReceiptNo") %>'></asp:Label>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Receipt Date">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblReceiptDate" runat="server" Text='<%# Eval("ReceiptDate") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <%-- <asp:TemplateField HeaderText="Action expected From">
@@ -426,7 +457,7 @@
                     text: '<i class="fa fa-print"></i> Print',
                     title: 'Pending Case Report',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
                     },
                     footer: true,
                     autoPrint: true
@@ -435,7 +466,7 @@
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
                     title: 'Pending Case Report',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
                     },
                     footer: true
                 }],

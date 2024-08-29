@@ -157,16 +157,28 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>
-                                            Case Year<span style="color: red;"><b> *</b></span>
-                                            <asp:RequiredFieldValidator ID="rfvCaseyear" ValidationGroup="Save"
-                                                ErrorMessage="Select Case year." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
-                                                ControlToValidate="ddlCaseYear" Display="Dynamic" runat="server" InitialValue="0">
-                                            </asp:RequiredFieldValidator><br />
-                                        </label>
-                                        <asp:DropDownList ID="ddlCaseYear" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                        <label>Court</label>
+                                       <%-- <span style="color: red;"><b>*</b></span>
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="Save" CssClass="fa fa-pull-right"
+                                            ErrorMessage="Select Court Name." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
+                                            ControlToValidate="ddlCourt" Display="Dynamic" runat="server" InitialValue="0">
+                                        </asp:RequiredFieldValidator>--%>
+                                        <asp:DropDownList ID="ddlCourt" runat="server" CssClass="form-control" OnSelectedIndexChanged="ddlCourt_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                                     </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>
+                                            District<%--<span style="color: red"><b>*</b></span>--%></label>
+                                        <%--<asp:RequiredFieldValidator runat="server" ID="RequiredFieldValidator3" Display="Dynamic" ForeColor="Red" SetFocusOnError="true"
+                                            ControlToValidate="ddlDistrict" ValidationGroup="Petitioner" ErrorMessage="Select District" InitialValue="0"
+                                            Text="<i class='fa fa-exclamation-circle' title='Required !'></i>">
+                                        </asp:RequiredFieldValidator>--%>
+                                        <asp:DropDownList runat="server" ID="ddlDistrict" CssClass="form-control select2"></asp:DropDownList>
+
+                                    </div>
+                                </div>
+
                                 <div class="col-md-3" style="display: none">
                                     <div class="form-group">
                                         <label>
@@ -196,13 +208,25 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label>
-                                            Case type<span style="color: red;"><b> *</b></span>
+                                            Case type</label><%--<span style="color: red;"><b> *</b></span>
                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Save"
                                                 ErrorMessage="Select Case type." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                 ControlToValidate="ddlCasetype" Display="Dynamic" runat="server" InitialValue="0">
+                                            </asp:RequiredFieldValidator><br />--%>
+                                        
+                                        <asp:DropDownList ID="ddlCasetype" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>
+                                            Case Year<span style="color: red;"><b> *</b></span>
+                                            <asp:RequiredFieldValidator ID="rfvCaseyear" ValidationGroup="Save"
+                                                ErrorMessage="Select Case year." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
+                                                ControlToValidate="ddlCaseYear" Display="Dynamic" runat="server" InitialValue="0">
                                             </asp:RequiredFieldValidator><br />
                                         </label>
-                                        <asp:DropDownList ID="ddlCasetype" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                        <asp:DropDownList ID="ddlCaseYear" runat="server" CssClass="form-control select2"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="col-md-3" style="padding-top: 2rem! important;">
@@ -254,6 +278,11 @@
                                                 <asp:TemplateField HeaderText="Case Sub Subject" ItemStyle-HorizontalAlign="Left">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblCaseSubSubject" runat="server" Text='<%# Eval("CaseSubSubject") %>'></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField HeaderText="District" ItemStyle-HorizontalAlign="Left">
+                                                    <ItemTemplate>
+                                                        <asp:Label ID="lblDistrict_Name" runat="server" Text='<%# Eval("District_Name") %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField HeaderText="Case Status" ItemStyle-HorizontalAlign="Center">
@@ -310,7 +339,7 @@
                     text: '<i class="fa fa-print"></i> Print',
                     title: 'Disposal Case Year Wise Report',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7]
                     },
                     footer: true,
                     autoPrint: true
@@ -319,7 +348,7 @@
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
                     title: 'Disposal Case Year Wise Report',
                     exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6]
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7]
                     },
                     footer: true
                 }],

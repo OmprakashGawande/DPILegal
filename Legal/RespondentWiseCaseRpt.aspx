@@ -163,19 +163,19 @@
                                                 ControlToValidate="ddlCourtName" Display="Dynamic" runat="server" InitialValue="0">
                                             </asp:RequiredFieldValidator><br />
                                         </label>
-                                        <asp:DropDownList ID="ddlCourtName" runat="server" CssClass="form-control"></asp:DropDownList>
+                                        <asp:DropDownList ID="ddlCourtName" runat="server" CssClass="form-control" OnSelectedIndexChanged="ddlCourt_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <%--<label>District<span style="color: red;"> *</span></label>
-                                                <span class="pull-right">
-                                                    <asp:RequiredFieldValidator ID="Rfv_division" ValidationGroup="Save"
-                                                        ErrorMessage="Select Division" Text="<i class='fa fa-exclamation-circle' title='Select Division'></i>"
-                                                        ControlToValidate="ddlDistrict" ForeColor="Red" Display="Dynamic" runat="server" InitialValue="0">
-                                                    </asp:RequiredFieldValidator>
-                                                </span>
-                                                <asp:DropDownList runat="server" ID="ddlDistrict" CssClass="form-control select2"></asp:DropDownList>--%>
+                                        <label>
+                                            District</label>
+                                        <asp:DropDownList runat="server" ID="ddlDistrict" CssClass="form-control select2"></asp:DropDownList>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
                                         <label>
                                             Designation<span style="color: red"><b>*</b></span></label>
                                         <asp:RequiredFieldValidator runat="server" ID="rfvpetiDesign" Display="Dynamic" ForeColor="Red"
@@ -183,7 +183,19 @@
                                             Text="<i class='fa fa-exclamation-circle' title='Required !'></i>" InitialValue="0">
                                         </asp:RequiredFieldValidator>
 
-                                        <asp:DropDownList ID="ddlDesigNation" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                        <asp:DropDownList ID="ddlDesigNation" runat="server" CssClass="form-control select2" OnSelectedIndexChanged="ddlDesigNation_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>
+                                            Respondent<%--<span style="color: red"><b>*</b></span>--%></label>
+                                        <%-- <asp:RequiredFieldValidator runat="server" ID="rfvRespondent" Display="Dynamic" ForeColor="Red"
+                                            SetFocusOnError="true" ControlToValidate="ddlRespondent" ValidationGroup="Petitioner" ErrorMessage="Select Respondent"
+                                            Text="<i class='fa fa-exclamation-circle' title='Required !'></i>" InitialValue="0">
+                                        </asp:RequiredFieldValidator>--%>
+
+                                        <asp:DropDownList ID="ddlRespondent" runat="server" CssClass="form-control select2"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <%--  <div class="col-md-3">
@@ -202,15 +214,18 @@
                                         <asp:DropDownList ID="ddlCaseType" runat="server" CssClass="form-control select2"></asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>
+                                            Case Year
+                                        </label>
+                                        <asp:DropDownList ID="ddlCaseYear" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <%--    <div class="col-md-2">
                                     <div class="form-group">
                                         <label>
                                             From Date</label>
-                                        <%--<span style="color: red;"><b> *</b></span><asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Save"
-                                                ErrorMessage="Enter From Date." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
-                                                ControlToValidate="txtFromDate" Display="Dynamic" runat="server">
-                                            </asp:RequiredFieldValidator><br />--%>
-
                                         <asp:TextBox ID="txtFromDate" runat="server" date-provide="datepicker" AutoComplete="off" data-date-end-date="0d" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>
                                     </div>
                                 </div>
@@ -218,14 +233,9 @@
                                     <div class="form-group">
                                         <label>
                                             To Date</label>
-                                        <%-- <span style="color: red;"><b> *</b></span> <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ValidationGroup="Save"
-                                                ErrorMessage="Enter To Date." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
-                                                ControlToValidate="txttodate" Display="Dynamic" runat="server">
-                                            </asp:RequiredFieldValidator><br />--%>
-
                                         <asp:TextBox ID="txttodate" runat="server" date-provide="datepicker" AutoComplete="off" data-date-start-date="0d" data-date-end-date="0d" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>
                                     </div>
-                                </div>
+                                </div>--%>
                                 <div class="col-md-3 mt-4">
                                     <div class="row ">
                                         <div class="col-md-5 mt-2">

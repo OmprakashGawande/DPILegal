@@ -118,7 +118,7 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
     {
         try
         {
-            ddlDistrict.Items.Clear();
+            ddlPetitionerPresentDistrict.Items.Clear();
             DataSet dsd = objdb.ByDataSet("select DM.District_ID, District_Name from  Mst_District DM inner join tbl_DistrictCourtMaping_Mst CMM on DM.District_ID=CMM.District_ID " +
              "where CMM.CourtName_ID=" + ddlCourtType.SelectedValue + " order by District_ID asc");
             if (dsd != null && dsd.Tables[0].Rows.Count > 0)
@@ -506,8 +506,9 @@ public partial class Legal_AddNewCase2 : System.Web.UI.Page
                             ddlResDepartment.SelectedItem.Text,
                             txtAddress.Text.Trim(),
                             ddlOfficetypeName.SelectedItem.Text.Trim(),
-                            ddlOfficeName.SelectedItem.Text.Trim());
-                        txtRespondentRemark.Text.Trim();
+                            ddlOfficeName.SelectedItem.Text.Trim(),
+                            txtRespondentRemark.Text.Trim());
+
                     }
                     if (dt != null && dt.Rows.Count > 0)
                     {

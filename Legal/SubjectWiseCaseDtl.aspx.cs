@@ -154,25 +154,25 @@ public partial class Legal_SubjectWiseCaseDtl : System.Web.UI.Page
             if (Session["Role_ID"].ToString() == "2")
             {
                 string Division_Id = Session["Division_Id"].ToString();
-                ds = obj.ByProcedure("Usp_SubjectWiseCaseDetails", new string[] { "flag", "Casetype_ID", "CaseSubject_Id", "Division_Id", "CourtType_Id", "CaseSubSubj_Id", "Year" },
-                   new string[] { "2", ddlCaseType.SelectedItem.Value, ddlCaseSubject.SelectedItem.Value, Division_Id, ddlCourtName.SelectedValue, ddlCaseSubSubject.SelectedValue, ddlCaseYear.SelectedItem.Text, }, "dataset");
+                ds = obj.ByProcedure("Usp_SubjectWiseCaseDetails", new string[] { "flag", "Casetype_ID", "CaseSubject_Id", "Division_Id", "CourtType_Id", "CaseSubSubj_Id", "Year", "CaseStatus" },
+                   new string[] { "2", ddlCaseType.SelectedItem.Value, ddlCaseSubject.SelectedItem.Value, Division_Id, ddlCourtName.SelectedValue, ddlCaseSubSubject.SelectedValue, ddlCaseYear.SelectedItem.Text,ddlCaseStatus.SelectedItem.Text }, "dataset");
             }
             else if (Session["Role_ID"].ToString() == "4")
             {
                 string District_Id = Session["District_Id"].ToString();
-                ds = obj.ByProcedure("Usp_SubjectWiseCaseDetails", new string[] { "flag", "Casetype_ID", "CaseSubject_Id", "District_ID", "CourtType_Id", "CaseSubSubj_Id", "Year" },
-                   new string[] { "3", ddlCaseType.SelectedItem.Value, ddlCaseSubject.SelectedItem.Value, District_Id, ddlCourtName.SelectedValue, ddlCaseSubSubject.SelectedValue, ddlCaseYear.SelectedItem.Text, }, "dataset");
+                ds = obj.ByProcedure("Usp_SubjectWiseCaseDetails", new string[] { "flag", "Casetype_ID", "CaseSubject_Id", "District_ID", "CourtType_Id", "CaseSubSubj_Id", "Year", "CaseStatus" },
+                   new string[] { "3", ddlCaseType.SelectedItem.Value, ddlCaseSubject.SelectedItem.Value, District_Id, ddlCourtName.SelectedValue, ddlCaseSubSubject.SelectedValue, ddlCaseYear.SelectedItem.Text, ddlCaseStatus.SelectedItem.Text }, "dataset");
             }
             else if (Session["Role_ID"].ToString() == "5")
             {
                 string District_Id = Session["District_Id"].ToString();
-                ds = obj.ByProcedure("Usp_SubjectWiseCaseDetails", new string[] { "flag", "Casetype_ID", "CaseSubject_Id", "District_ID", "CourtType_Id", "CaseSubSubj_Id", "Year" },
-                   new string[] { "4", ddlCaseType.SelectedItem.Value, ddlCaseSubject.SelectedItem.Value, District_Id , ddlCourtName.SelectedValue, ddlCaseSubSubject.SelectedValue, ddlCaseYear.SelectedItem.Text, }, "dataset");
+                ds = obj.ByProcedure("Usp_SubjectWiseCaseDetails", new string[] { "flag", "Casetype_ID", "CaseSubject_Id", "District_ID", "CourtType_Id", "CaseSubSubj_Id", "Year", "CaseStatus" },
+                   new string[] { "4", ddlCaseType.SelectedItem.Value, ddlCaseSubject.SelectedItem.Value, District_Id , ddlCourtName.SelectedValue, ddlCaseSubSubject.SelectedValue, ddlCaseYear.SelectedItem.Text, ddlCaseStatus.SelectedItem.Text }, "dataset");
             }
             else
             {
-                ds = obj.ByProcedure("Usp_SubjectWiseCaseDetails", new string[] { "flag", "Casetype_ID", "CaseSubject_Id", "OICMaster_Id" , "CourtType_Id", "CaseSubSubj_Id", "Year" },
-                   new string[] { "1", ddlCaseType.SelectedItem.Value, ddlCaseSubject.SelectedItem.Value, OIC,ddlCourtName.SelectedValue,ddlCaseSubSubject.SelectedValue,ddlCaseYear.SelectedItem.Text, }, "dataset");
+                ds = obj.ByProcedure("Usp_SubjectWiseCaseDetails", new string[] { "flag", "Casetype_ID", "CaseSubject_Id", "OICMaster_Id" , "CourtType_Id", "CaseSubSubj_Id", "Year", "CaseStatus" },
+                   new string[] { "1", ddlCaseType.SelectedValue, ddlCaseSubject.SelectedValue, OIC,ddlCourtName.SelectedValue,ddlCaseSubSubject.SelectedValue,ddlCaseYear.SelectedItem.Text, ddlCaseStatus.SelectedItem.Text }, "dataset");
             }
             if (ds.Tables[0].Rows.Count > 0)
             {

@@ -119,6 +119,7 @@ public partial class Legal_ViewWPPendingCaseDetail : System.Web.UI.Page
                 }
                 if (ds.Tables[7].Rows.Count > 0){GrdOldCaseDtl.DataSource = ds.Tables[7]; GrdOldCaseDtl.DataBind();}
                 if (ds.Tables[8].Rows.Count > 0){ grvReturnFileAppeal.DataSource = ds.Tables[8]; grvReturnFileAppeal.DataBind();} //Add New Grid On Date  09/05/2023 By Bhanu 
+                if (ds.Tables[9].Rows.Count > 0){ GRVOrderDoc.DataSource = ds.Tables[9]; GRVOrderDoc.DataBind();} //Add New Grid On Date  16/05/2024 By Omprakash 
             }
             else
             {

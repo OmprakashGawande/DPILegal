@@ -150,7 +150,7 @@
                                                 ControlToValidate="ddlCourtName" Display="Dynamic" runat="server" InitialValue="0">
                                             </asp:RequiredFieldValidator><br />
                                         </label>
-                                        <asp:DropDownList ID="ddlCourtName" runat="server" CssClass="form-control select2"></asp:DropDownList>
+                                        <asp:DropDownList ID="ddlCourtName" runat="server" CssClass="form-control select2" OnSelectedIndexChanged="ddlCourtName_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -165,11 +165,25 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        <label>Case Disposal Type</label><span style="color: red;"><b> *</b></span>
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Save"
+                                        <label>District</label><%--<span style="color: red;"> *</span>--%>
+                                        <span class="pull-right">
+                                            <%--  <asp:RequiredFieldValidator ID="Rfv_division" ValidationGroup="Save"
+                                                ErrorMessage="Select District" Text="<i class='fa fa-exclamation-circle' title='Select Division'></i>"
+                                                ControlToValidate="ddlDistrict" ForeColor="Red" Display="Dynamic" runat="server" InitialValue="0">
+                                            </asp:RequiredFieldValidator>--%>
+                                        </span>
+                                        <%--<asp:DropDownList runat="server" ID="ddlDistrict" CssClass="form-control select2"></asp:DropDownList>--%>
+                                        <asp:ListBox runat="server" ID="ddlDistrict" CssClass="form-control" SelectionMode="Multiple"></asp:ListBox>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Case Disposal Type</label><%--<span style="color: red;"><b> *</b></span>
+                                       <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Save"
                                             ErrorMessage="Select Case Dispose type." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                             ControlToValidate="ddlDisposetype" Display="Dynamic" runat="server" InitialValue="0">
-                                        </asp:RequiredFieldValidator>
+                                        </asp:RequiredFieldValidator>--%>
                                         <asp:DropDownList ID="ddlDisposetype" runat="server" CssClass="form-control" AutoPostBack="true" OnSelectedIndexChanged="ddlDisposetype_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </div>
@@ -205,7 +219,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-2">
+                                <%--  <div class="col-md-2">
                                     <div class="form-group">
                                         <label>
                                             From Date
@@ -219,6 +233,12 @@
                                             To Date
                                         </label>
                                         <asp:TextBox ID="txttodate" runat="server" date-provide="datepicker" AutoComplete="off" data-date-end-date="0d" placeholder="DD/MM/YYYY" class="form-control DateAdd" ClientIDMode="Static"></asp:TextBox>
+                                    </div>
+                                </div>--%>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Year</label>
+                                        <asp:DropDownList ID="ddlCaseYear" runat="server" CssClass="form-control select2"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="col-md-3 mt-4">
@@ -305,6 +325,7 @@
             </div>
         </section>
     </div>
+    <asp:HiddenField ID="hdnDistrict_Id" runat="server" />
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="Fotter" runat="Server">
     <script src="../DataTable_CssJs/jquery.js"></script>
@@ -361,6 +382,13 @@
                     }
                 }
             }
+        });
+    </script>
+    <script type="text/javascript">
+        $('[id*=ddlDistrict]').multiselect({
+            includeSelectAllOption: true,
+            includeSelectAllOption: true,
+            buttonWidth: '100%'
         });
     </script>
 </asp:Content>

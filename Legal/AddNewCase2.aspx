@@ -110,11 +110,11 @@
                                             <div class="form-group">
                                                 <div class="form-group">
                                                     <label>
-                                                        Case Subject<%--<span style="color: red;">*</span>--%></label>
-                                                    <%--<asp:RequiredFieldValidator ID="rfvCaseSubject" ValidationGroup="Save"
+                                                        Case Subject<span style="color: red;">*</span></label>
+                                                    <asp:RequiredFieldValidator ID="rfvCaseSubject" ValidationGroup="Save"
                                                         ErrorMessage="Select Case Subject." ForeColor="Red" Text="<i class='fa fa-exclamation-circle' title='Required !'></i>"
                                                         ControlToValidate="ddlCaseSubject" Display="Dynamic" runat="server" InitialValue="0">
-                                                    </asp:RequiredFieldValidator>--%>
+                                                    </asp:RequiredFieldValidator>
                                                     <asp:DropDownList ID="ddlCaseSubject" runat="server" class="form-control select2" OnSelectedIndexChanged="ddlCaseSubject_SelectedIndexChanged" AutoPostBack="true">
                                                     </asp:DropDownList>
                                                 </div>
@@ -309,9 +309,14 @@
                                                                 <asp:Label ID="lblDistrictID" runat="server" Text='<%# Eval("District_ID") %>' Visible="false"></asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="Address">
+                                                        <asp:TemplateField HeaderText="Present posting address">
                                                             <ItemTemplate>
                                                                 <asp:Label ID="lblAddress" runat="server" Text='<%# Eval("AddRess") %>'></asp:Label>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Remark">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblRemark" runat="server" Text='<%# Eval("PetitionerRemark") %>'></asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                     </Columns>
@@ -462,6 +467,11 @@
                                                         <asp:TemplateField HeaderText="Address">
                                                             <ItemTemplate>
                                                                 <asp:Label ID="lblAddress" runat="server" Text='<%# Eval("Address") %>'></asp:Label>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Respondent Details as per High Court site">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblRespondentRemark" runat="server" Text='<%# Eval("RespondentRemark") %>'></asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                     </Columns>

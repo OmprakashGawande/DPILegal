@@ -209,10 +209,11 @@
                                                         <asp:Label ID="lblSrno" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:BoundField HeaderText="Name" DataField="PetitionerName" />
+                                                <asp:BoundField HeaderText="Petitioner Name" DataField="PetitionerName" />
                                                 <asp:BoundField HeaderText="Designation" DataField="Designation_Name" />
-                                                <asp:BoundField HeaderText="Mobile No." DataField="PetitionerMobileNo" />
-                                                <asp:BoundField HeaderText="Address" DataField="PetitionerAddress" />
+                                                <asp:BoundField HeaderText="Petitioner Mobile No." DataField="PetitionerMobileNo" />
+                                                <asp:BoundField HeaderText="Present posting District" DataField="District_Name" />
+                                                <asp:BoundField HeaderText="Present posting address" DataField="PetitionerAddress" />
                                                 <asp:BoundField HeaderText="Remark" DataField="PetitionerRemark" />
                                             </Columns>
                                         </asp:GridView>
@@ -249,55 +250,90 @@
                                 </div>
                             </div>
                         </fieldset>
-                        <fieldset>
-                            <legend>Advocate Details</legend>
-                            <div class="row">
-                                <div class="col-md-6" id="DivHide_Petitioner" runat="server" visible="false">
-                                    <fieldset>
-                                        <legend>Petitioner Advocate Detail</legend>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="table-responsive">
-                                                    <asp:GridView ID="GrdPetiAdv" runat="server" CssClass="table table-bordered" AutoGenerateColumns="false" EmptyDataText="NO RECORD FOUND">
-                                                        <Columns>
-                                                            <asp:TemplateField HeaderText="S.No.">
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblSrno" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:BoundField HeaderText="Name" DataField="PetiAdv_Name" />
-                                                            <asp:BoundField HeaderText="Mobile No." DataField="PetiAdv_MobileNo" />
-                                                        </Columns>
-                                                    </asp:GridView>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <fieldset>
+                                    <legend>Advocate Details</legend>
+                                    <div class="row">
+                                        <div class="col-md-12" id="DivHide_Petitioner" runat="server" visible="false">
+                                            <fieldset>
+                                                <legend>Petitioner Advocate Detail</legend>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive">
+                                                            <asp:GridView ID="GrdPetiAdv" runat="server" CssClass="table table-bordered" AutoGenerateColumns="false" EmptyDataText="NO RECORD FOUND">
+                                                                <Columns>
+                                                                    <asp:TemplateField HeaderText="S.No.">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblSrno" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:BoundField HeaderText="Name" DataField="PetiAdv_Name" />
+                                                                    <asp:BoundField HeaderText="Mobile No." DataField="PetiAdv_MobileNo" />
+                                                                </Columns>
+                                                            </asp:GridView>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </fieldset>
                                         </div>
-                                    </fieldset>
-                                </div>
-                                <div class="col-md-6">
-                                    <fieldset>
-                                        <legend>Department Advocate Detail</legend>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="table-responsive">
-                                                    <asp:GridView ID="GrdDeptAdv" runat="server" CssClass="table table-bordered" AutoGenerateColumns="false" EmptyDataText="NO RECORD FOUND">
-                                                        <Columns>
-                                                            <asp:TemplateField HeaderText="S.No.">
-                                                                <ItemTemplate>
-                                                                    <asp:Label ID="lblSrno" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                            <asp:BoundField HeaderText="Name" DataField="DeptAdvName" />
-                                                            <asp:BoundField HeaderText="Mobile No." DataField="DeptAdvMobileNo" />
-                                                        </Columns>
-                                                    </asp:GridView>
+                                        <div class="col-md-12">
+                                            <fieldset>
+                                                <legend>Department Advocate Detail</legend>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="table-responsive">
+                                                            <asp:GridView ID="GrdDeptAdv" runat="server" CssClass="table table-bordered" AutoGenerateColumns="false" EmptyDataText="NO RECORD FOUND">
+                                                                <Columns>
+                                                                    <asp:TemplateField HeaderText="S.No.">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblSrno" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:BoundField HeaderText="Name" DataField="DeptAdvName" />
+                                                                    <asp:BoundField HeaderText="Mobile No." DataField="DeptAdvMobileNo" />
+                                                                </Columns>
+                                                            </asp:GridView>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </fieldset>
                                         </div>
-                                    </fieldset>
-                                </div>
+                                    </div>
+                                </fieldset>
                             </div>
-                        </fieldset>
+                            <div class="col-md-6">
+                                <fieldset>
+                                    <legend>Order Document</legend>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView ID="GRVOrderDoc" runat="server" CssClass="table" AutoGenerateColumns="false" EmptyDataText="NO RECORD FOUND">
+                                                    <Columns>
+                                                        <asp:TemplateField HeaderText="S.No." ItemStyle-HorizontalAlign="Center" ItemStyle-Width="2%">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblSrno" runat="server" Text='<%# Container.DataItemIndex + 1 %>'></asp:Label>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Case Disposal Date" ItemStyle-Width="5%">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblCaseDisposal_Date" runat="server" Text='<%# Eval("CaseDisposal_Date") %>'></asp:Label>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="View" ItemStyle-HorizontalAlign="Center" ItemStyle-Width="5%">
+                                                            <ItemTemplate>
+                                                                <asp:HyperLink ID="HyperlinkOrderDoc" runat="server" Target="_blank" Enabled='<%# Eval("CaseDisposal_Doc").ToString() == "" ? false : true %>' NavigateUrl='<%# "../Legal/DisposalDocs/" + Eval("CaseDisposal_Doc") %>' CssClass="fa fa-eye"></asp:HyperLink>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                </asp:GridView>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
                         <fieldset>
                             <legend>Respondent Detail</legend>
                             <div class="row">
@@ -313,11 +349,12 @@
                                                 <asp:BoundField HeaderText="Department" DataField="Dept_Name" />
                                                 <asp:BoundField HeaderText="HOD" DataField="HodName" />
                                                 <asp:BoundField HeaderText="Office type" DataField="OfficeType_Name" />
-                                                <asp:BoundField HeaderText="Office Name" DataField="OfficeName" />
-                                                <asp:BoundField HeaderText="Responder Name" DataField="RespondentName" />
+                                                <asp:BoundField HeaderText="Office Location" DataField="OfficeName" />
                                                 <asp:BoundField HeaderText="Designation" DataField="Designation_Name" />
+                                                <asp:BoundField HeaderText="Responder Name" DataField="RespondentName" />
                                                 <asp:BoundField HeaderText="Mobile No." DataField="RespondentMobileNo" />
                                                 <asp:BoundField HeaderText="Address" DataField="Address" />
+                                                <asp:BoundField HeaderText="Respondend Details as per High Court   site" DataField="RespondentRemark" />
                                             </Columns>
                                         </asp:GridView>
                                     </div>
